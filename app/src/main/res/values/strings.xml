@@ -1,0 +1,129 @@
+<resources>
+    <string name="app_name">Perseo</string>
+    <string name="version">Versión </string>
+    <string name="cerra_app">Vuelva a presionar para salir</string>
+    <string name="title_share">Nueva App de Vagos</string>
+    <string name="url_share">https://</string>
+    <string name="home">Inicio</string>
+    <string name="idioma_app">es</string>
+    <string name="version_name"> Beta</string>
+
+
+    <!-- Menu -->
+    <string name="registrar_cliente">Registrar Cliente</string>
+    <string name="registrar_pedido">Registrar Pedido</string>
+    <string name="lista_pedido">Pedidos Realizados</string>
+    <string name="sincronixar_datos">Sincronizar Datos</string>
+    <!-- Menu de configuracion-->
+    <string name="action_about">Acerca de nosotros</string>
+    <string name="action_share">Compartí la App</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_refresh">Actualizar</string>
+    <string name="drawer_open">Abrir</string>
+    <string name="drawer_close">Cerrar</string>
+    <string name="texto_about">™ © 2018 – Ideas Web. Todos los derechos reservados.</string>
+    <string name="developers">Emilio Espinola - Jaime Ferreira - Marcos Cespedes.</string>
+
+    <!-- Login Activity -->
+    <string name="loginactivity">Ingresar</string>
+    <string name="tex_correo">Correo electrónico</string>
+    <string name="text_pass">Contraseña</string>
+    <string name="text_user">Usuario</string>
+    <string name="btn_acceder">Acceder</string>
+    <string name="text_olvido"><u>Olvidé mi contraseña</u></string>
+    <string name="text_recordarusuario">Recordar usuario</string>
+    <string name="miperfil">Mi perfil</string>
+    <string name="login_correcto">Login Correcto</string>
+
+    <!--Cerrar Session-->
+    <string name="logout">Cerrar sesión</string>
+    <string name="dialog_logout">Desea cerrar sesión?</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+
+    <!--Mensajes-->
+    <string name="guardarUsuario">Se guardará el usuario</string>
+    <string name="noGuardarUsuario">No se guardará el usuario</string>
+    <string name="usuarioIncorrecto">Usuario o contraseña incorrecto</string>
+    <string name="verifiqueInternet">Verifique su conexión a internet...</string>
+    <string name="errorDesloguear">Error al desloguear, favor intente nuevamente</string>
+    <string name="enviandoDatos">Enviando sus datos</string>
+    <string name="sincronizando">Sincronizando</string>
+    <string name="aguarde">Aguarde...</string>
+    <string name="esperar">Por favor, aguarde...</string>
+    <string name="pwdIncorrect">Usuario y/o Password Incorrectos</string>
+    <string name="procesoExitoso">Proceso exitoso</string>
+    <string name="error">Ha ocurrido un error!</string>
+    <string name="mastarde">Favor intente más tarde</string>
+    <string name="servivioNoDisponible">Servicio no disponible temporalmente, favor intente más tarde</string>
+    <string name="conectese_sincronize">Favor, conectese a internet y sincronize</string>
+    <string name="salir_app">Desea salir de la aplicacion?</string>
+    <string name="salir">Desea salir?</string>
+    <string name="grabar_continuar">Grabar y continuar?</string>
+    <string name="gracias">Gracias...</string>
+    <string name="version_antigua">Estás utilizando una versión anterior</string>
+    <string name="spot_title">Cargando</string>
+    <string name="grabar">Grabar</string>
+    <string name="cargando">Cargando...</string>
+
+    <!--Validaciones -->
+    <string name="required">Campo requerido</string>
+    <string name="mail_invalid">Email inválido</string>
+    <string name="required_min">Debe conterner mínimo</string>
+    <string name="caracter">caracteres</string>
+    <string name="ingreseContraseña">Ingrese su contraseña</string>
+    <string name="titulo_actualizarContraseña">Actualizar contraseña</string>
+    <string name="text_contraseña">Contraseña actual</string>
+    <string name="text_nuevaContraseña">Nueva contraseña</string>
+    <string name="complete_campos">Favor complete los campos</string>
+    <string name="required_foto">Favor tome la foto para continuar</string>
+
+
+    <!--About-->
+    <string name="jaime"><u>Jaime Ferreira</u></string>
+    <string name="marcos"><u>Marcos Céspedes</u></string>
+    <string name="emilio"><u>Emilio Espinola</u></string>
+    <string name="desarroladores">Desarrolladores: </string>
+    <string name="about">Desarrollo de páginas web, aplicaciones móviles y software a medida.</string>
+    <string name="nosotros">Sobre Nosotros</string>
+
+    <!--Botones-->
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="continuar">Continuar</string>
+
+    <!--Stepper-->
+    <string name="ms_prev">ANTERIOR</string>
+    <string name="ms_next">SIGUIENTE</string>
+    <string name="ms_end">PROCESAR ORDEN</string>
+    <string name="ms_continue">CONTINUAR</string>
+    <string name="ms_optional">Optional</string>
+    <string name="ms_text_step">Paso $current de $total</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pendientes">Pendientes</string>
+    <string name="confrimados">Sincronizados</string>
+    <string name="anulados">Anulados</string>
+    <string name="seleccione_items">Seleccione los items a sincronizar</string>
+    <string name="todos">Todos</string>
+    <string name="sinc_seleccionados">Sincronizar seleccionados</string>
+    <string name="seleccione_cliente">Seleccione el Cliente</string>
+    <string name="buscar">Código de barra o descripcion</string>
+    <string name="agregar_articulo">Agregar al Carrito</string>
+    <string name="empresa">DISTRIBUIDORA AVV S.R.L.</string>
+    <string name="direccion_empresa">CABALLERO N 2796 ESQ ISLA TAJY</string>
+    <string name="telefono_empresa">021 371 943</string>
+    <string name="ruc_empresa">80032130-8</string>
+    <string name="registrar_talonario">Registrar Talonario</string>
+
+
+    <string name="nocoincidenpwd">No coinciden las contraseñas</string>
+    <string name="pwdupdate">Contrasena Actualizada</string>
+
+    <string name="elegirunaOpcion">Eligí una opción</string>
+    <string name="tomarFoto">Tomar Foto</string>
+    <string name="ElegirGaleria">Elegir de la Galeria</string>
+    <string name="imgperfil">Seleccione Foto de Perfil</string>
+
+</resources>

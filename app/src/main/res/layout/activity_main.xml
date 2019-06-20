@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tools:android.support.v4.widget.DrawerLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawerLayout"
+    tools:context="py.com.ideasweb.perseo.ui.activities.MainActivity">
+
+    <LinearLayout
+        android:layout_width="368dp"
+        android:layout_height="551dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+
+        <FrameLayout
+            android:layout_below="@id/toolbar"
+            android:id="@+id/container_body"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+
+
+
+
+    </LinearLayout>
+
+    <py.com.ideasweb.perseo.ui.elements.ScrimInsetsFrameLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/scrimInsetsFrameLayout"
+        style="@style/drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_marginEnd="@dimen/drawer_margin"
+        android:layout_marginLeft="-64dp"
+        android:layout_marginRight="@dimen/drawer_margin"
+        android:layout_marginStart="-64dp"
+        android:clickable="true"
+        android:elevation="10dp"
+        android:fitsSystemWindows="true"
+        app:insetForeground="@color/status_bar_inset">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Your drawer content -->
+            <include layout="@layout/drawer" />
+
+        </LinearLayout>
+
+    </py.com.ideasweb.perseo.ui.elements.ScrimInsetsFrameLayout>
+
+</tools:android.support.v4.widget.DrawerLayout>

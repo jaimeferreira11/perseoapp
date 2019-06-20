@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLight"
+    tools:context="py.com.ideasweb.perseo.ui.activities.SplashActivity">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:id="@+id/imgSplash"
+        android:src="@drawable/perseo"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_below="@id/imgSplash"
+        android:layout_height="wrap_content"
+        android:textColor="@color/icons"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="@dimen/spacing_large"
+        android:text="Facturacion Movil"/>
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/progress_view"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cpv_animAutostart="true"
+        app:cpv_color="@color/colorAccent"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        app:cpv_indeterminate="true" />
+
+
+
+</RelativeLayout>

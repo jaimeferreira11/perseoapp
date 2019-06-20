@@ -1,0 +1,434 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="py.com.ideasweb.perseo.ui.fragments.cliente.RegistroClienteFragment">
+
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="@string/registrar_cliente"
+        android:textStyle="bold"
+        android:id="@+id/regTitulo"
+        android:textSize="@dimen/titulo_fragment"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/primary_text"
+        android:gravity="center"/>
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollAdd"
+        android:layout_below="@id/regTitulo"
+
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
+
+
+
+                <android.support.percent.PercentRelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    app:layout_widthPercent="10%"
+                    android:padding="12dp"
+                    />
+
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/regTipoPersona"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:layout_widthPercent="18%"
+                    android:textColorHint="@color/secondary_text"
+                    app:met_floatingLabel="normal" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_widthPercent="80%"
+                    android:layout_marginLeft="5dp"
+                    >
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/regCedula"
+
+                        android:inputType="text"
+                        android:hint="Nro. Cedula"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+                </android.support.percent.PercentRelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center"
+                    >
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/regNombres"
+                        android:lines="2"
+                        android:hint="Nombres y Apellidos"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/regDireccion"
+                        android:inputType="text"
+                        android:lines="2"
+                        android:hint="Direccion"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/regTelefono"
+                        android:inputType="text"
+                        android:hint="Telefono"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/regBarrio"
+                        android:inputType="text"
+                        android:hint="Barrio"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/regCiudad"
+                        android:inputType="text"
+                        android:hint="Ciudad"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+
+
+
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Selececcione la ciudad"
+                        android:textSize="18dp"
+                        android:textColor="@color/secondary_text"/>
+
+                    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                        android:id="@+id/regCiudad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/secondary_text"
+
+                        app:met_floatingLabel="normal" />
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Seleccione el departamento"
+                        android:textSize="18dp"
+                        android:textColor="@color/secondary_text"/>
+
+                    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                        android:id="@+id/regDpto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Departamento"
+                        android:textColorHint="@color/secondary_text"
+
+                        app:met_floatingLabel="normal"/>
+
+
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Seleccione el Barrio"
+                        android:textSize="18dp"
+                        android:textColor="@color/secondary_text"/>
+
+                    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                        android:id="@+id/regBarrio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Barrios"
+                        android:textColorHint="@color/secondary_text"
+                        app:met_floatingLabel="normal"/>
+
+
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>-->
+
+
+
+
+            <Button
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button"
+                android:text="@string/grabar"
+                android:theme="@style/MiBotonRaised"
+                android:id="@+id/regGuardar"
+                android:enabled="false"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cliente xxx"
+        android:id="@+id/detCliente"
+        android:textSize="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"/>
+
+
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Factura nro: xxxx"
+            android:id="@+id/detNro"
+            android:textSize="18dp"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/primary_text"/>
+
+
+
+
+
+    <View
+
+        android:layout_marginBottom="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryDark"
+        />
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvDetallePedido"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="2dp"
+            />
+
+
+
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_text"
+            android:text="TOTAL: "/>
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:id="@+id/detTotal"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:text=" 100000 GS"/>
+
+    </LinearLayout>
+
+</LinearLayout>

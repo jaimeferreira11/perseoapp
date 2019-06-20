@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="py.com.ideasweb.perseo.ui.fragments.talonario.TalonarioFragment">
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:text="@string/registrar_talonario"
+    android:textStyle="bold"
+    android:id="@+id/regTitulo"
+    android:textSize="@dimen/titulo_fragment"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    android:textColor="@color/primary_text"
+    android:gravity="center"/>
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollAdd"
+        android:layout_below="@id/regTitulo"
+
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
+
+
+
+            <android.support.percent.PercentRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <net.steamcrafted.materialiconlib.MaterialIconView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:materialIcon="label_outline"
+                        android:textColor="@color/colorAccent"
+                        app:materialIconColor="@color/colorPrimaryDark"
+                        app:materialIconSize="24dp"
+                        app:layout_widthPercent="10%"
+                        android:padding="12dp"
+                        />
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_widthPercent="80%"
+                        android:layout_marginLeft="5dp"
+                        >
+
+                        <android.support.design.widget.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/timbrado"
+                            android:inputType="number"
+                            android:hint="Timbrado"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+            </android.support.percent.PercentRelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:minWidth="150dp"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fecha_desde"
+                        android:inputType="number"
+                        android:lines="2"
+                        android:hint="Fecha desde"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fecha_hasta"
+                        android:inputType="number"
+                        android:hint="Fecha hasta"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:minWidth="150dp"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/nro_inicial"
+                        android:inputType="number"
+                        android:hint="Nro Incial"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:minWidth="150dp"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/nro_final"
+                        android:inputType="number"
+                        android:hint="Nro Final"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:minWidth="150dp"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/establecimiento"
+                        android:inputType="number"
+                        android:hint="Establecimiento"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:minWidth="150dp"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/expedicion"
+                        android:inputType="number"
+                        android:hint="Punto Expedicion"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:materialIcon="label_outline"
+                    android:textColor="@color/colorAccent"
+                    app:materialIconColor="@color/colorPrimaryDark"
+                    app:materialIconSize="24dp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/nro_actual"
+                        android:inputType="number"
+                        android:hint="Numero Actual"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+
+
+            <Button
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button"
+                android:text="@string/grabar"
+                android:theme="@style/MiBotonRaised"
+                android:id="@+id/guardar"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryLight">#95CCC6</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="colorAccentLigth">#EBD07F</color>
+
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="title_text">#1E7D3E</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="windowBackground">#d1d2d4</color>
+    <color name="colorlink">#2196f3</color>
+    <color name="icons2">#f0f9f1</color>
+    <color name="coloBackground">#eccbf2</color>
+
+    <color name="white">#ffffff</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="iron_ligth">#E2E2E2</color>
+    <color name="iron_dark">#585656</color>
+    <color name="darkRed">#FFB31921</color>
+
+    <!--drawer-->
+    <color name="status_bar_inset">#0000</color>
+</resources>

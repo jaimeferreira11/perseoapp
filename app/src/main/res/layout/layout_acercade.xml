@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_margin="5dp"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ideasweb"/>
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="@string/nosotros"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:paddingBottom="10dip"
+        />
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/version"/>
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/version_name"/>
+    </LinearLayout>
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Visite nuestra pagina oficial:"/>
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:id="@+id/pagina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorlink"
+            android:onClick="irPagina"
+            android:textSize="15dp"
+            android:layout_marginTop="5dp"
+            android:text="wwww.ideasweb.com.py"/>
+
+
+
+
+
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:id="@+id/desarrollador"
+        android:text="Desarrollador Android"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="60dp"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        >
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/linkedin_48"
+            android:layout_marginRight="10dp"
+            />
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:id="@+id/emilio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorlink"
+            android:onClick="irLinkEmilio"
+            android:textSize="15dp"
+            android:text="@string/emilio"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="60dp"
+        android:layout_marginTop="10dp"
+        >
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/linkedin_48"
+            android:layout_marginRight="10dp"
+            />
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:id="@+id/jaime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorlink"
+            android:onClick="irLinkJaime"
+            android:textSize="15dp"
+            android:text="@string/jaime"/>
+
+    </LinearLayout>
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:text="Desarrollador Backend"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="60dp"
+        android:layout_marginTop="5dp"
+        >
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/linkedin_48"
+            android:layout_marginRight="10dp"
+            />
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorlink"
+            android:id="@+id/marcos"
+            android:textSize="15dp"
+            android:onClick="irLinkMarcos"
+            android:text="@string/marcos"/>
+
+    </LinearLayout>
+
+
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+
+        android:text="@string/texto_about"/>
+
+
+
+</LinearLayout>

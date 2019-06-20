@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="py.com.ideasweb.perseo.ui.fragments.sincronizacion.DownloadFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sincronixar_datos"
+            android:textSize="@dimen/titulo_fragment"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/margin_titulo"
+            android:gravity="center"/>
+
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/text_form"
+            android:layout_height="wrap_content"
+            android:text="Descargue los datos del servidor"/>
+
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/card_item_sinc">
+
+
+            </android.support.v7.widget.RecyclerView>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button"
+        android:layout_margin="@dimen/margin_button"
+        android:text="Descargar Datos"
+        android:id="@+id/descargar"
+        android:layout_alignParentBottom="true"
+
+        android:theme="@style/MiBotonRaised"/>
+
+</RelativeLayout>

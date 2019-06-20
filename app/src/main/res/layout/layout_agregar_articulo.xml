@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_margin="5dp"
+        android:text="@string/agregar_articulo"/>
+
+    <View
+
+        android:layout_marginBottom="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@color/windowBackground"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <py.com.ideasweb.perseo.ui.elements.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@color/primary_text"
+                android:id="@+id/aa_descripcion"
+                android:textSize="@dimen/text_form"
+
+                />
+            <py.com.ideasweb.perseo.ui.elements.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/aa_id"
+                android:textSize="@dimen/text_form"
+
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="5dp"
+                android:layout_height="wrap_content">
+
+                <py.com.ideasweb.perseo.ui.elements.MyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_text"
+                    android:textSize="14dp"
+                    android:text="Precio Unit."/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <py.com.ideasweb.perseo.ui.elements.MyTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/secondary_text"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="14dp"
+                        android:id="@+id/aa_precio"
+                        />
+
+                    <py.com.ideasweb.perseo.ui.elements.MyTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="14dp"
+                        android:text=" Gs."/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
+    </RelativeLayout>
+
+    <py.com.ideasweb.perseo.ui.elements.MyTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="* Solo 20 en existencia"
+        android:layout_margin="5dp"
+        android:textColor="@color/red_error"
+        android:textSize="15dp"
+        android:visibility="gone"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:textStyle="bold"
+            android:textSize="24dp"
+            android:text=" TOTAL: "/>
+
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textSize="24dp"
+            android:text="0"
+            android:id="@+id/aa_monto"
+
+            />
+        <py.com.ideasweb.perseo.ui.elements.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:textSize="24dp"
+            android:text=" Gs."/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp"
+        android:gravity="center">
+
+
+        <net.steamcrafted.materialiconlib.MaterialIconView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            app:materialIcon="arrow_down_bold_circle_outline"
+            android:textColor="@color/colorAccent"
+            app:materialIconColor="@color/colorPrimaryDark"
+            app:materialIconSize="42dp"
+            android:id="@+id/aa_down"
+            android:gravity="center"
+            />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/aa_cantidad"
+            android:text="1"/>
+
+        <net.steamcrafted.materialiconlib.MaterialIconView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            app:materialIcon="arrow_up_bold_circle_outline"
+            android:textColor="@color/colorAccent"
+            app:materialIconColor="@color/colorPrimaryDark"
+            app:materialIconSize="42dp"
+            android:gravity="center"
+            android:id="@+id/aa_up"
+            />
+
+
+
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>
