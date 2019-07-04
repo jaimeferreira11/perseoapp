@@ -83,6 +83,10 @@ public interface Endpoints {
     @POST(ConstantesRestApi.API_GET_ARTICULO_BY_CODIGO_EAN)
     Call<List<Articulo>> getArticulosByCodBarra(@Field("codigo") String codigo);
 
+    @FormUrlEncoded
+    @POST(ConstantesRestApi.API_POST_ADD_ARTICULO)
+    Call<Articulo> addArticulo(@Body RequestBody articulo);
+
 
     // FACTURAS
 

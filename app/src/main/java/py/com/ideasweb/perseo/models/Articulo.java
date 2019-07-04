@@ -6,7 +6,6 @@ import org.litepal.crud.LitePalSupport;
 
 public class Articulo extends LitePalSupport {
 
-	@Column(unique = true)
 	private Integer idArticulo;
 	private String codigoBarra;
 	private String descripcion;
@@ -15,6 +14,11 @@ public class Articulo extends LitePalSupport {
 	private Double cantidad;
 	private Integer idDeposito;
 	private Integer idSucursal;
+	private Integer idEmpresa;
+	@Column(defaultValue = "false")
+	private Boolean sincronizar;
+	@Column(defaultValue = "true")
+	private Boolean estado;
 	
 	public Articulo(){}
 
@@ -80,6 +84,30 @@ public class Articulo extends LitePalSupport {
 
 	public void setIdSucursal(Integer idSucursal) {
 		this.idSucursal = idSucursal;
+	}
+
+	public Integer getIdEmpresa() {
+		return idEmpresa;
+	}
+
+	public void setIdEmpresa(Integer idEmpresa) {
+		this.idEmpresa = idEmpresa;
+	}
+
+	public Boolean getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Boolean estado) {
+		this.estado = estado;
+	}
+
+	public Boolean getSincronizar() {
+		return sincronizar;
+	}
+
+	public void setSincronizar(Boolean sincronizar) {
+		this.sincronizar = sincronizar;
 	}
 
 	@Override

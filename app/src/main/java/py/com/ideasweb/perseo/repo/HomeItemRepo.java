@@ -20,7 +20,7 @@ public class HomeItemRepo {
             lista.add(new HomeItem(3 ,"Registro de cliente" ,"py.com.ideasweb.perseo.ui.fragments.cliente.RegistroClienteFragment", R.drawable.new_user ,3,"F"));
             lista.add(new HomeItem(5 ,"Registar Factura" ,"py.com.ideasweb.perseo.ui.activities.MainStepper", R.drawable.registro_de_facturas ,1,"A"));
             lista.add(new HomeItem(6 ,"Facturas Registradas" ,"py.com.ideasweb.perseo.ui.fragments.pedidos.PedidosListFragment", R.drawable.faccturas ,3,"F"));
-            lista.add(new HomeItem(2 ,"Subir Datos" ,"py.com.ideasweb.perseo.ui.fragments.sincronizacion.SincronizarFragment", R.drawable.up ,3,"F"));
+            lista.add(new HomeItem(2 ,"Subir Datos" ,"py.com.ideasweb.perseo.ui.fragments.sincronizacion.UploadFragment", R.drawable.up ,3,"F"));
             // lista.add(new HomeItem(7 ,"Reimpresion de  Facturas" ,"", null ,null,"F"));
 
 

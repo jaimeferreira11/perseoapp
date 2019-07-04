@@ -14,6 +14,8 @@ public class SincronizacionItem {
 
     private List<Cliente> clientes;
 
+    private List<Articulo> articulos;
+
     public SincronizacionItem(String titulo, Integer cantidad, String tipo) {
         this.titulo = titulo;
         this.cantidad = cantidad;
@@ -26,6 +28,13 @@ public class SincronizacionItem {
         this.tipo = tipo;
         this.facturas = facturas;
         this.clientes = clientes;
+    }
+
+    public SincronizacionItem(String titulo, Integer cantidad, String tipo, List<Articulo> articulos) {
+        this.titulo = titulo;
+        this.cantidad = cantidad;
+        this.tipo = tipo;
+        this.articulos = articulos;
     }
 
     public String getTitulo() {
@@ -66,5 +75,13 @@ public class SincronizacionItem {
 
     public void setClientes(List<Cliente> clientes) {
         this.clientes = clientes;
+    }
+
+    public List<Articulo> getArticulos() {
+        return articulos;
+    }
+
+    public void setArticulos(List<Articulo> articulos) {
+        this.articulos = articulos;
     }
 }

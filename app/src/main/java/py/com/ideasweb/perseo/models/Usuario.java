@@ -29,6 +29,7 @@ public class Usuario extends LitePalSupport {
     private String barrio;
     private String idSucursal;
     private Integer idDeposito;
+    private Integer idEmpresa;
 
     @Column(ignore = true)
     private List<Perfilusuario> perfiles;
@@ -135,6 +136,14 @@ public class Usuario extends LitePalSupport {
 
     public void setPerfiles(List<Perfilusuario> perfiles) {
         this.perfiles = perfiles;
+    }
+
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     @Override

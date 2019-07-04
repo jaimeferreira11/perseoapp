@@ -183,7 +183,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/regNombres"
                         android:focusable="false"
-                        android:lines="2"
+                        android:maxLines="2"
                         android:hint="Nombres y Apellidos"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -353,6 +353,7 @@
         android:layout_margin="5dp"
         android:clickable="true"
         app:fabSize="normal"
+        android:visibility="gone"
         android:src="@drawable/plus_math_96"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"

@@ -22,7 +22,7 @@ public class ConstructorCliente {
         System.out.println("Insertando clientes en el contrucutor cliente");
         int cont = 0;
 
-        LitePal.deleteAll(Cliente.class, "idcliente > ?" , "0");
+        borraClientesNuevos();
         for (Cliente data: lista) {
             data.save();
             cont++;
@@ -33,24 +33,24 @@ public class ConstructorCliente {
 
     public void borraClientesNuevos(){
 
-        LitePal.deleteAll(Cliente.class, "idcliente = ?" , "0");
+        LitePal.deleteAll(Cliente.class, "sincronizar = ?" , "false");
     }
 
-
-    public void grabar(Cliente cliente){
-        cliente.save();
-    }
 
 
     public List<Cliente> obtenerClientesNuevos(){
 
-        final List<Cliente> busqueda = LitePal.where(" idcliente = ? " , "0" )
+        final List<Cliente> busqueda = LitePal.where(" sincronizar = ? " , "false" )
                 .find(Cliente.class);
 
         UtilLogger.info("Clientes nuevos: " + busqueda.size());
         return  busqueda;
     }
 
+
+    public void grabar(Cliente cliente){
+        cliente.save();
+    }
 
 
 }

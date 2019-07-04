@@ -38,6 +38,7 @@ public class Facturacablog extends LitePalSupport {
 
     private Double porcDescuento;
     private String comentario;
+    private Integer idEmpresa;
 
 
     public Facturacablog(Facturacab cab) {
@@ -60,6 +61,7 @@ public class Facturacablog extends LitePalSupport {
         this.cliente = cab.getCliente();
         this.usuario = cab.getUsuario();
         this.porcDescuento = cab.getPorcDescuento();
+        this.idEmpresa = cab.getIdEmpresa();
         this.comentario = cab.getComentario();
     }
 
@@ -231,6 +233,14 @@ public class Facturacablog extends LitePalSupport {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     @Override

@@ -116,13 +116,13 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Result
 
                                     detalleDTO.setArticulo(articuloDTO);
                                     detalleDTO.setIdArticulo(articuloDTO.getIdArticulo());
-                                    detalleDTO.setConcepto(articuloDTO.getDescripcion());
+                                    detalleDTO.setConcepto(articuloDTO.getCodigoBarra()+ " "+articuloDTO.getDescripcion());
                                     detalleDTO.setTasaIva(Double.parseDouble(iva.getText().toString()));
 
                                     if(detalleDTO.getTasaIva().intValue() == 10){
                                         detalleDTO.setImpuesto(detalleDTO.getSubTotal() / 11);
                                     }else if(detalleDTO.getTasaIva().intValue() == 5){
-                                        detalleDTO.setImpuesto(detalleDTO.getSubTotal() / 1.1);
+                                        detalleDTO.setImpuesto(detalleDTO.getSubTotal() / 21);
                                     }else{
                                         detalleDTO.setImpuesto(detalleDTO.getSubTotal());
                                     }

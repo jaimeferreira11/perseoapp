@@ -83,6 +83,7 @@ public class RegistroClienteFragment extends Fragment {
 
         regTipoPersona = (MaterialBetterSpinner) view.findViewById(R.id.regTipoPersona) ;
 
+
         ArrayAdapter<String> tipoAdapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_dropdown_item_1line, TIPOSPER);
         regTipoPersona.setAdapter(tipoAdapter);
         regTipoPersona.setText(TIPOSPER[0]);

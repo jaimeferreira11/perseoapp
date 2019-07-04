@@ -2,7 +2,7 @@
     <string name="app_name">Perseo</string>
     <string name="version">Versión </string>
     <string name="cerra_app">Vuelva a presionar para salir</string>
-    <string name="title_share">Nueva App de Vagos</string>
+    <string name="title_share">Perseo - Aplicacion de Facturacion Offline</string>
     <string name="url_share">https://</string>
     <string name="home">Inicio</string>
     <string name="idioma_app">es</string>
@@ -31,7 +31,7 @@
     <string name="text_user">Usuario</string>
     <string name="btn_acceder">Acceder</string>
     <string name="text_olvido"><u>Olvidé mi contraseña</u></string>
-    <string name="text_recordarusuario">Recordar usuario</string>
+    <string name="text_recordarusuario">Recordar Credenciales</string>
     <string name="miperfil">Mi perfil</string>
     <string name="login_correcto">Login Correcto</string>
 

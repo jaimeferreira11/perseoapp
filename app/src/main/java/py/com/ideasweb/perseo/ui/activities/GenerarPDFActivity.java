@@ -83,7 +83,7 @@ public class GenerarPDFActivity extends AppCompatActivity {
             // Insertamos una imagen que se encuentra en los recursos de la
             // aplicación.
             Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(),
-                    R.drawable.vagos_logo);
+                    R.drawable.perseo);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             Image imagen = Image.getInstance(stream.toByteArray());

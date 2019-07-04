@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,11 +19,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.multidots.fingerprintauth.AuthErrorCodes;
+import com.multidots.fingerprintauth.FingerPrintAuthCallback;
+import com.multidots.fingerprintauth.FingerPrintAuthHelper;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import butterknife.BindView;
@@ -31,7 +36,7 @@ import py.com.ideasweb.perseo.constructor.ConstructorUsuario;
 import py.com.ideasweb.perseo.models.Usuario;
 import py.com.ideasweb.perseo.utilities.Validation;
 
-public class LoginActivity extends BaseActivity  {
+public class LoginActivity extends BaseActivity  implements FingerPrintAuthCallback {
    // private Toolbar mToolbar;
     /*private SwitchCompat SwRecordad;
     TextView tvuser;
@@ -47,6 +52,15 @@ public class LoginActivity extends BaseActivity  {
     ActionProcessButton btnSignIn;
 
 
+    //finger
+    boolean fingerSuccess = false;
+    private FingerPrintAuthHelper mFingerPrintAuthHelper;
+    boolean fingerPrintAvailability = true;
+    ImageView imgHuella;
+    TextView textHuella;
+    MaterialDialog dialogPrint;
+
+
    // Button login;
   //  ShowHidePasswordEditText tEdit;
   //  ActionProcessButton btnSignIn;
@@ -59,6 +73,8 @@ public class LoginActivity extends BaseActivity  {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+
 
     public static final String EXTRAS_ENDLESS_MODE = "EXTRAS_ENDLESS_MODE";
 
@@ -79,58 +95,31 @@ public class LoginActivity extends BaseActivity  {
         inicializar();
         setListeners();
 
-     //   SwRecordad = (SwitchCompat) findViewById(R.id.loginRecordar);
-     //   tvuser = (TextView) findViewById(R.id.loginUsuario);
-     //   tvpass = (TextView) findViewById(R.id.loginPwd);
-
-
-
-
-
-     //   btnSignIn = (ActionProcessButton) findViewById(R.id.btnSignIn);
         btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
         btnSignIn.setProgress(0);
 
 
         SwRecordad.setChecked(true);
-        String usuarioguardado= UsuarioGuardado();
 
-    //    tEdit = ( ShowHidePasswordEditText ) findViewById(R.id.loginPwd);
 
         Typeface tf = Typeface.createFromAsset(getApplicationContext().getAssets(), "font/Roboto-Medium.ttf");
         tEdit.setTypeface(tf);
 
 
-        if (usuarioguardado.equals("no")){
-            SwRecordad.setChecked(false);
-        }else{
-            SwRecordad.setChecked(true);
-            tEdit.requestFocus(); // (java)
-            //request al loginPwd
-            tvuser.setText(usuarioguardado);
-        }
+
 
         SwRecordad.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    //  Snackbar.make(getCurrentFocus(), R.string.guardarUsuario, Snackbar.LENGTH_SHORT).show();
-
+                    recordarCrenciales();
                     Snackbar.make(getCurrentFocus(), R.string.guardarUsuario, Snackbar.LENGTH_LONG).show();
-
-                    recordarUsuario(tvuser.getText().toString());
                 }else{
-                    // Snackbar.make(getCurrentFocus(), R.string.noGuardarUsuario, Snackbar.LENGTH_SHORT).show();
-
-                    Snackbar.make(getCurrentFocus(),R.string.noGuardarUsuario, Snackbar.LENGTH_LONG).show();
-
                     borrarUsuario();
+                    Snackbar.make(getCurrentFocus(),R.string.noGuardarUsuario, Snackbar.LENGTH_LONG).show();
                 }
             }
         });
-
-        // Permiso para almacenamiento interno
-        //verifyStoragePermissions(this);
 
 
         int PERMISSION_ALL = 1;
@@ -147,10 +136,6 @@ public class LoginActivity extends BaseActivity  {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
-        //new SpotsDialog(this).show();
-
-        //getParametros();
-
 
     }
 
@@ -162,11 +147,56 @@ public class LoginActivity extends BaseActivity  {
     @Override
     public void inicializar() {
 
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            mFingerPrintAuthHelper = FingerPrintAuthHelper.getHelper(this, this);
+
+        tvuser.setText(usuarioGuardado());
+        tEdit.setText(passwordGuardado());
+        if (recordarCrenciales().equals("no")){
+            SwRecordad.setChecked(false);
+        }else{
+            SwRecordad.setChecked(true);
+
+        }
+
+        if(!passwordGuardado().equals("")){
+
+            if( mFingerPrintAuthHelper != null){
+                mFingerPrintAuthHelper.startAuth();
+                if (fingerPrintAvailability){
+
+                    fingerprint(); // el otro dialog
+                }
+            }
+        }
+
     }
 
     @Override
     public void setListeners() {
 
+    }
+
+    private void fingerprint(){
+
+        dialogPrint = new MaterialDialog.Builder(LoginActivity.this)
+                .title("Ingresar con huella digital")
+                .customView(R.layout.layout_fingerprint,true)
+                .titleColor(getResources().getColor(R.color.colorAccent))
+                // .positiveText(v.getContext().getResources().getString(R.string.aceptar))
+                .negativeText(getResources().getString(R.string.cancelar))
+                //    .autoDismiss(false)
+
+                .build();
+
+        View layout = dialogPrint.getCustomView();
+        imgHuella = (ImageView) layout.findViewById(R.id.imgHuella);
+        textHuella = (TextView) layout.findViewById(R.id.textHuella);
+
+
+        if(!dialogPrint.isShowing()){
+            dialogPrint.show();
+        }
     }
 
 
@@ -184,16 +214,8 @@ public class LoginActivity extends BaseActivity  {
 
     public void logueo(View view){
 
-        /*Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        finish();*/
-
-
         if(checkValidation()){
 
-            if(SwRecordad.isChecked()){
-                recordarUsuario(tvuser.getText().toString());
-            }
             // inicio de la animacion
             btnSignIn.setProgress(1);
 
@@ -205,6 +227,13 @@ public class LoginActivity extends BaseActivity  {
             u.setPassword(tEdit.getText().toString().trim());
 
             if (cu.login(u)){
+
+                //recordad credenciales
+                if(SwRecordad.isChecked()){
+                    recordarUsuario(tvuser.getText().toString() , tEdit.getText().toString().trim());
+                }else{
+                    borrarUsuario();
+                }
                 btnSignIn.setProgress(100);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -321,23 +350,36 @@ public class LoginActivity extends BaseActivity  {
 
 
 
-    private String UsuarioGuardado() {
+    private String recordarCrenciales() {
         SharedPreferences sharedPreferences = getSharedPreferences("perseo", Context.MODE_PRIVATE);
         String usuario= "no";
-        usuario = sharedPreferences.getString("username", "no");
+        usuario = sharedPreferences.getString("guardar-user", "no");
         return usuario;
     }
+    private String passwordGuardado() {
+        SharedPreferences sharedPreferences = getSharedPreferences("perseo", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("password", "");
+    }
 
-    public void  recordarUsuario(String username){
+    private String usuarioGuardado() {
+        SharedPreferences sharedPreferences = getSharedPreferences("perseo", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("username", "");
+    }
+
+    public void  recordarUsuario(String username, String password){
         SharedPreferences SPUbicacion = getSharedPreferences("perseo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = SPUbicacion.edit();
         editor.putString("username", username);
+        editor.putString("password", password);
+        editor.putString("guardad-user", "si");
         editor.commit();
     }
     public void  borrarUsuario(){
         SharedPreferences SPUbicacion = getSharedPreferences("perseo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = SPUbicacion.edit();
-        editor.putString("username", "no");
+        //editor.putString("username", "no");
+        //editor.putString("password", "");
+        editor.putString("guardad-user", "no");
         editor.commit();
     }
 
@@ -390,4 +432,58 @@ public class LoginActivity extends BaseActivity  {
     }
 
 
+    @Override
+    public void onNoFingerPrintHardwareFound() {
+        fingerPrintAvailability = false;
+        System.out.println("NO HAY HARDWARE DE FINGERPRINT");
+    }
+
+    @Override
+    public void onNoFingerPrintRegistered() {
+
+        fingerPrintAvailability = false;
+        System.out.println("NO HAY HUELLAS DE FINGERPRINT REGISTRADAS");
+    }
+
+    @Override
+    public void onBelowMarshmallow() {
+
+        fingerPrintAvailability = false;
+        System.out.println("ES INFERIOR A MARSHMELLOW");
+    }
+
+    @Override
+    public void onAuthSuccess(FingerprintManager.CryptoObject cryptoObject) {
+
+        fingerSuccess = true;
+
+        tvuser.setText(getSharedPreferences("perseo", MODE_PRIVATE)
+                    .getString("username", ""));
+
+        tEdit.setText(getSharedPreferences("perseo", MODE_PRIVATE)
+                .getString("password", ""));
+
+
+        imgHuella.setImageDrawable(getDrawable(R.drawable.checked_48));
+        textHuella.setText("Huella digital reconocida.");
+        textHuella.setTextColor(getResources().getColor(R.color.colorPrimary));
+        logueo(getCurrentFocus());
+
+    }
+
+    @Override
+    public void onAuthFailed(int errorCode, String errorMessage) {
+
+        switch (errorCode) {
+            case AuthErrorCodes.CANNOT_RECOGNIZE_ERROR:
+                textHuella.setText("No se puede reconocer su huella digital. Inténtalo de nuevo.");
+                break;
+            case AuthErrorCodes.NON_RECOVERABLE_ERROR:
+                textHuella.setText("No se puede inicializar la autenticación de huella digital. Ingrese con su contraseña");
+                break;
+            case AuthErrorCodes.RECOVERABLE_ERROR:
+                textHuella.setText(errorMessage);
+                break;
+        }
+    }
 }

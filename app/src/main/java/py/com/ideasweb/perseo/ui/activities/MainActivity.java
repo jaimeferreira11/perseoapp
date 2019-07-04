@@ -807,6 +807,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
         } catch (IOException eConnectException) {
             Log.d(TAG, "CouldNotConnectToSocket", eConnectException);
             closeSocket(mBluetoothSocket);
+
             return;
         }
     }

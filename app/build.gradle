@@ -117,6 +117,9 @@ dependencies {
     //ayuda
     implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.1'
 
+    // finger print
+    implementation 'com.multidots:fingerprint-auth:1.0.1'
+
 
     testImplementation 'junit:junit:4.12'
 }

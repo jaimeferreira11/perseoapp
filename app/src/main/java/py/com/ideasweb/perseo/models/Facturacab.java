@@ -38,6 +38,7 @@ public class Facturacab extends LitePalSupport {
 
     private Double porcDescuento;
     private String comentario;
+    private Integer idEmpresa;
 
 
 
@@ -216,6 +217,14 @@ public class Facturacab extends LitePalSupport {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     @Override

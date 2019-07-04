@@ -752,10 +752,10 @@ public class Utilities {
 
 
                     String BILL = "";
-                    BILL =  "\t  "+context.getResources().getString(R.string.empresa) +"\n"
-                            + "\t  "+context.getResources().getString(R.string.direccion_empresa) +"\n"
-                            + "\t  Tel: "+context.getResources().getString(R.string.telefono_empresa) +"\n"
-                            +"\t  RUC.: "+context.getResources().getString(R.string.ruc_empresa) +"\n"
+                    BILL =    "   "+context.getResources().getString(R.string.empresa) +"\n"
+                            + "   "+context.getResources().getString(R.string.direccion_empresa) +"\n"
+                            + "   Tel: "+context.getResources().getString(R.string.telefono_empresa) +"\n"
+                            + "   RUC.: "+context.getResources().getString(R.string.ruc_empresa) +"\n"
                             +" Timbrado Nro.: "+LoginData.getTalonario().getTimbrado() +"\n"
                             +" Validos hasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
                             +" Factura.: "+  fmt.format("%08d",factura.getNumeroFactura())  +"\n"
@@ -768,13 +768,13 @@ public class Utilities {
                             + "RUC/CI: " +factura.getNroDocumentoCliente()+"\n";
 
                     BILL = BILL
-                            + "-----------------------------------\n";
+                            + "----------------------------\n";
 
-
-                    BILL = BILL + String.format("%1$5s %2$10s %3$10s %4$10s %5$10s", "Cant.", "Descr.", "Tasa", "P. Unit", "Total");
+                    BILL = BILL + String.format("%1$8s %2$5s %3$5s %4$8s %5$8s", "Desc.", "Cant.", "IVA", "P. U", "Total");
+                   // BILL = BILL + String.format("%1$5s %2$10s %3$10s %4$10s %5$10s", "Cant.", "Descr.", "Tasa", "P. Unit", "Total");
                     BILL = BILL + "\n";
                     BILL = BILL
-                            + "-----------------------------------\n";
+                            + "----------------------------\n";
 
                     Double exenta = new Double(0);
                     Double total10 = new Double(0);
@@ -792,33 +792,39 @@ public class Utilities {
                         }else if(det.getTasaIva().intValue() == 0){
                             exenta += det.getSubTotal();
                         }
-                        BILL = BILL + "\n " + String.format("%1$5s %2$10s %3$10s %4$10s %5$10s",
-                                det.getCantidad().intValue(), det.getConcepto(), det.getTasaIva().intValue(), Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));
+
+                        BILL = BILL + "\n " + String.format("%1$20s %2$5s", det.getConcepto(), det.getTasaIva().intValue()+"%" );
+
+                        BILL = BILL + "\n " + String.format("%1$2s %2$10s %3$10s %4$10s",
+                                "" ,  det.getCantidad().intValue(), Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));
+
+
+                        /*BILL = BILL + "\n " + String.format("%1$5s %2$10s %3$10s %4$10s %5$10s",
+                                det.getCantidad().intValue(), det.getConcepto(), det.getTasaIva().intValue(), Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));*/
                     }
 
-
+                    BILL = BILL+ "\n";
                     BILL = BILL
-                            + "\n-------------------------------------";
+                            + "----------------------------\n";
                     BILL = BILL + "\n\n ";
 
-                    BILL = BILL + " TOTAL :         " + Utilities.toStringFromDoubleWithFormat(factura.getImporte()) + " Gs. \n";
+                    BILL = BILL + " TOTAL :             "+ Utilities.toStringFromDoubleWithFormat(factura.getImporte()) + " Gs. \n";
                     BILL = BILL
-                            + "--------------------------------------\n";
+                            + "----------------------------\n";
 
-
-                    BILL = BILL + " Total exentas:     "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
-                    BILL = BILL + " Total 10%:     "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
-                    BILL = BILL + " Total 5%:     "+ Utilities.toStringFromDoubleWithFormat(total5) + " Gs.\n";
+                    BILL = BILL + " Total exentas:       "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
+                    BILL = BILL + " Total 10%:           "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
+                    BILL = BILL + " Total 5%:            "+ Utilities.toStringFromDoubleWithFormat(total5) + " Gs.\n";
 
 
                     BILL = BILL
-                            + "--------------------------------------\n";
+                            + "----------------------------\n";
                     BILL = BILL + " Liquidacion IVA     \n";
-                    BILL = BILL + " Total 10%:     "+ Utilities.toStringFromDoubleWithFormat(iva10) + " Gs.\n";
-                    BILL = BILL + " Total 5%:     "+ Utilities.toStringFromDoubleWithFormat(iva5) + " Gs.\n";
+                    BILL = BILL + " Total 10%:          "+ Utilities.toStringFromDoubleWithFormat(iva10) + " Gs.\n";
+                    BILL = BILL + " Total 5%:           "+ Utilities.toStringFromDoubleWithFormat(iva5) + " Gs.\n";
                     BILL = BILL + "\n\n ";
                     BILL = BILL
-                            + "------ Gracias por su preferencia ------\n";
+                            + " --- Gracias por su preferencia ---\n";
                     BILL = BILL + "\n\n\n";
                     os.write(BILL.getBytes());
                     //This is printer specific code you can comment ==== > Start

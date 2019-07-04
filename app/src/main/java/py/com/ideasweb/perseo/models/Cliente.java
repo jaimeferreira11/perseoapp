@@ -15,7 +15,9 @@ public class Cliente extends LitePalSupport {
 	private String ciudad;
 	private String barrio;
 	private String coordenadas;
-
+	private Integer idEmpresa;
+    @Column(defaultValue = "false")
+    private Boolean sincronizar;
 
 
 
@@ -99,8 +101,23 @@ public class Cliente extends LitePalSupport {
 		this.coordenadas = coordenadas;
 	}
 
+	public Integer getIdEmpresa() {
+		return idEmpresa;
+	}
 
-	@Override
+	public void setIdEmpresa(Integer idEmpresa) {
+		this.idEmpresa = idEmpresa;
+	}
+
+    public Boolean getSincronizar() {
+        return sincronizar;
+    }
+
+    public void setSincronizar(Boolean sincronizar) {
+        this.sincronizar = sincronizar;
+    }
+
+    @Override
 	public String toString() {
 		return  nroDocumento + " - "+ nombreApellido ;
 	}

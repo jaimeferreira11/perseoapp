@@ -69,6 +69,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/timbrado"
                             android:inputType="number"
+                            android:maxLength="8"
                             android:hint="Timbrado"/>
 
                     </android.support.design.widget.TextInputLayout>
@@ -209,6 +210,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/establecimiento"
                         android:inputType="number"
+                        android:maxLength="3"
                         android:hint="Establecimiento"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -225,6 +227,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/expedicion"
                         android:inputType="number"
+                        android:maxLength="3"
                         android:hint="Punto Expedicion"/>
 
                 </android.support.design.widget.TextInputLayout>

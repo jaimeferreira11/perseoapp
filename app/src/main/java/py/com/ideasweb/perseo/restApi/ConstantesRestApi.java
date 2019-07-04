@@ -6,9 +6,9 @@ package py.com.ideasweb.perseo.restApi;
 
 public final class ConstantesRestApi {
 
-    public static final String urlBase = "http://10.0.10.11";
-    public static final String port    = ":8080";
-    public static final String context = "/";
+    public static final String urlBase = "http://192.155.92.106";
+    public static final String port    = ":8888";
+    public static final String context = "/perseo-rest/";
 
    /*public static final String urlBase = "http://www.fundacionparaguaya.org.py";
    public static final String port    = "";
@@ -73,6 +73,7 @@ public final class ConstantesRestApi {
     public static final String API_GET_ALL_ARTICULOS= api_version + "/articulos";
     public static final String API_GET_ARTICULO_BY_CODIGO = api_version + "/articulos/codigo";
     public static final String API_GET_ARTICULO_BY_CODIGO_EAN = api_version + "/articulos/codigo-ean";
+    public static final String API_POST_ADD_ARTICULO= api_version + "articulos/";
 
     //clientes
     public static final String API_GET_ALL_CLIENTE= api_version + "/clientes";

@@ -31,7 +31,7 @@
                     android:id="@+id/ca_image"
                     android:layout_margin="2dp"
                     android:layout_alignParentLeft="true"
-                    android:src="@drawable/loading_spinner"/>
+                    android:src="@drawable/no_img"/>
 
 
 
