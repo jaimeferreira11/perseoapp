@@ -84,7 +84,10 @@ public class DialogAdapter extends BaseAdapter {
     viewHolder.descripcion.setText(entity.getConcepto());
     viewHolder.precio.setText(Utilities.toStringFromDoubleWithFormat(entity.getPrecioVenta()));
    // viewHolder.codigo.setText(entity.getArticulo().getCodigoBarraEan());
-    viewHolder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(Double.valueOf(entity.getCantidad())));
+    viewHolder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(entity.getCantidad()));
+    if(entity.getCantidad() < 1 ){
+      viewHolder.cantidad.setText(String.format("%.3f", entity.getCantidad()));
+    }
     viewHolder.monto.setText(Utilities.toStringFromDoubleWithFormat(entity.getSubTotal()));
 
 
@@ -187,12 +190,12 @@ public class DialogAdapter extends BaseAdapter {
         down.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            int c = Integer.parseInt(cantidad1.getText().toString());
+            Double c = Double.parseDouble(cantidad1.getText().toString());
             c = c-1;
             if(c > 0){
               cantidad1.setText(String.valueOf(c));
-              int m = 0;
-              m = Integer.parseInt(precio1.getText().toString().replace(".", "")) * c;
+              Double m = new Double(0);
+              m = Double.parseDouble(precio1.getText().toString().replace(".", "")) * c;
               monto1.setText(Utilities.stringNumberFormat(String.valueOf(m)));
             }
 
@@ -203,11 +206,11 @@ public class DialogAdapter extends BaseAdapter {
         up.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            int c = Integer.parseInt(cantidad1.getText().toString());
+            Double c = Double.parseDouble(cantidad1.getText().toString());
             c = c+1;
             cantidad1.setText(String.valueOf(c));
-            int m = 0;
-            m = Integer.parseInt(precio1.getText().toString().replace(".", "")) * c;
+            Double m = new Double(0);
+            m = Double.parseDouble(precio1.getText().toString().replace(".", "")) * c;
             monto1.setText(Utilities.stringNumberFormat(String.valueOf(m)));
           }
         });

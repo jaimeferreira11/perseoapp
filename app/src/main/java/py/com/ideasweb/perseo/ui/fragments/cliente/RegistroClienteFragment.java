@@ -20,9 +20,16 @@ import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
+import py.com.ideasweb.perseo.constructor.ConstructorCliente;
 import py.com.ideasweb.perseo.models.Cliente;
+import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
+import py.com.ideasweb.perseo.restApi.manager.ClienteManager;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
+import py.com.ideasweb.perseo.restApi.pojo.LoginData;
+import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.utilities.MiUbicacion;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
+import py.com.ideasweb.perseo.utilities.Utilities;
 import py.com.ideasweb.perseo.utilities.Validation;
 
 /**
@@ -58,6 +65,8 @@ public class RegistroClienteFragment extends Fragment {
     //Departamento dptoAux;
    // Barrio barrioAux;
 
+    Cliente cliente;
+
     String[] TIPOSPER =  {"CI", "RUC", "DNI"};
 
 
@@ -89,60 +98,7 @@ public class RegistroClienteFragment extends Fragment {
         regTipoPersona.setText(TIPOSPER[0]);
 
 
-
-        //ciudad = (SearchableSpinner) view.findViewById(R.id.regCiudad);
-        //dpto = (SearchableSpinner) view.findViewById(R.id.regDpto);
-        //barrio = (SearchableSpinner) view.findViewById(R.id.regBarrio);
-
-        //dpto.setTitle("Seleccione una opcion");
-        //dpto.setPositiveButton("OK");
-       /// barrio.setTitle("Seleccione una opcion");
-        //barrio.setPositiveButton("OK");
-        //ciudad.setTitle("Seleccione una opcion");
-        //ciudad.setPositiveButton("OK");
-        /*ciudadAdapter = new ArrayAdapter<Ciudad>(view.getContext(), android.R.layout.simple_dropdown_item_1line, LoginData.getCiudades());
-        ciudad.setAdapter(ciudadAdapter);
-        dptoAdapter = new ArrayAdapter<Departamento>(view.getContext(), android.R.layout.simple_dropdown_item_1line, LoginData.getDepartamentos());
-        dpto.setAdapter(dptoAdapter);
-        barrioAdapter = new ArrayAdapter<Barrio>(view.getContext(), android.R.layout.simple_dropdown_item_1line, LoginData.getBarrios());
-        barrio.setAdapter(barrioAdapter);
-*/
-        /*ciudad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ciudadAux = (Ciudad) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        dpto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dptoAux = (Departamento) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        barrio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                barrioAux = (Barrio) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
-
+        cliente = new Cliente();
 
         cedula.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -164,8 +120,7 @@ public class RegistroClienteFragment extends Fragment {
             public void onClick(View v) {
                 if(checkValidation()){
 
-                    Cliente cliente= new Cliente();
-                    cliente.setIdCliente(0);
+
                     cliente.setNroDocumento(cedula.getText().toString());
                     cliente.setNombreApellido(nombres.getText().toString());
                     cliente.setDireccion(direccion.getText().toString());
@@ -174,8 +129,20 @@ public class RegistroClienteFragment extends Fragment {
                     cliente.setBarrio(barrio.getText().toString());
                     cliente.setCodTipoDocumento(regTipoPersona.getText().toString());
                     cliente.setCoordenadas(MiUbicacion.getCoordenadasActual());
+                    cliente.setSincronizar(true);
+                    cliente.setIdEmpresa(ConstantesRestApi.ID_EMPRESA);
 
-                    grabar(cliente);
+                    if(CredentialValues.getLoginData().getPerfilactual().getIdPerfil() == 1){
+                        //si es administrador
+                        if(Utilities.isNetworkConnected(getContext())){
+                            subirCliente(cliente);
+                        }else{
+                            Utilities.sendToast(getContext(), "Necesitas conexion a internet para realizar esta accion", "error");
+                        }
+
+                    }else{
+                        grabar(cliente);
+                    }
 
                 }
             }
@@ -192,8 +159,10 @@ public class RegistroClienteFragment extends Fragment {
         telefono.setText(null);
         barrio.setText(null);
         ciudad.setText(null);
+        regTipoPersona.setText(TIPOSPER[0]);
         //ciudad.setSelection(-1);
         //dpto.setText("");
+        cliente = new Cliente();
     }
 
     public void grabar(Cliente cliente){
@@ -222,6 +191,73 @@ public class RegistroClienteFragment extends Fragment {
 
     }
 
+    private void subirCliente(final Cliente cliente){
+
+        final AlertDialog dialog = new SpotsDialog.Builder()
+                .setContext(getContext())
+                .setTheme(R.style.spots)
+                .setMessage(R.string.aguarde)
+                .build();
+        dialog.show();
+
+
+        final ConstructorCliente cc = new ConstructorCliente();
+        final ClienteManager manager = new ClienteManager();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Respuesta respuesta = manager.addCliente(cliente);
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    if(respuesta.getEstado() == "OK"){
+
+                        if(cliente.getId() == 0){
+                            cc.grabar((Cliente) respuesta.getDatos());
+                        }else{
+                            cc.update(cliente);
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                new MaterialDialog.Builder(getContext())
+                                        .icon(getResources().getDrawable(R.drawable.checked_48))
+                                        .title(getResources().getString(R.string.procesoExitoso))
+                                        .content("El cliente registrado!")
+                                        .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                                        .positiveText("Aceptar")
+                                        .show();
+
+                                clear();
+                            }
+                        });
+
+
+                    }else{
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utilities.sendToast(view.getContext(), "Ocurrio un error", "error");
+                            }
+                        });
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+    }
 
     public void buscar(String nrodoc){
 
@@ -233,17 +269,46 @@ public class RegistroClienteFragment extends Fragment {
         dialog.show();
 
 
-        List<Cliente> busqueda = LitePal.where("nroDocumento like ? " , nrodoc).find(Cliente.class);
+        final List<Cliente> busqueda = LitePal.where("nroDocumento like ? " , nrodoc).find(Cliente.class);
 
         if(busqueda.size() > 0){
 
-            new MaterialDialog.Builder(getContext())
-                    .icon(getResources().getDrawable(R.drawable.attention_48))
-                    .title("Atencion!")
-                    .content("El cliente ya se encuentra registrado.")
-                    .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
-                    .positiveText("Aceptar")
-                    .show();
+            if(CredentialValues.getLoginData().getPerfilactual().getIdPerfil() == 1){
+
+                grabar.setEnabled(true);
+
+                new MaterialDialog.Builder(getContext())
+                        .title("Clientes encontrados")
+                        .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                        .items(busqueda)
+                        .itemsCallbackSingleChoice(0, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                                //setear el cliente
+                                setCliente(busqueda.get(which));
+                                UtilLogger.info(which + " - " + text);
+
+                                return true;
+                            }
+
+                        })
+
+                        .positiveText("Aceptar")
+                        .negativeText("Cancelar")
+                        .show();
+
+            }else{
+                new MaterialDialog.Builder(getContext())
+                        .icon(getResources().getDrawable(R.drawable.attention_48))
+                        .title("Atencion!")
+                        .content("El cliente ya se encuentra registrado.")
+                        .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                        .positiveText("Aceptar")
+                        .show();
+            }
+
+
         }else{
             grabar.setEnabled(true);
         }
@@ -278,6 +343,28 @@ public class RegistroClienteFragment extends Fragment {
 
         UtilLogger.info(ret + "");
         return ret;
+    }
+
+
+    public void setCliente(Cliente c){
+
+
+        this.cliente = c;
+
+
+        cedula.setText(cliente.getNroDocumento());
+        nombres.setText(cliente.getNombreApellido());
+        direccion.setText(cliente.getDireccion());
+        telefono.setText(cliente.getTelefono());
+        regTipoPersona.setText(cliente.getCodTipoDocumento());
+
+
+        if(cliente.getCiudad() != null){
+            ciudad.setText(cliente.getCiudad());
+        }
+        if(cliente.getBarrio() != null){
+            barrio.setText(cliente.getBarrio());
+        }
     }
 
 

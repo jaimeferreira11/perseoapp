@@ -253,7 +253,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="5dp">
+                   >
 
                     <android.support.design.widget.TextInputEditText
                         android:layout_width="match_parent"
@@ -263,7 +263,17 @@
                         android:hint="Numero Actual"/>
 
                 </android.support.design.widget.TextInputLayout>
+
             </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"
+                android:text="Si es un talonario nuevo, inicielo con 0 (cero)"/>
 
 
 

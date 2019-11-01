@@ -1,14 +1,7 @@
 package py.com.ideasweb.perseo.models;
 
-import com.yahoo.squidb.annotations.ColumnSpec;
-import com.yahoo.squidb.annotations.PrimaryKey;
-import com.yahoo.squidb.annotations.TableModelSpec;
-
 import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
-
-import java.sql.Date;
-import java.sql.Timestamp;
 
 
 public class Talonario extends LitePalSupport {

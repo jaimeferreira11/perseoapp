@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import py.com.ideasweb.perseo.models.Articulo;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 
 
@@ -30,39 +31,27 @@ public class ConstructorArticulos {
     }
 
 
-
-    public List<Articulo> obtenerArticulosNuevos(){
-
-        final List<Articulo> busqueda = LitePal.where(" sincronizar = ? " , "true" )
+    public List<Articulo> getAll(){
+        return LitePal.order("descripcion")
+                .where(" idDeposito =  ?", String.valueOf(CredentialValues.getLoginData().getUsuario().getIdDeposito()))
                 .find(Articulo.class);
-
-        UtilLogger.info("Articulos nuevos o modificados: " + busqueda.size());
-        return  busqueda;
     }
 
 
     public List<Articulo> getArticuloByParam(String param){
 
-
-
-        final List<Articulo> busqueda = LitePal.where("upper(codigoBarra) like ? or upper(descripcion) like ?" ,
-                "%"+param.toUpperCase().trim()+"%", "%"+param.toUpperCase().trim()+"%")
+        final List<Articulo> busqueda = LitePal.where(" idDeposito =  ? and upper(codigoBarra) like ? or upper(descripcion) like ? or upper(referencia) like ?" ,
+                String.valueOf(CredentialValues.getLoginData().getUsuario().getIdDeposito()),"%"+param.toUpperCase().trim()+"%", "%"+param.toUpperCase().trim()+"%", "%"+param.toUpperCase().trim()+"%")
                 .find(Articulo.class);
-
-
 
         return  busqueda;
     }
 
     public List<Articulo> getArticulosByCodigoBarra(String param){
 
-
-
-        final List<Articulo> busqueda = LitePal.where("upper(codigoBarra) like ? " ,
-                "%"+param.toUpperCase().trim()+"%")
+        final List<Articulo> busqueda = LitePal.where("idDeposito =  ? and upper(codigoBarra) like ? " ,
+                String.valueOf(CredentialValues.getLoginData().getUsuario().getIdDeposito()), "%"+param.toUpperCase().trim()+"%")
                 .find(Articulo.class);
-
-
 
         return  busqueda;
     }
@@ -70,13 +59,9 @@ public class ConstructorArticulos {
 
     public List<Articulo> getArticuloByParamAndCantidad(String param){
 
-
-
         final List<Articulo> busqueda = LitePal.where("cantidad > 0 and (upper(codigoBarra) like ? or upper(descripcion) like ?)" ,
                 "%"+param.toUpperCase().trim()+"%", "%"+param.toUpperCase().trim()+"%")
                 .find(Articulo.class);
-
-
 
         return  busqueda;
     }
@@ -84,12 +69,9 @@ public class ConstructorArticulos {
 
     public List<Articulo> getArticulosByCodigoBarraCantidad(String param){
 
-
-
         final List<Articulo> busqueda = LitePal.where("cantidad > 0 and upper(codigoBarra) like ? " ,
                 "%"+param.toUpperCase().trim()+"%")
                 .find(Articulo.class);
-
 
 
         return  busqueda;
@@ -97,7 +79,18 @@ public class ConstructorArticulos {
 
 
     public void grabar(Articulo articulo){
+        UtilLogger.info("Grabando el articulo..." );
         articulo.save();
+    }
+
+
+
+
+    public void update(Articulo articulo){
+
+        UtilLogger.info("Actualizando el articulo..." + articulo.getId() );
+        articulo.update(articulo.getId());
+
     }
 
 

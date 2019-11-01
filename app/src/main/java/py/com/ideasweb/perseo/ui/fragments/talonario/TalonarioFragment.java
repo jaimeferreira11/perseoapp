@@ -9,8 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.text.ParseException;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,6 +23,7 @@ import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorTalonario;
 import py.com.ideasweb.perseo.models.Talonario;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
 import py.com.ideasweb.perseo.utilities.Validation;
@@ -75,9 +80,11 @@ public class TalonarioFragment extends Fragment {
 
         if(talonario != null){
             cargar();
-            deshabilitar();
+            if(CredentialValues.getLoginData().getPerfilactual().getIdPerfil() != 1)
+                deshabilitar();
         }else{
             talonario = new Talonario();
+            nroActual.setText("0");
         }
 
 
@@ -164,13 +171,45 @@ public class TalonarioFragment extends Fragment {
     private boolean checkValidation() {
         boolean ret = true;
         if (!Validation.hasText(timbrado, getContext())) ret = false;
-        if (!Validation.hasText(fechaHasta, getContext())) ret = false;
-        if (!Validation.hasText(fechaDesde, getContext())) ret = false;
+        if (!Validation.minLenght(timbrado, 8, getContext())) ret = false;
+        //if (!Validation.hasText(fechaHasta, getContext())) ret = false;
+       // if (!Validation.hasText(fechaDesde, getContext())) ret = false;
         if (!Validation.hasText(expedicion, getContext())) ret = false;
         if (!Validation.hasText(establecimiento, getContext())) ret = false;
         if (!Validation.hasText(nroInicial, getContext())) ret = false;
         if (!Validation.hasText(nroFinal, getContext())) ret = false;
         if (!Validation.hasText(nroInicial, getContext())) ret = false;
+
+
+        try {
+            if (Validation.hasText(fechaHasta, getContext())){
+                Date fechaValido = Utilities.toDateFromString(fechaHasta.getText().toString());
+                if (fechaValido.before(new Date(System.currentTimeMillis()))) {
+                    fechaHasta.setError("Vencido.La fecha no es valido");
+                    ret = false;
+                }
+
+            }else{
+                ret = false;
+            }
+
+
+        }catch (ParseException e){
+            fechaHasta.setError("Vencido.La fecha no es valido");
+            ret = false;
+        }
+
+        try {
+            if (Validation.hasText(fechaDesde, getContext())){
+                Date fechaInicio = Utilities.toDateFromString(fechaDesde.getText().toString());
+            }else{
+                ret = false;
+            }
+        }catch (ParseException e){
+            fechaDesde.setError("Vencido.La fecha no es valido");
+            ret = false;
+        }
+
 
         return ret;
     }

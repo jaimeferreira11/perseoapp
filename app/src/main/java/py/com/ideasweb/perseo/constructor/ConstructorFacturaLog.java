@@ -2,6 +2,7 @@ package py.com.ideasweb.perseo.constructor;
 
 import org.litepal.LitePal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import py.com.ideasweb.perseo.models.Facturacab;
@@ -18,12 +19,11 @@ import py.com.ideasweb.perseo.utilities.UtilLogger;
 public class ConstructorFacturaLog {
 
     public void insertar(Facturacab cab){
-        System.out.println("Insertando factura");
+        System.out.println("Insertando facturalog");
         try {
             Facturacablog log = new Facturacablog(cab);
-
             log.save();
-            System.out.println("CANTIDAD DE DETALLES: " + log.getFacturadet().size());
+            System.out.println("CANTIDAD DE DETALLES LOG: " + cab.getFacturadet().size());
             for (Facturadet det: cab.getFacturadet() ) {
 
                 Facturadetlog detlog = new Facturadetlog(det);
@@ -43,19 +43,31 @@ public class ConstructorFacturaLog {
     }
 
 
-    public List<Facturacablog> getAll(){
+    public List<Facturacab> getAll(){
 
         List<Facturacablog> busqueda = LitePal.findAll(Facturacablog.class);
-
+        List<Facturacab> result = new ArrayList<>();
 
         for (Facturacablog cab: busqueda ) {
             List<Facturadetlog> detalles = LitePal.where(" facturacablog_id = ? "  , String.valueOf(cab.getId()))
                     .find(Facturadetlog.class);
             cab.setFacturadet(detalles);
-        }
 
-        UtilLogger.info("Facturas pendientes: " + busqueda.size());
-        return  busqueda;
+            List<Facturadet> detList = new ArrayList<>();
+            for (Facturadetlog detlog: detalles){
+                Facturadet det = new Facturadet(detlog);
+                detList.add(det);
+            }
+
+            //
+
+            Facturacab factura = new Facturacab(cab);
+            factura.setFacturadet(detList);
+            result.add(factura);
+        }
+        UtilLogger.info("Todas Facturas Log: " + busqueda.size());
+        UtilLogger.info("Todas Facturas Log: " + result.size());
+        return  result;
     }
 
 

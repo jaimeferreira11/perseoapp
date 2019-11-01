@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +15,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import org.litepal.LitePal;
+
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
+import py.com.ideasweb.perseo.models.Articulo;
+import py.com.ideasweb.perseo.models.Cliente;
+import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.Facturacablog;
+import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.Facturadetlog;
 import py.com.ideasweb.perseo.models.HomeItem;
+import py.com.ideasweb.perseo.models.Talonario;
+import py.com.ideasweb.perseo.models.Tracking;
+import py.com.ideasweb.perseo.models.TrackingConfig;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.ui.activities.MainActivity;
+import py.com.ideasweb.perseo.ui.activities.MainStepper;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
+import py.com.ideasweb.perseo.utilities.Validation;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
@@ -71,6 +91,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
                                     Toast.makeText(context, "Agregue un talonario antes de registrar alguna factura", Toast.LENGTH_LONG).show();
                                     return;
+                                }else{
+
+                                    try {
+                                        Date fechaValido = Utilities.toDateFromString(LoginData.getTalonario().getValidoHasta());
+                                        if (fechaValido.before(new Date(System.currentTimeMillis()))) {
+                                            Toast.makeText(context, "El talonario esta vencido. Favor actualice", Toast.LENGTH_LONG).show();
+                                            return;
+                                        }
+
+                                    }catch (ParseException e){
+                                        Toast.makeText(context, "El talonario esta vencido. Favor actualice", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+
+                                    if(LoginData.getTalonario().getNumeroActual() == LoginData.getTalonario().getNumeroFinal()){
+                                        Toast.makeText(context, "El talonario ya no tiene numeros disponibles. Favor actualice", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
                                 }
                             }
                             irActivityFinish(element.getUrl());
@@ -81,6 +119,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
                         case 3 :
                             irFragment(element.getUrl());
+                            break;
+                        case 4 :
+                            restaurar();
                             break;
 
                          default:
@@ -164,6 +205,46 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         context.startActivity(intent);
         //finish();
     }*/
+
+    private void restaurar(){
+
+        new MaterialDialog.Builder(context)
+                .title("Desea reestablecer los datos de la app?")
+                .icon(context.getResources().getDrawable(R.drawable.help_48))
+                .positiveText(context.getResources().getString(R.string.aceptar))
+                .negativeText(context.getResources().getString(R.string.cancelar))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        LitePal.deleteAll(Facturacab.class);
+                        //LitePal.deleteAll(Facturacablog.class);
+                        LitePal.deleteAll(Facturadet.class);
+                       // LitePal.deleteAll(Facturadetlog.class);
+                        LitePal.deleteAll(Talonario.class);
+                        LitePal.deleteAll(Cliente.class);
+                        LitePal.deleteAll(Articulo.class);
+                        LitePal.deleteAll(Tracking.class);
+                        LitePal.deleteAll(TrackingConfig.class);
+                        dialog.dismiss();
+
+                        Utilities.setUltSync(context, "", "" );
+
+                        new MaterialDialog.Builder(context)
+                                .icon(context.getResources().getDrawable(R.drawable.checked_48))
+                                .title(context.getResources().getString(R.string.procesoExitoso))
+                                .content("Se restauro los datos del telefono")
+                                .titleColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                                .positiveText("Aceptar")
+                                .show();
+
+                    }
+                })
+                .show();
+
+
+
+
+    }
 
 
 }

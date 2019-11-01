@@ -27,9 +27,11 @@ public class Usuario extends LitePalSupport {
     private String telefono;
     private String ciudad;
     private String barrio;
-    private String idSucursal;
+    private Integer idSucursal;
     private Integer idDeposito;
     private Integer idEmpresa;
+    @Column(defaultValue = "1") // true
+    private Boolean activo;
 
     @Column(ignore = true)
     private List<Perfilusuario> perfiles;
@@ -106,11 +108,11 @@ public class Usuario extends LitePalSupport {
         this.barrio = barrio;
     }
 
-    public String getIdSucursal() {
+    public Integer getIdSucursal() {
         return idSucursal;
     }
 
-    public void setIdSucursal(String idSucursal) {
+    public void setIdSucursal(Integer idSucursal) {
         this.idSucursal = idSucursal;
     }
 
@@ -146,20 +148,17 @@ public class Usuario extends LitePalSupport {
         this.idEmpresa = idEmpresa;
     }
 
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+
     @Override
     public String toString() {
-        return "Usuario{" +
-                "idUsuario=" + idUsuario +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", nombreApellido='" + nombreApellido + '\'' +
-                ", nroDocumento='" + nroDocumento + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", ciudad='" + ciudad + '\'' +
-                ", barrio='" + barrio + '\'' +
-                ", idSucursal='" + idSucursal + '\'' +
-                ", idDeposito=" + idDeposito +
-                '}';
+        return  login +" - " + nombreApellido ;
     }
 }

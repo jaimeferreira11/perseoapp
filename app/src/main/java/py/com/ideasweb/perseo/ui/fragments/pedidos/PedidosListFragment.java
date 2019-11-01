@@ -57,20 +57,11 @@ public class PedidosListFragment extends Fragment {
 
         ConstructorFactura constructorFact = new ConstructorFactura();
 
-        if(LoginData.getFactSincronizadas().size() == 0){
-            LoginData.setFactSincronizadas((ArrayList<Facturacab>) constructorFact.getSincronizados());
-            count2 = LoginData.getFactSincronizadas().size();
-        }
 
-        if(LoginData.getFactPendientes().size() == 0){
-            LoginData.setFactPendientes((ArrayList<Facturacab>) constructorFact.getPendientes());
-            count1 = LoginData.getFactPendientes().size();
-        }
+        count1 = constructorFact.getPendientes().size();
+        count2 = constructorFact.getSincronizados().size();
+        count3 = constructorFact.getAnulados().size();
 
-        if(LoginData.getFactAnuladas().size() == 0){
-            LoginData.setFactAnuladas((ArrayList<Facturacab>) constructorFact.getAnulados());
-            count3 = LoginData.getFactAnuladas().size();
-        }
 
 
         setUpViewPager();

@@ -18,7 +18,7 @@ public class ConstructorFactura {
 
 
     public void insertarNuevaFactura(Facturacab cab){
-        System.out.println("Insertando factura");
+        System.out.println("Insertando nueva factura " + cab.getNumeroFactura());
         try {
             cab.save();
             System.out.println("CANTIDAD DE DETALLES: " + cab.getFacturadet().size());
@@ -57,7 +57,18 @@ public class ConstructorFactura {
     }
 
     public void actualizar(Facturacab cab){
+        List<Facturacab> allSongs = LitePal.findAll(Facturacab.class);
+
+        System.out.println("Facturas antes de actualizar " + allSongs.size());
+
+        System.out.println("Actualizando la factura: " + cab.toString());
         cab.update(cab.getId());
+
+        allSongs = LitePal.findAll(Facturacab.class);
+        System.out.println("Actualizado factura: " + cab.toString());
+        System.out.println("Facturas desdepues de actualizar " + allSongs.size());
+
+
     }
 
 
@@ -111,10 +122,13 @@ public class ConstructorFactura {
 
     public void borrarFactura(Facturacab cab){
 
+        System.out.println("Borrando la factura " + cab.getId());
         for (Facturadet det: cab.getFacturadet() ) {
-            det.delete();
+            LitePal.delete(Facturadet.class, det.getId());
         }
-        cab.delete();
+
+        LitePal.delete(Facturacab.class, cab.getId());
+
 
     }
 

@@ -33,23 +33,47 @@ public class ConstructorCliente {
 
     public void borraClientesNuevos(){
 
-        LitePal.deleteAll(Cliente.class, "sincronizar = ?" , "false");
+        LitePal.deleteAll(Cliente.class, "sincronizar = ?" , "1");
     }
 
 
 
     public List<Cliente> obtenerClientesNuevos(){
 
-        final List<Cliente> busqueda = LitePal.where(" sincronizar = ? " , "false" )
+        final List<Cliente> busqueda = LitePal.where(" sincronizar = ? " , "1" )
                 .find(Cliente.class);
 
         UtilLogger.info("Clientes nuevos: " + busqueda.size());
         return  busqueda;
     }
 
+    public List<Cliente> getAll(){
+
+        return LitePal.order("nombreApellido").find(Cliente.class);
+    }
+
+    public List<Cliente> getByUsuario(Integer idUsuario){
+
+        final List<Cliente> busqueda = LitePal.where(" idUsuario =  ?  " , String.valueOf(idUsuario))
+                .find(Cliente.class);
+
+        return  busqueda;
+    }
+
 
     public void grabar(Cliente cliente){
-        cliente.save();
+
+        UtilLogger.info("Grabando el cliente..." );
+            cliente.save();
+
+    }
+
+
+    public void update(Cliente cliente){
+
+        UtilLogger.info("Actualizando el cliente..." + cliente.getId() );
+        cliente.update(cliente.getId());
+
     }
 
 

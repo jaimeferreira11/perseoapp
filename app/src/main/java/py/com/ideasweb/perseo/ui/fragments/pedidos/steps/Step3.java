@@ -7,11 +7,14 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.appyvet.materialrangebar.RangeBar;
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 
+import java.util.Formatter;
 import java.util.List;
 
 import py.com.ideasweb.R;
@@ -36,9 +39,9 @@ public class Step3 extends AbstractStep {
     TextView value;
     View view;
     private RangeBar rangebar;
-    /*RadioButton radioCero;
-    RadioButton radioVeinte;
-    RadioButton radioTreinta;
+    RadioButton radioCO;
+    RadioButton radioCR;
+    /*RadioButton radioTreinta;
     RadioButton radioCuarenta;*/
 
     @Override
@@ -101,13 +104,13 @@ public class Step3 extends AbstractStep {
         total = (TextView) view.findViewById(R.id.step3Total);
         value = (TextView) view.findViewById(R.id.setValue);
 
-        /*radioCero = (RadioButton) view.findViewById(R.id.radioCero);
-        radioVeinte = (RadioButton) view.findViewById(R.id.radioVeinte);
-        radioTreinta = (RadioButton) view.findViewById(R.id.radioTreinta);
-        radioCuarenta = (RadioButton) view.findViewById(R.id.radioCuarenta);*/
+        radioCO = (RadioButton) view.findViewById(R.id.radioCO);
+        radioCR = (RadioButton) view.findViewById(R.id.radioCR);
 
-        cliente.setText(LoginData.getFactura().getNombreCliente());
-        doc.setText("Doc: "+LoginData.getFactura().getNroDocumentoCliente());
+        Formatter fmt = new Formatter();
+        cliente.setText(fmt.format("%08d",LoginData.getTalonario().getNumeroActual() + 1)+"-"+LoginData.getFactura().getNombreCliente());
+        doc.setText("CI/RUC: "+LoginData.getFactura().getNroDocumentoCliente());
+        LoginData.getFactura().setTipoFactura(radioCO.getText().toString());
 
         final String sFecha = "<b>Fecha: </b>"+Utilities.getCurrentDate();
         fecha.setText(Html.fromHtml(sFecha));
@@ -151,30 +154,30 @@ public class Step3 extends AbstractStep {
 
             }
         });
-        /*radioCero.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+
+        radioCO.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    String sTotal = "<b>Total: </b>"+Utilities.toStringFromDoubleWithFormat(aux);
-                    total.setText(Html.fromHtml(sTotal));
-                    LoginData.getPedido().setPorcDescuento(new Double(0));
+                    LoginData.getFactura().setTipoFactura(radioCO.getText().toString());
+                    radioCR.setChecked(false);
                 }
             }
         });
 
-        radioVeinte.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        radioCR.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
 
-                    String sTotal = "<b>Total: </b>"+Utilities.toStringFromDoubleWithFormat(aux*0.8);
-                    total.setText(Html.fromHtml(sTotal));
-                    LoginData.getPedido().setPorcDescuento(new Double(20));
+                    LoginData.getFactura().setTipoFactura(radioCR.getText().toString());
+                    radioCO.setChecked(false);
                 }
             }
         });
 
-        radioTreinta.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*radioTreinta.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){

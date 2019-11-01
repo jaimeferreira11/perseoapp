@@ -25,7 +25,11 @@ import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorArticulos;
 import py.com.ideasweb.perseo.models.Articulo;
+import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
+import py.com.ideasweb.perseo.restApi.manager.ArticuloManager;
+import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
+import py.com.ideasweb.perseo.utilities.Utilities;
 import py.com.ideasweb.perseo.utilities.Validation;
 
 /**
@@ -42,6 +46,7 @@ public class RegistroArticuloFragment extends Fragment {
 
     @BindView(R.id.codigo)
     EditText codigo;
+
     @BindView(R.id.descripcion)
     EditText descripcion;
     @BindView(R.id.codigobarra)
@@ -79,6 +84,11 @@ public class RegistroArticuloFragment extends Fragment {
         iva.setAdapter(tipoAdapter);
         iva.setText(TIPOIVA[0]);
 
+        precio.addTextChangedListener(Utilities.numberFormat(precio));
+        cantidad.addTextChangedListener(Utilities.numberFormat(cantidad));
+
+        articulo = new Articulo();
+
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,33 +108,39 @@ public class RegistroArticuloFragment extends Fragment {
                 if(checkValidation()){
 
 
-                    articulo.setDescripcion(descripcion.getText().toString());
-                    articulo.setCodigoBarra(codigobarra.getText().toString());
-                    articulo.setCantidad(Double.parseDouble(cantidad.getText().toString()));
-                    articulo.setPrecioVenta(Double.parseDouble(precio.getText().toString()));
-                    articulo.setSincronizar(true);
-                    articulo.setEstado(checkEstado.isChecked());
+                    if(Utilities.isNetworkConnected(getContext())){
 
-                    switch (iva.getText().toString()){
-                        case "10%":
-                            articulo.setTasaIva(new Double(10));
-                            break;
-                        case "5%":
-                            articulo.setTasaIva(new Double(5));
-                            break;
-                        case "EXENTA":
-                            articulo.setTasaIva(new Double(0));
-                            break;
-                        default:
-                            break;
+
+                        articulo.setDescripcion(descripcion.getText().toString());
+                        articulo.setCodigoBarra(codigobarra.getText().toString());
+                        articulo.setCantidad(Double.parseDouble(cantidad.getText().toString().replace(".", "")));
+                        articulo.setPrecioVenta(Double.parseDouble(precio.getText().toString().replace(".", "")));
+                        articulo.setEstado(checkEstado.isChecked());
+                        articulo.setIdEmpresa(ConstantesRestApi.ID_EMPRESA);
+
+                        switch (iva.getText().toString()){
+                            case "10%":
+                                articulo.setTasaIva(new Double(10));
+                                break;
+                            case "5%":
+                                articulo.setTasaIva(new Double(5));
+                                break;
+                            case "EXENTA":
+                                articulo.setTasaIva(new Double(0));
+                                break;
+                            default:
+                                break;
+
+                        }
+
+                        grabar(articulo);
+
+
+                    }else{
+                        Utilities.sendToast(getContext(), "Necesitas conexion a internet para realizar esta accion", "error");
 
                     }
 
-
-
-
-
-                    grabar(articulo);
 
                 }
             }
@@ -188,12 +204,14 @@ public class RegistroArticuloFragment extends Fragment {
 
     }
 
-    private void setData(Articulo articulo) {
+    private void setData(Articulo a) {
 
-        codigo.setText(articulo.getIdArticulo());
+
+        this.articulo = a;
+        codigo.setText(String.valueOf(articulo.getIdArticulo()));
         codigobarra.setText(articulo.getCodigoBarra());
-        cantidad.setText(String.valueOf(articulo.getCantidad()));
-        precio.setText(String.valueOf(articulo.getPrecioVenta()));
+        cantidad.setText(String.valueOf(articulo.getCantidad().intValue()));
+        precio.setText(String.valueOf(articulo.getPrecioVenta().intValue()));
         descripcion.setText(articulo.getDescripcion());
         checkEstado.setChecked(articulo.getEstado());
 
@@ -214,43 +232,87 @@ public class RegistroArticuloFragment extends Fragment {
     }
 
 
-    public void grabar(Articulo articulo){
+    public void grabar(final Articulo articulo){
 
 
-        AlertDialog dialog = new SpotsDialog.Builder()
+        final AlertDialog dialog = new SpotsDialog.Builder()
                 .setContext(getContext())
                 .setTheme(R.style.spots)
                 .setMessage(R.string.aguarde)
                 .build();
         dialog.show();
 
-        articulo.save();
 
-        dialog.dismiss();
 
-        new MaterialDialog.Builder(getContext())
-                .icon(getResources().getDrawable(R.drawable.checked_48))
-                .title(getResources().getString(R.string.procesoExitoso))
-                .content("Articulo registrado!")
-                .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
-                .positiveText("Aceptar")
-                .show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ArticuloManager manager = new ArticuloManager();
+                    Respuesta respuesta = manager.addArticulo(articulo);
 
-        clear();
+                    if(respuesta.getEstado().equalsIgnoreCase("OK")){
+
+                        ConstructorArticulos cc = new ConstructorArticulos();
+                        if(articulo.getId() == 0){
+                            cc.grabar((Articulo) respuesta.getDatos());
+                        }else{
+                            cc.update(articulo);
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+
+                                new MaterialDialog.Builder(getContext())
+                                        .icon(getResources().getDrawable(R.drawable.checked_48))
+                                        .title(getResources().getString(R.string.procesoExitoso))
+                                        .content("Articulo registrado!")
+                                        .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                                        .positiveText("Aceptar")
+                                        .show();
+
+                                clear();
+                            }
+                        });
+
+                    }else{
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utilities.sendToast(getContext(), "Ocurrio un error, intente mas tarde", "error");
+
+                            }
+                        });
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
 
     }
 
 
     public void clear(){
+
+        busqueda.setText(null);
         codigo.setText("0");
         descripcion.setText(null);
-        codigo.setText(null);
+        codigobarra.setText(null);
         precio.setText(null);
         cantidad.setText(null);
         iva.setText(TIPOIVA[0]);
         checkEstado.setChecked(true);
         //ciudad.setSelection(-1);
         //dpto.setText("");
+
+        articulo = new Articulo();
     }
 
     private boolean checkValidation() {

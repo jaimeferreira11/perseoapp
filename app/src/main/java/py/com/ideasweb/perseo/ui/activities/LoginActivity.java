@@ -1,7 +1,6 @@
 package py.com.ideasweb.perseo.ui.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +32,10 @@ import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 import butterknife.BindView;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorUsuario;
+import py.com.ideasweb.perseo.models.Perfil;
 import py.com.ideasweb.perseo.models.Usuario;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
+import py.com.ideasweb.perseo.utilities.Utilities;
 import py.com.ideasweb.perseo.utilities.Validation;
 
 public class LoginActivity extends BaseActivity  implements FingerPrintAuthCallback {
@@ -235,77 +237,87 @@ public class LoginActivity extends BaseActivity  implements FingerPrintAuthCallb
                     borrarUsuario();
                 }
                 btnSignIn.setProgress(100);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
+                selectPerfil(view);
+
+                if(dialogPrint != null)
+                if(dialogPrint.isShowing()){
+                    dialogPrint.dismiss();
+                }
+
             }else{
                 btnSignIn.setProgress(-1);
             }
-
-
-
-           // AlertDialog dialog = new SpotsDialog(this, "Custom message & style", R.style.spots);
-           // dialog.show();
-
-                /*new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            LoginManager manager = new LoginManager();
-                            Usuario u = new Usuario();
-                            u.setUsuario(tvuser.getText().toString().toUpperCase());
-                            u.setPassword(tEdit.getText().toString());
-                            final Respuesta respuesta =manager.login(u);
-
-                            if(respuesta.getEstado().equals("OK")){
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        btnSignIn.setProgress(100);
-                                    }
-                                });
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }else{
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        btnSignIn.setProgress(-1);
-                                    }
-                                });
-                            }
-
-
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                }).start();*/
-
-               // dialog.dismiss();
-
 
         }
 
 
     }
 
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    private void irHome(String path){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        if(path != null)
+            intent.putExtra("url", path);
+        startActivity(intent);
+        finish();
+    }
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
+    private void selectPerfil(View view){
+
+        Perfil perfilactual = new Perfil();
+        if(CredentialValues.getLoginData().getUsuario().getPerfiles().size() == 0){
+            perfilactual.setIdPerfil(2);
+            perfilactual.setDescripcion("FACTURACION");
+            CredentialValues.getLoginData().setPerfilactual(perfilactual);
+            irHome(null);
+            return;
+        }else{
+            if(CredentialValues.getLoginData().getUsuario().getPerfiles().size() == 1){
+                perfilactual.setIdPerfil(CredentialValues.getLoginData().getUsuario().getPerfiles().get(0).getIdperfil());
+                perfilactual.setDescripcion(CredentialValues.getLoginData().getUsuario().getPerfiles().get(0).getDescripcion());
+                CredentialValues.getLoginData().setPerfilactual(perfilactual);
+                if(perfilactual.getIdPerfil() == 1){
+                    // si es administrador
+                    irHome("py.com.ideasweb.perseo.ui.fragments.LoadingFragment");
+                }else{
+                    irHome(null);
+                }
+
+                return;
+            }else{
+
+
+                new MaterialDialog.Builder(view.getContext())
+                        .cancelable(false)
+                        .title("Seleccione el Perfil")
+                        .cancelable(false)
+                        .titleColor(view.getContext().getResources().getColor(R.color.colorPrimaryDark))
+                        .items(CredentialValues.getLoginData().getUsuario().getPerfiles())
+                        .itemsCallbackSingleChoice(0, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+                                Perfil perfilactual = new Perfil(Integer.parseInt(Utilities.obtenerIdPerfil(text.toString(),0)),Utilities.obtenerIdPerfil(text.toString(),1));
+                                CredentialValues.getLoginData().setPerfilactual(perfilactual);
+
+                                if(perfilactual.getIdPerfil() == 1){
+                                    // si es administrador
+                                    irHome("py.com.ideasweb.perseo.ui.fragments.LoadingFragment");
+                                }else{
+                                    irHome(null);
+                                }
+
+                                return true;
+                            }
+
+
+                        })
+
+                        .positiveText("Aceptar")
+                        .negativeText("Cancelar")
+                        .show();
+            }
         }
+
     }
 
 

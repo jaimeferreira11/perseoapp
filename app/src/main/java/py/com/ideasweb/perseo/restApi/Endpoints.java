@@ -46,7 +46,9 @@ public interface Endpoints {
     @GET(ConstantesRestApi.API_GET_ALL_USUARIOS)
     Call<List<Usuario>> getAllUsuarios();
 
-    @FormUrlEncoded
+    @GET(ConstantesRestApi.API_GET_USUARIOS_BY_EMPRESA)
+    Call<List<Usuario>> getUsuariosByEmpresa(@Path("idEmpresa") Integer idEmpresa);
+
     @POST(ConstantesRestApi.API_POST_GRABAR_USUARIO)
     Call<Usuario> grabarUsuario(@Body Usuario usuario);
 
@@ -59,9 +61,14 @@ public interface Endpoints {
     @GET(ConstantesRestApi.API_GET_CLIENTE_BY_USUARIO)
     Call<List<Cliente>> getClientesByUsuario(@Path("idUsuario") Integer idUsuario);
 
-    @FormUrlEncoded
+    @GET(ConstantesRestApi.API_GET_CLIENTE_BY_EMPRESA)
+    Call<List<Cliente>> getClientesByEmpresa(@Path("idEmpresa") Integer idEmpresa);
+
     @POST(ConstantesRestApi.API_POST_ADD_CLIENTE)
     Call<Cliente> addCliente(@Body RequestBody cliente);
+
+    @POST(ConstantesRestApi.API_POST_ADD_LISTA_CLIENTE)
+    Call<Void> grabarListaCliente(@Body List<Cliente> clientes);
 
     @GET(ConstantesRestApi.API_GET_CLIENTE_BY_DOC)
     Call<List<Cliente>> getClienteByDoc(@Path("tipoDoc") String tipoDoc, @Path("nroDoc") String nroDoc);
@@ -75,6 +82,9 @@ public interface Endpoints {
     @GET(ConstantesRestApi.API_GET_ALL_ARTICULOS)
     Call<List<Articulo>> getAllArticulos();
 
+    @GET(ConstantesRestApi.API_GET_ARTICULOS_BY_EMPRESA)
+    Call<List<Articulo>> getArticulosByEmpresa(@Path("idEmpresa") Integer idEmpresa);
+
     @FormUrlEncoded
     @POST(ConstantesRestApi.API_GET_ARTICULO_BY_CODIGO)
     Call<List<Articulo>> getArticulosByCod(@Field("codigo") String codigo);
@@ -83,7 +93,6 @@ public interface Endpoints {
     @POST(ConstantesRestApi.API_GET_ARTICULO_BY_CODIGO_EAN)
     Call<List<Articulo>> getArticulosByCodBarra(@Field("codigo") String codigo);
 
-    @FormUrlEncoded
     @POST(ConstantesRestApi.API_POST_ADD_ARTICULO)
     Call<Articulo> addArticulo(@Body RequestBody articulo);
 
@@ -93,16 +102,22 @@ public interface Endpoints {
     @GET(ConstantesRestApi.API_GET_TALONARIO)
     Call<Talonario> getTalonario();
 
-    @FormUrlEncoded
     @POST(ConstantesRestApi.API_POST_GRABAR_TALONARIO)
     Call<Talonario> grabarTalonario(@Body Talonario talonario);
 
-    @GET(ConstantesRestApi.API_GET_ALL_ARTICULOS)
+    @GET(ConstantesRestApi.API_GET_FACTURAS)
     Call<List<Facturacab>> getFacturas();
 
-    @FormUrlEncoded
+    @GET(ConstantesRestApi.API_GET_FACTURAS_BY_USUARIO)
+    Call<List<Facturacab>> getFacturasByUsuario(@Path("idUsuario") Integer idUsuario);
+
+
     @POST(ConstantesRestApi.API_POST_GRABAR_FACTURA)
     Call<Facturacab> grabarFactura(@Body Facturacab facturacab);
+
+    @POST(ConstantesRestApi.API_POST_GRABAR_LISTA_FACTURA)
+    Call<Void> grabarListaFactura(@Body List<Facturacab> facturas);
+
 
 
 

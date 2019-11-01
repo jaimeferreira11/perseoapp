@@ -6,6 +6,13 @@ public class Respuesta {
 	String error;
 	Object datos;
 
+	public Respuesta() {
+	}
+
+	public Respuesta(String estado) {
+		this.estado = estado;
+	}
+
 	public String getEstado() {
 		return estado;
 	}

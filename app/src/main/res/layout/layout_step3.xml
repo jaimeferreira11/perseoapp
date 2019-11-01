@@ -26,12 +26,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/step3Cliente"
-                android:textSize="20dp"
-                android:lines="2"
+                android:textSize="@dimen/subtitle"
+                android:maxLines="2"
+                android:text=""
+                android:ellipsize="end"
+                android:layout_marginTop="@dimen/spacing_tiny"
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/primary_text"
                 android:gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/radioCO"
+                    android:checked="true"
+                    android:text="CONTADO"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/radioCR"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:text="CREDITO"/>
+
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -57,6 +85,8 @@
                     android:id="@+id/step3Fecha"
                     android:textColor="@color/secondary_text"
                     android:text="Fecha: 01/11/2017"/>
+
+
 
             </RelativeLayout>
 
@@ -97,31 +127,7 @@
                     android:textSize="@dimen/text_form"
                     android:textColor="@color/primary_text"/>
 
-                <!--<RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:checked="true"
-                    android:id="@+id/radioCero"
-                    android:layout_marginLeft="10dp"
-                    android:text="0 %"/>
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:id="@+id/radioVeinte"
-                    android:text="20%"/>
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:id="@+id/radioTreinta"
-                    android:text="30%"/>
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:id="@+id/radioCuarenta"
-                    android:text="40%"/>-->
+
 
                 <TextView
                     android:id="@+id/setValue"

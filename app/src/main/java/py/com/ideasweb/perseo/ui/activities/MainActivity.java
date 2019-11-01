@@ -4,10 +4,16 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -18,10 +24,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -47,6 +55,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
@@ -65,6 +74,8 @@ import py.com.ideasweb.perseo.adapter.DrawerAdapter;
 import py.com.ideasweb.perseo.constructor.ConstructorTalonario;
 import py.com.ideasweb.perseo.constructor.ConstructorUsuario;
 import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.Perfil;
+import py.com.ideasweb.perseo.models.Tracking;
 import py.com.ideasweb.perseo.models.Usuario;
 import py.com.ideasweb.perseo.restApi.manager.UsuarioManager;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
@@ -72,10 +83,12 @@ import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.ui.elements.DrawerItem;
 import py.com.ideasweb.perseo.ui.elements.ItemClickSupport;
 import py.com.ideasweb.perseo.utilities.GPSTracker;
+import py.com.ideasweb.perseo.utilities.GPSTracker2;
 import py.com.ideasweb.perseo.utilities.MiUbicacion;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
 import py.com.ideasweb.perseo.utilities.Validation;
+import py.com.ideasweb.perseo.work.LocationJobService;
 
 
 public class MainActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener,
@@ -141,7 +154,77 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
 
         inicializar();
 
+        //Utilities.iniciarTareaPeriodica();
 
+        // TRACKING
+       /* System.out.println("INICIALIZAR ");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Log.d("registered"," on start service");
+            startBackgroundService();
+        }else{
+            Toast.makeText(getBaseContext(),"service for pre lollipop will be available in next update",Toast.LENGTH_LONG).show();
+        }*/
+
+
+
+    }
+
+    public static final String JOB_STATE_CHANGED = "jobStateChanged";
+    public static final String LOCATION_ACQUIRED = "locAcquired";
+    boolean registered = false, isServiceStarted=false;
+
+    private BroadcastReceiver jobStateChanged = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction()==null){
+                return;
+            }
+            if(intent.getAction().equals(JOB_STATE_CHANGED)) {
+                //changeServiceButton(intent.getExtras().getBoolean("isStarted"));
+            }else if (intent.getAction().equals(LOCATION_ACQUIRED)){
+                if(intent.getExtras()!=null){
+                    Bundle b = intent.getExtras();
+                    Location l = b.getParcelable("location");
+                    updateUI(l);
+                }else{
+                    Log.d("intent","null");
+                }
+            }
+        }
+    };
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void startBackgroundService() {
+        if(!registered) {
+            IntentFilter i = new IntentFilter(JOB_STATE_CHANGED);
+            i.addAction(LOCATION_ACQUIRED);
+            LocalBroadcastManager.getInstance(this).registerReceiver(jobStateChanged, i);
+        }
+        JobScheduler jobScheduler =
+                (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        assert jobScheduler != null;
+        jobScheduler.schedule(new JobInfo.Builder(LocationJobService.LOCATION_SERVICE_JOB_ID,
+                new ComponentName(this, LocationJobService.class))
+                .setOverrideDeadline(500)
+                .setPersisted(true)
+                .setRequiresDeviceIdle(false)
+                .build());
+    }
+
+    private void stopBackgroundService() {
+        if(getSharedPreferences("PERSEO",MODE_PRIVATE).getBoolean("isServiceStarted",false)){
+            Log.d("registered"," on stop service");
+            Intent stopJobService = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                stopJobService = new Intent(LocationJobService.ACTION_STOP_JOB);
+                LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(stopJobService);
+            }else{
+                Toast.makeText(getApplicationContext(),"yet to be coded - stop service",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -205,6 +288,8 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
 
         }else{
             inHome = true;
+
+
             //infla el home
             Fragment fragshome = Fragment.instantiate(getApplicationContext(), "py.com.ideasweb.perseo.ui.fragments.HomeFragment");
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -419,7 +504,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
                 .build(); // Finally call build
 
 
-        /*for (HomeItem item: HomeItemRepo.getListaFacturacion()) {
+        /*for (HomeItem item: HomeItemRepo.getModulos()) {
             drawerItems1.add(new DrawerItem(yourDrawable, item.getTexto(), item.getUrl(), item.getTipo()));
 
         }*/
@@ -454,6 +539,13 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
                 .setToActionbarSize() // set the icon size
                 .build(); // Finally call build
         drawerItemsSettings.add(new DrawerItem(passwordDrawable,"Cambiar Contraseña", "", ""));
+
+        Drawable perfilDrawable = MaterialDrawableBuilder.with(getApplicationContext()) // provide a context
+                .setIcon(MaterialDrawableBuilder.IconValue.REPEAT) // provide an icon
+                .setColor(getResources().getColor(R.color.colorPrimaryDark)) // set the icon color
+                .setToActionbarSize() // set the icon size
+                .build(); // Finally call build
+        drawerItemsSettings.add(new DrawerItem(perfilDrawable,"Cambiar Perfil", "", ""));
 
 
         //material icons
@@ -613,6 +705,42 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
                         cambiarPass(view);
                         break;
                     case 2:
+                        inHome = true;
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        if(CredentialValues.getLoginData().getUsuario().getPerfiles().size() > 1){
+
+                            new MaterialDialog.Builder(MainActivity.this)
+                                    .title("Seleccione el Perfil")
+                                    .titleColor(getResources().getColor(R.color.colorPrimaryDark))
+                                    .items(CredentialValues.getLoginData().getUsuario().getPerfiles())
+                                    .itemsCallbackSingleChoice(0, new MaterialDialog.ListCallbackSingleChoice() {
+                                        @Override
+                                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+
+
+                                            Perfil perfilactual = new Perfil(Integer.parseInt(Utilities.obtenerIdPerfil(text.toString(),0)),Utilities.obtenerIdPerfil(text.toString(),1));
+                                            CredentialValues.getLoginData().setPerfilactual(perfilactual);
+
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+
+                                            return true;
+
+                                        }
+                                    })
+
+                                    .positiveText("Aceptar")
+                                    .negativeText("Cancelar")
+                                    .show();
+
+                        }else{
+
+                            Utilities.sendToast(getApplicationContext(), "Solo tienes este perfil", "info");
+                        }
+                        break;
+
+                    case 3:
                         inHome = false;
                         new MaterialDialog.Builder(MainActivity.this)
                                 .title(R.string.logout)
@@ -622,6 +750,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
+                                        stopBackgroundService();
                                         Utilities.deleteLoginData();
                                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                         startActivity(intent);
@@ -634,7 +763,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
                                 .show();
 
                         break;
-                    case 3:
+                    case 4:
                         drawerLayout.closeDrawer(GravityCompat.START);
                         boolean wrapInScrollView = true;
                         new MaterialDialog.Builder(view.getContext())
@@ -643,7 +772,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
                                 .positiveText("OK")
                                 .show();
                         break;
-                    case 4:
+                    case 5:
                         inHome = false;
                         Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
                         startActivity(intent);
@@ -726,7 +855,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
 
                 Location lastLocation =gps.getLocation();
 
-                updateUI(lastLocation);
+                //updateUI(lastLocation);
 
 
             } else {
@@ -753,7 +882,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
             Location lastLocation =
                     LocationServices.FusedLocationApi.getLastLocation(apiClient);
 
-            updateUI(lastLocation);
+            //updateUI(lastLocation);
         }
 
     }
@@ -773,10 +902,33 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
     private void updateUI(Location loc) {
 
         if (loc != null) {
+
+            if(CredentialValues.getLoginData() != null){
+
+                System.out.println("Agregando nuevo punto: " + String.valueOf(loc.getLatitude()) + ","+String.valueOf(loc.getLongitude()));
+
+                Tracking t = new Tracking();
+                t.setCoordenadas(String.valueOf(loc.getLatitude()) + ","+String.valueOf(loc.getLongitude()));
+                t.setFechaHora(Utilities.getCurrentDateTimeBD());
+                t.setIdusuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
+                if(MiUbicacion.lugar != null){
+                    t.setDireccion(MiUbicacion.lugar.address);
+                    t.setCiudad(MiUbicacion.lugar.city);
+                }
+
+                t.save();
+
+
+                LatLng punto = new LatLng(loc.getLatitude(), loc.getLongitude());
+                MiUbicacion.listaPuntos.add(punto); // Se añade un punto a la lista, para crear una ruta después.
+            }
+
+
             Log.e(LOGTAG, "Actualizando coordenadas " + loc.getLatitude() + loc.getLongitude());
             MiUbicacion.setLatitud(loc.getLatitude());
             MiUbicacion.setLongitud(loc.getLongitude());
             MiUbicacion.setBan(true);
+            MiUbicacion.guardarUbicacion(getApplicationContext());
 
 
         } else {
@@ -924,50 +1076,59 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
 
                             if (checkValidation()){
 
-                                ConstructorUsuario cu = new ConstructorUsuario();
-                                Usuario user = new Usuario();
-                                user.setLogin(CredentialValues.getLoginData().getUsuario().getLogin());
-                                user.setPassword(passAnterior.getText().toString());
-                                if(cu.login(user)){
-                                    CredentialValues.getLoginData().getUsuario().setPassword(user.getPassword());
-                                    cu.update(CredentialValues.getLoginData().getUsuario());
+                                if(Utilities.isNetworkConnected(getApplicationContext())){
 
-                                    new MaterialDialog.Builder(MainActivity.this)
-                                            .title(getResources().getString(R.string.pwdupdate))
-                                            .titleColor(getResources().getColor(R.color.colorPrimary))
-                                            .icon(getResources().getDrawable(R.drawable.checked_48))
-                                            .positiveText(R.string.aceptar)
-                                            .autoDismiss(false)
-                                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                                @Override
-                                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                                    startActivity(intent);
-                                                    finish();
+                                    ConstructorUsuario cu = new ConstructorUsuario();
+                                    Usuario user = new Usuario();
+                                    user.setLogin(CredentialValues.getLoginData().getUsuario().getLogin());
+                                    user.setPassword(passAnterior.getText().toString());
+                                    if(cu.login(user)){
+                                        CredentialValues.getLoginData().getUsuario().setPassword(user.getPassword());
+                                        cu.update(CredentialValues.getLoginData().getUsuario());
 
+                                        new MaterialDialog.Builder(MainActivity.this)
+                                                .title(getResources().getString(R.string.pwdupdate))
+                                                .titleColor(getResources().getColor(R.color.colorPrimary))
+                                                .icon(getResources().getDrawable(R.drawable.checked_48))
+                                                .positiveText(R.string.aceptar)
+                                                .autoDismiss(false)
+                                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                    @Override
+                                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                                        startActivity(intent);
+                                                        finish();
+
+                                                    }
+                                                })
+                                                .show();
+
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    UsuarioManager manager = new UsuarioManager();
+                                                    manager.grabarUsuario(CredentialValues.getLoginData().getUsuario());
+
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
                                                 }
-                                            })
-                                            .show();
-
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                UsuarioManager manager = new UsuarioManager();
-                                                manager.grabarUsuario(CredentialValues.getLoginData().getUsuario());
-
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
                                             }
-                                        }
-                                    }).start();
+                                        }).start();
 
 
+
+
+                                    }else{
+                                        passAnterior.setError("La contraseña no coincide");
+                                    }
 
 
                                 }else{
-                                    passAnterior.setError("La contraseña no coincide");
+                                    Utilities.sendToast(getApplicationContext(), "Necesitas conexion a internet para realizar esta accion", "error");
                                 }
+
+
                             }
 
                         }

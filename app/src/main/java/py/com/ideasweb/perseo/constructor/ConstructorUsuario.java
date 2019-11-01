@@ -70,13 +70,69 @@ public class ConstructorUsuario {
     }
 
 
-    public void update(Usuario user){
+    public void insertarUsuario(Usuario usuario){
+        System.out.println("Insertando usuario ");
 
-       user.setPassword(MD5Generator.MD5(user.getPassword()));
-       user.update(user.getId());
+        ConstructorPerfil cp = new ConstructorPerfil();
 
-       CredentialValues.getLoginData().setUsuario(user);
+
+        if(usuario.getId() > 0){
+            update(usuario);
+
+        }else{
+
+            usuario.save();
+        }
+
+        // actualiza los perfiles
+        // no tenemos el id
+        if(usuario.getPerfiles().size() > 0 ){
+            cp.deleteByUsuario(usuario.getIdUsuario());
+            cp.insertarPerfilByUsuario((ArrayList<Perfilusuario>) usuario.getPerfiles());
+        }
+
+
+
+
+
+
     }
 
+    public void update(Usuario user){
+
+        System.out.println("Actualiza el usuario " + user.getLogin());
+       user.update(user.getId());
+
+    }
+
+    public List<Usuario> getUsuarioByParam(String param){
+
+
+
+        final List<Usuario> busqueda = LitePal.where("upper(login) like ? or upper(nombreApellido) like ?" ,
+                "%"+param.toUpperCase().trim()+"%", "%"+param.toUpperCase().trim()+"%")
+                .find(Usuario.class);
+
+
+        ConstructorPerfil cp = new ConstructorPerfil();
+
+        for (Usuario user: busqueda ) {
+
+            user.setPerfiles(cp.getPerfilesByUsuario(user.getIdUsuario()));
+        }
+
+
+        return  busqueda;
+    }
+
+    public Usuario getById(Integer idUsuairo){
+
+        List<Usuario> userDB = LitePal.where("idUsuario = ?  " , String.valueOf(idUsuairo)).find(Usuario.class);
+
+        if (userDB.size() == 0)
+            return null;
+
+        return userDB.get(0);
+    }
 
 }

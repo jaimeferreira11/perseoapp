@@ -25,4 +25,10 @@
 
     <!--drawer-->
     <color name="status_bar_inset">#0000</color>
+
+    <!--Notificacions-->
+    <color name="error">#d9534f</color>
+    <color name="warning">#f0ad4e</color>
+    <color name="info">#31b0d5</color>
+    <color name="success">#f1449d44</color>
 </resources>

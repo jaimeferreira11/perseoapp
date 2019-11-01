@@ -53,7 +53,11 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
         holder.descripcion.setText(task.getConcepto());
         holder.precio.setText(Utilities.toStringFromDoubleWithFormat(task.getPrecioVenta()));
         holder.monto.setText(Utilities.toStringFromDoubleWithFormat(task.getSubTotal()));
-        holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(Double.valueOf(task.getCantidad())));
+
+        holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(task.getCantidad()));
+        if(task.getCantidad() < 1 ){
+            holder.cantidad.setText(String.format("%.3f", task.getCantidad()));
+        }
 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,12 +157,12 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
                 down.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int c = Integer.parseInt(cantidad1.getText().toString());
+                        Double c = Double.valueOf(cantidad1.getText().toString());
                         c = c-1;
                         if(c > 0){
                             cantidad1.setText(String.valueOf(c));
-                            int m = 0;
-                            m = Integer.parseInt(precio1.getText().toString().replace(".", "")) * c;
+                            Double m = new Double(0);
+                            m = Double.parseDouble(precio1.getText().toString().replace(".", "")) * c;
                             monto1.setText(Utilities.stringNumberFormat(String.valueOf(m)));
                         }
 
@@ -169,11 +173,11 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
                 up.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int c = Integer.parseInt(cantidad1.getText().toString());
+                        Double c = Double.valueOf(cantidad1.getText().toString());
                         c = c+1;
                         cantidad1.setText(String.valueOf(c));
-                        int m = 0;
-                        m = Integer.parseInt(precio1.getText().toString().replace(".", "")) * c;
+                        Double m = new Double(0);
+                        m = Double.parseDouble(precio1.getText().toString().replace(".", "")) * c;
                         monto1.setText(Utilities.stringNumberFormat(String.valueOf(m)));
                     }
                 });

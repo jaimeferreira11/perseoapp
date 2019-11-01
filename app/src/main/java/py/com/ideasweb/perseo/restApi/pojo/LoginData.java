@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.Perfil;
 import py.com.ideasweb.perseo.models.Talonario;
 import py.com.ideasweb.perseo.models.Usuario;
 
@@ -18,6 +19,7 @@ public class LoginData implements Serializable {
     private Date fechalog;
     private Usuario usuario;
     private String tipo;
+    private Perfil perfilactual;
     private static ArrayList<Menuapp> menues;
   //  private static PedidoCabecera pedido = new PedidoCabecera();
 
@@ -149,6 +151,14 @@ public class LoginData implements Serializable {
 
     public static void setFactAnuladas(ArrayList<Facturacab> factAnuladas) {
         LoginData.factAnuladas = factAnuladas;
+    }
+
+    public Perfil getPerfilactual() {
+        return perfilactual;
+    }
+
+    public void setPerfilactual(Perfil perfilactual) {
+        this.perfilactual = perfilactual;
     }
 
     @Override

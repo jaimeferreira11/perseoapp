@@ -46,6 +46,9 @@ public class FacturaDetAdapter2 extends RecyclerView.Adapter<FacturaDetAdapter2.
         holder.monto.setText(Utilities.toStringFromDoubleWithFormat(task.getSubTotal()) + " Gs.");
         holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(Double.valueOf(task.getCantidad())));
 
+        if(task.getCantidad() < 1 ){
+            holder.cantidad.setText(String.format("%.3f", task.getCantidad()));
+        }
 
     }
 

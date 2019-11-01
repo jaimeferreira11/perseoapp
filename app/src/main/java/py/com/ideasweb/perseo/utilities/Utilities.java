@@ -14,8 +14,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -39,11 +43,14 @@ import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import harmony.java.awt.Color;
 import py.com.ideasweb.R;
@@ -66,6 +73,7 @@ import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.ui.activities.MainActivity;
+import py.com.ideasweb.perseo.work.MyPeriodicWork;
 
 
 /**
@@ -90,6 +98,11 @@ public class Utilities {
     public static String toStringFromDate(Date date ){
         SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
         return sd.format(date);
+    }
+
+    public static Date toDateFromString(String stringDate ) throws ParseException {
+        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
+        return sd.parse(stringDate);
     }
 
     public static String toStringFromDoubleWithFormat(Double value ){
@@ -336,7 +349,7 @@ public class Utilities {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Respuesta respuesta = manager.getaAll();
+                    Respuesta respuesta = manager.getByEmpresa();
 
                     if(respuesta.getEstado() == "OK"){
                         ConstructorUsuario cu = new ConstructorUsuario();
@@ -353,7 +366,7 @@ public class Utilities {
         }).start();
 
         // perfiles
-        final PerfilManager pmanager = new PerfilManager();
+        /*final PerfilManager pmanager = new PerfilManager();
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -369,7 +382,7 @@ public class Utilities {
                 }
             }
 
-        }).start();
+        }).start();*/
     }
 
     public static void bajarDatos(final Context context){
@@ -382,7 +395,7 @@ public class Utilities {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Respuesta respuesta = manager.getaAll();
+                    Respuesta respuesta = manager.getClientesByEmpresa();
                     //Respuesta respuesta = manager.getClientesByUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
 
                     if(respuesta.getEstado() == "OK"){
@@ -402,7 +415,7 @@ public class Utilities {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Respuesta respuesta = manager2.getaAll();
+                    Respuesta respuesta = manager2.getByEmpresa();
 
                     if(respuesta.getEstado() == "OK"){
                         ConstructorArticulos cu = new ConstructorArticulos();
@@ -532,6 +545,13 @@ public class Utilities {
         return s;
     }
 
+    public static String getCurrentDateTimeBD(){
+
+        String s = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Timestamp(System.currentTimeMillis()).getTime());
+
+        return s;
+    }
+
 
    /* public static void sendErrorlog(){
         List<Errorlog> list = new ArrayList<>();
@@ -604,6 +624,10 @@ public class Utilities {
         return ruta;
     }
 
+    public static String obtenerIdPerfil(String descripcion, int n) {
+        String[] parts = descripcion.split("-");
+        return parts[n].trim();
+    }
 
 
     public static void generarPDF(Context context) {
@@ -747,9 +771,20 @@ public class Utilities {
                     OutputStream os = MainActivity.mBluetoothSocket
                             .getOutputStream();
 
-                    Formatter fmt = new Formatter();
 
+                    System.out.println(factura.toString());
+                    String establecimiento =  String.format("%03d", factura.getEstablecimiento());
+                    System.out.println("Estable " + establecimiento);
+                    String punto =  String.format("%03d",factura.getPuntoExpedicion());
+                    System.out.println("Punto " + punto);
+                    String numero = String.format("%07d", factura.getNumeroFactura());
+                    System.out.println("Numero " + numero);
 
+                    ConstructorUsuario cu = new ConstructorUsuario();
+
+                    Usuario usuario = cu.getById(factura.getIdUsuario());
+
+                    System.out.println("Talonario: " + establecimiento + "-"+punto+"-"+numero);
 
                     String BILL = "";
                     BILL =    "   "+context.getResources().getString(R.string.empresa) +"\n"
@@ -757,10 +792,11 @@ public class Utilities {
                             + "   Tel: "+context.getResources().getString(R.string.telefono_empresa) +"\n"
                             + "   RUC.: "+context.getResources().getString(R.string.ruc_empresa) +"\n"
                             +" Timbrado Nro.: "+LoginData.getTalonario().getTimbrado() +"\n"
-                            +" Validos hasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
-                            +" Factura.: "+  fmt.format("%08d",factura.getNumeroFactura())  +"\n"
+                            +" Valido hasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
+                            +" Condicion: "+ factura.getTipoFactura() +"\n"
+                            +" Factura.: "+ establecimiento + "-"+punto+"-"+numero  +"\n"
                             +" Fecha Hora.: "+Utilities.getCurrentDateTime() +"\n"
-                            +" Usuario.: "+ CredentialValues.getLoginData().getUsuario().getLogin().toUpperCase() +"\n";
+                            +" Usuario.: "+ usuario.getLogin().toUpperCase() +"\n";
 
                     BILL = BILL
                             + "CLIENTE: " +factura.getNombreCliente()+"\n";
@@ -768,13 +804,13 @@ public class Utilities {
                             + "RUC/CI: " +factura.getNroDocumentoCliente()+"\n";
 
                     BILL = BILL
-                            + "----------------------------\n";
+                            + "-------------------------------\n";
 
-                    BILL = BILL + String.format("%1$8s %2$5s %3$5s %4$8s %5$8s", "Desc.", "Cant.", "IVA", "P. U", "Total");
+                    BILL = BILL + String.format("%1$-8s %2$-6s %3$-6s %4$-6s %5$-8s", "Desc.", "Cant.", "IVA", "P.U.", "TOTAL");
                    // BILL = BILL + String.format("%1$5s %2$10s %3$10s %4$10s %5$10s", "Cant.", "Descr.", "Tasa", "P. Unit", "Total");
                     BILL = BILL + "\n";
                     BILL = BILL
-                            + "----------------------------\n";
+                            + "-------------------------------\n";
 
                     Double exenta = new Double(0);
                     Double total10 = new Double(0);
@@ -793,10 +829,10 @@ public class Utilities {
                             exenta += det.getSubTotal();
                         }
 
-                        BILL = BILL + "\n " + String.format("%1$20s %2$5s", det.getConcepto(), det.getTasaIva().intValue()+"%" );
+                        BILL = BILL + "\n " + String.format("%1$-20s %2$4s", det.getConcepto(), det.getTasaIva().intValue()+"%" );
 
-                        BILL = BILL + "\n " + String.format("%1$2s %2$10s %3$10s %4$10s",
-                                "" ,  det.getCantidad().intValue(), Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));
+                        BILL = BILL + "\n " + String.format("%1$5s %2$14s %3$15s",
+                                String.format("%.2f", det.getCantidad()).replace(".",","), Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));
 
 
                         /*BILL = BILL + "\n " + String.format("%1$5s %2$10s %3$10s %4$10s %5$10s",
@@ -805,12 +841,12 @@ public class Utilities {
 
                     BILL = BILL+ "\n";
                     BILL = BILL
-                            + "----------------------------\n";
+                            + "-------------------------------\n";
                     BILL = BILL + "\n\n ";
 
                     BILL = BILL + " TOTAL :             "+ Utilities.toStringFromDoubleWithFormat(factura.getImporte()) + " Gs. \n";
                     BILL = BILL
-                            + "----------------------------\n";
+                            + "-------------------------------\n";
 
                     BILL = BILL + " Total exentas:       "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
                     BILL = BILL + " Total 10%:           "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
@@ -818,13 +854,13 @@ public class Utilities {
 
 
                     BILL = BILL
-                            + "----------------------------\n";
+                            + "-------------------------------\n";
                     BILL = BILL + " Liquidacion IVA     \n";
                     BILL = BILL + " Total 10%:          "+ Utilities.toStringFromDoubleWithFormat(iva10) + " Gs.\n";
                     BILL = BILL + " Total 5%:           "+ Utilities.toStringFromDoubleWithFormat(iva5) + " Gs.\n";
                     BILL = BILL + "\n\n ";
                     BILL = BILL
-                            + " --- Gracias por su preferencia ---\n";
+                            + " --- Gracias por su preferencia ---\n\n\n\n";
                     BILL = BILL + "\n\n\n";
                     os.write(BILL.getBytes());
                     //This is printer specific code you can comment ==== > Start
@@ -879,6 +915,54 @@ public class Utilities {
         texto = texto.replaceAll("ú" , "u");
 
         return texto;
+    }
+
+
+    public static void sendToast(Context context, String messsage, String type) {
+
+        try {
+            Toast toast = Toast.makeText(context, messsage, Toast.LENGTH_LONG);
+            //toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            View toastView = toast.getView();
+            switch (type) {
+                case "error":
+                    toastView.setBackgroundColor(context.getResources().getColor(R.color.error));
+                    break;
+                case "warning":
+                    toastView.setBackgroundColor(context.getResources().getColor(R.color.warning));
+                    break;
+                case "info":
+                    toastView.setBackgroundColor(context.getResources().getColor(R.color.info));
+                    break;
+                case "success":
+                    toastView.setBackgroundColor(context.getResources().getColor(R.color.success));
+                    break;
+                default:
+                    break;
+
+            }
+
+            toast.show();
+
+        }catch (Exception e){
+
+        }
+    }
+
+    public static void iniciarTareaPeriodica(){
+        PeriodicWorkRequest mPeriodicWorkRequest = new PeriodicWorkRequest.Builder(MyPeriodicWork.class,
+                15, TimeUnit.MINUTES)
+                .addTag("periodicWorkRequest")
+                .build();
+
+
+        WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
+    }
+
+    public static void finalizarTareaPeriodica(){
+        /*UUID getId = mPeriodicWorkRequest.getId();
+        getId = mPeriodicWorkRequest.getId();*/
+        WorkManager.getInstance().cancelAllWork();
     }
 
 }

@@ -7,6 +7,7 @@ import org.litepal.crud.LitePalSupport;
 public class Facturadet extends LitePalSupport {
 
 
+    private int id;
     //@Column(unique = true)
     //int idFacturaDet;
     String concepto;//nombre del articulo
@@ -28,6 +29,19 @@ public class Facturadet extends LitePalSupport {
     public void setIdFacturaDet(int idFacturaDet) {
         this.idFacturaDet = idFacturaDet;
     }*/
+
+    public Facturadet() {
+    }
+
+    public Facturadet(Facturadetlog log) {
+        this.concepto = log.getConcepto();
+        this.cantidad = log.getCantidad();
+        this.precioVenta = log.getPrecioVenta();
+        this.tasaIva = log.getTasaIva();
+        this.impuesto = log.getImpuesto();
+        this.idArticulo = log.getIdArticulo();
+        this.subTotal = log.getSubTotal();
+    }
 
     public String getConcepto() {
         return concepto;
@@ -109,6 +123,13 @@ public class Facturadet extends LitePalSupport {
         this.idArticulo = idArticulo;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

@@ -6,27 +6,32 @@ import org.litepal.crud.LitePalSupport;
 
 public class Perfilusuario extends LitePalSupport {
 
-    Integer idusuario;
-    Integer iderfil;
+    Integer idUsuario;
+    Integer idperfil;
     String descripcion;
 
+    @Column(ignore = true)
+    private Perfil perfil;
 
 
-
-    public Integer getIdusuario() {
-        return idusuario;
+    public Perfilusuario() {
     }
 
-    public void setIdusuario(Integer idusuario) {
-        this.idusuario = idusuario;
+
+    public Integer getIdUsuario() {
+        return idUsuario;
     }
 
-    public Integer getIderfil() {
-        return iderfil;
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public void setIderfil(Integer iderfil) {
-        this.iderfil = iderfil;
+    public Integer getIdperfil() {
+        return idperfil;
+    }
+
+    public void setIdperfil(Integer idperfil) {
+        this.idperfil = idperfil;
     }
 
     public String getDescripcion() {
@@ -35,5 +40,18 @@ public class Perfilusuario extends LitePalSupport {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Perfil getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
+    }
+
+    @Override
+    public String toString() {
+        return  getIdperfil()+"-"+getDescripcion();
     }
 }

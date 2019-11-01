@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import py.com.ideasweb.perseo.models.Perfilusuario;
 import py.com.ideasweb.perseo.models.Usuario;
+import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.Endpoints;
 import py.com.ideasweb.perseo.restApi.adapter.RestApiAdapter;
 import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
@@ -79,11 +81,66 @@ public class UsuarioManager {
     }
 
 
+    public Respuesta getByEmpresa() throws Exception{
+
+        final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
+        RestApiAdapter restApiAdapter = new RestApiAdapter();
+        Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
+
+        //se invoca al metodo del endpoints
+        Call<List<Usuario>> tokenCall = endpoints.getUsuariosByEmpresa(ConstantesRestApi.ID_EMPRESA);
+
+        UtilLogger.info("Obteniendo usuarios de la empresa..." + ConstantesRestApi.ID_EMPRESA);
+
+        tokenCall.enqueue(new Callback<List<Usuario>>() {
+            @Override
+            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                Respuesta respuesta = new Respuesta();
+                System.out.println("USUARIOS: " + response.code());
+                if (response.code() >= 400) {
+                    respuesta.setEstado("ERROR");
+                    respuesta.setError("Ha ocurrido un error");
+
+
+                }else{
+
+                    UtilLogger.info("USUARIOS: " + response.body());
+                    respuesta.setEstado("OK");
+                    //deserealizando
+                    Gson gson =  new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
+
+                    //deserealizando
+                    // Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Type listType = new TypeToken<List<Usuario>>() {}.getType();
+                    //setenado en login en el credentials
+                    respuesta.setDatos((ArrayList<Usuario>) gson.fromJson(jsonInString, listType));
+
+
+                }
+                blockingQueue.add(respuesta);
+            }
+
+            @Override
+            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+                Respuesta respuesta = new Respuesta();
+                t.printStackTrace();
+                respuesta.setEstado("Error");
+                respuesta.setError("Ha ocurrido un error");
+                blockingQueue.add(respuesta);
+            }
+        });
+
+        return blockingQueue.take();
+    }
+
+
     public Respuesta grabarUsuario(Usuario usuario) throws  Exception{
 
         final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
         RestApiAdapter restApiAdapter = new RestApiAdapter();
         Endpoints endpoints = restApiAdapter.establecerConexionRest();
+
 
         Call<Usuario> tokenCall = endpoints.grabarUsuario(usuario);
 

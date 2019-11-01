@@ -42,6 +42,7 @@ import py.com.ideasweb.perseo.utilities.Utilities;
 public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.ResultadoViewHolder>{
     private Context context;
     private List<Facturacab> lista;
+    private ArrayList<Facturacab> listCopy;
     private static RecyclerView rv;
     RecyclerView.Adapter adapter = this;
     String state;
@@ -52,6 +53,8 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
         this.context = context;
         this.lista = lista;
         this.state = state;
+        this.listCopy = new ArrayList<>();
+        listCopy.addAll(lista);
 
     }
 
@@ -168,6 +171,7 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 Toast.makeText(v.getContext(), "Reimprimiendo la factura", Toast.LENGTH_SHORT).show();
+
 
                                 ((MainActivity)context).buscarImpresora(task);
 
@@ -347,6 +351,37 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
             }
         });
 
+
+    }
+
+
+
+    public void filter(CharSequence sequence) {
+
+        try {
+
+            ArrayList<Facturacab> temp = new ArrayList<>();
+            if (sequence != null) {
+                System.out.println("BUSQUEDA: " + sequence.toString());
+                for (Facturacab s : lista) {
+                    if (s.getNombreCliente().toLowerCase().contains(sequence) || String.valueOf(s.getNumeroFactura()).contains(sequence)) {
+                        temp.add(s);
+                    }
+
+                }
+            } else {
+                System.out.println("esta vacio");
+                temp.addAll(listCopy);
+            }
+            System.out.println("Resultado: " + temp.size());
+            lista.clear();
+            lista.addAll(temp);
+            notifyDataSetChanged();
+            temp.clear();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

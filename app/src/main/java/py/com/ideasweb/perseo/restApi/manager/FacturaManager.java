@@ -14,6 +14,7 @@ import py.com.ideasweb.perseo.models.Facturacab;
 import py.com.ideasweb.perseo.models.Talonario;
 import py.com.ideasweb.perseo.restApi.Endpoints;
 import py.com.ideasweb.perseo.restApi.adapter.RestApiAdapter;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import retrofit2.Call;
@@ -132,7 +133,7 @@ public class FacturaManager {
             @Override
             public void onResponse(Call<Facturacab> call, Response<Facturacab> response) {
                 Respuesta respuesta = new Respuesta();
-                System.out.println(response.code());
+                System.out.println("Codigo grabar " + response.code());
                 if (response.code() >= 400) {
                     respuesta.setEstado("ERROR");
                     respuesta.setError("Ha ocurrido un error");
@@ -144,7 +145,7 @@ public class FacturaManager {
                     String jsonInString = gson.toJson(response.body());
                     Type listType = new TypeToken<Facturacab>() {}.getType();
                     //setenado en login en el credentials
-                    respuesta.setDatos((Facturacab) gson.fromJson(jsonInString, listType));
+                   // respuesta.setDatos((Facturacab) gson.fromJson(jsonInString, listType));
                     //deserealizando
 
                 }
@@ -153,6 +154,51 @@ public class FacturaManager {
 
             @Override
             public void onFailure(Call<Facturacab> call, Throwable t) {
+                Respuesta respuesta = new Respuesta();
+                t.printStackTrace();
+                respuesta.setEstado("Error");
+                respuesta.setError("Ha ocurrido un error");
+                // blockingQueue.add(respuesta);
+            }
+        });
+
+        return blockingQueue.take();
+    }
+
+    public Respuesta grabarListafactura(List<Facturacab> facturas) throws  Exception{
+
+        final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
+        RestApiAdapter restApiAdapter = new RestApiAdapter();
+        Endpoints endpoints = restApiAdapter.establecerConexionRest();
+
+        Call<Void> tokenCall = endpoints.grabarListaFactura(facturas);
+
+        tokenCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Respuesta respuesta = new Respuesta();
+                System.out.println("Codigo grabar " + response.code());
+                if (response.code() >= 400) {
+                    respuesta.setEstado("ERROR");
+                    respuesta.setError("Ha ocurrido un error");
+
+                }else{
+                    Gson gson = new Gson();
+                    System.out.println("body info grabar: " + response.body());
+                    respuesta.setEstado( "OK");
+                    //respuesta.setDatos(response.body());
+                    //String jsonInString = gson.toJson(response.body());
+                    //Type listType = new TypeToken<Facturacab>() {}.getType();
+                    //setenado en login en el credentials
+                    // respuesta.setDatos((Facturacab) gson.fromJson(jsonInString, listType));
+                    //deserealizando
+
+                }
+                blockingQueue.add(respuesta);
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
                 Respuesta respuesta = new Respuesta();
                 t.printStackTrace();
                 respuesta.setEstado("Error");
@@ -215,6 +261,57 @@ public class FacturaManager {
         return blockingQueue.take();
     }
 
+
+
+    public Respuesta getFacturasByUsuario() throws Exception{
+
+        final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
+        RestApiAdapter restApiAdapter = new RestApiAdapter();
+        Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
+
+        //se invoca al metodo del endpoints
+        Call<List<Facturacab>> tokenCall = endpoints.getFacturasByUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
+
+        tokenCall.enqueue(new Callback<List<Facturacab>>() {
+            @Override
+            public void onResponse(Call<List<Facturacab>> call, Response<List<Facturacab>> response) {
+                Respuesta respuesta = new Respuesta();
+                System.out.println(response.code());
+                if (response.code() >= 400) {
+                    respuesta.setEstado("ERROR");
+                    respuesta.setError("Ha ocurrido un error");
+
+
+                }else{
+
+                    respuesta.setEstado("OK");
+                    //deserealizando
+                    Gson gson =  new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
+
+                    //deserealizando
+                    // Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Type listType = new TypeToken<List<Facturacab>>() {}.getType();
+                    //setenado en login en el credentials
+                    respuesta.setDatos((ArrayList<Facturacab>) gson.fromJson(jsonInString, listType));
+
+
+                }
+                blockingQueue.add(respuesta);
+            }
+
+            @Override
+            public void onFailure(Call<List<Facturacab>> call, Throwable t) {
+                Respuesta respuesta = new Respuesta();
+                t.printStackTrace();
+                respuesta.setEstado("Error");
+                respuesta.setError("Ha ocurrido un error");
+                blockingQueue.add(respuesta);
+            }
+        });
+
+        return blockingQueue.take();
+    }
 
 
 }

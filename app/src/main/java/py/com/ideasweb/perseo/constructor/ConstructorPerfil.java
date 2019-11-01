@@ -10,6 +10,19 @@ import py.com.ideasweb.perseo.models.Perfilusuario;
 
 public class ConstructorPerfil {
 
+    public static List<Perfil> perfiles = new ArrayList<>();
+
+
+    public List<Perfil> getPerfilesDisponibles(){
+
+        if(perfiles.size() == 0){
+            perfiles.add(new Perfil(1, "ADMINISTRADOR"));
+            perfiles.add(new Perfil(2, "FACTURACION"));
+            perfiles.add(new Perfil(3, "COBRANZA"));
+        }
+
+        return perfiles;
+    }
     public void insertar(ArrayList<Perfil> lista){
         System.out.println("Insertando perfiles en el contrucutor perfil");
         int cont = 0;
@@ -23,11 +36,13 @@ public class ConstructorPerfil {
     }
 
     public void insertarPerfilByUsuario(ArrayList<Perfilusuario> lista){
-        System.out.println("Insertando perfiles por usuario en el contrucutor perfil");
+        System.out.println("Insertando perfiles por usuario en el constructor perfil");
         int cont = 0;
 
 
         for (Perfilusuario data: lista) {
+            data.setDescripcion(data.getPerfil().getDescripcion());
+            data.setIdperfil(data.getPerfil().getIdPerfil());
             data.save();
             cont++;
         }
@@ -37,10 +52,19 @@ public class ConstructorPerfil {
     public List<Perfilusuario> getPerfilesByUsuario(Integer idUsuario){
 
 
-        final List<Perfilusuario> busqueda = LitePal.where("idusuario = ?" ,
+        List<Perfilusuario> busqueda = LitePal.where("idusuario = ?" ,
                 String.valueOf(idUsuario))
                 .find(Perfilusuario.class);
+
+        if(busqueda == null)
+            busqueda= new ArrayList<>();
+
         return busqueda;
 
+    }
+
+    public void deleteByUsuario(Integer idusuario){
+
+        LitePal.deleteAll(Perfilusuario.class, "idusuario = ?" , String.valueOf(idusuario));
     }
 }

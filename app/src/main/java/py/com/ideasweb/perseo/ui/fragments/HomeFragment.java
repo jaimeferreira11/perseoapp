@@ -3,6 +3,7 @@ package py.com.ideasweb.perseo.ui.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.adapter.HomeAdapter;
 import py.com.ideasweb.perseo.models.HomeItem;
 import py.com.ideasweb.perseo.repo.HomeItemRepo;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.utilities.Utilities;
 
 
@@ -35,6 +37,14 @@ public class HomeFragment extends Fragment {
 
     @BindView(R.id.download)
     TextView download;
+
+    @BindView(R.id.text_admin)
+    TextView textAdmin;
+
+    @BindView(R.id.cardFecha)
+    CardView cardFecha;
+
+
 
     HomeAdapter adaptador;
 
@@ -55,7 +65,13 @@ public class HomeFragment extends Fragment {
 
 
         generarLineaLayoutVertical();
-        inicializarAdaptadorRV(crearAdaptador(HomeItemRepo.getListaFacturacion()));
+        inicializarAdaptadorRV(crearAdaptador(HomeItemRepo.getModulos()));
+
+        if(CredentialValues.getLoginData().getPerfilactual().getIdPerfil() == 1){
+            //administrador
+            textAdmin.setVisibility(View.VISIBLE);
+            cardFecha.setVisibility(View.GONE);
+        }
 
         if(!Utilities.getUltDownload(getContext()).equals(""))
             download.setText(Utilities.getUltDownload(getContext()));

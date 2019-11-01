@@ -3,6 +3,13 @@ package py.com.ideasweb.perseo.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import org.ankit.gpslibrary.ADLocation;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jaime on 03/12/16.
  */
@@ -11,6 +18,10 @@ public class MiUbicacion {
     private static  Double latitud;
     private  static  Double Longitud;
     private static boolean ban = false;
+
+    public static boolean registrar = false;
+    public static List<LatLng> listaPuntos = new ArrayList<>(); // Lista de puntos
+    public static ADLocation lugar;
 
 
     private static  Double latitudGPS;

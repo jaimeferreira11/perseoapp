@@ -6,6 +6,7 @@ import org.litepal.crud.LitePalSupport;
 
 public class Articulo extends LitePalSupport {
 
+	private int id;
 	private Integer idArticulo;
 	private String codigoBarra;
 	private String descripcion;
@@ -15,10 +16,9 @@ public class Articulo extends LitePalSupport {
 	private Integer idDeposito;
 	private Integer idSucursal;
 	private Integer idEmpresa;
-	@Column(defaultValue = "false")
-	private Boolean sincronizar;
-	@Column(defaultValue = "true")
+	@Column(defaultValue = "1") // true
 	private Boolean estado;
+	private String referencia;
 	
 	public Articulo(){}
 
@@ -102,25 +102,24 @@ public class Articulo extends LitePalSupport {
 		this.estado = estado;
 	}
 
-	public Boolean getSincronizar() {
-		return sincronizar;
+	public int getId() {
+		return id;
 	}
 
-	public void setSincronizar(Boolean sincronizar) {
-		this.sincronizar = sincronizar;
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getReferencia() {
+		return referencia;
+	}
+
+	public void setReferencia(String referencia) {
+		this.referencia = referencia;
 	}
 
 	@Override
 	public String toString() {
-		return "Articulo{" +
-				"idArticulo=" + idArticulo +
-				", codigoBarra='" + codigoBarra + '\'' +
-				", descripcion='" + descripcion + '\'' +
-				", tasaIva=" + tasaIva +
-				", precioVenta=" + precioVenta +
-				", cantidad=" + cantidad +
-				", idDeposito=" + idDeposito +
-				", idSucursal=" + idSucursal +
-				'}';
+		return  codigoBarra + " - " +descripcion;
 	}
 }

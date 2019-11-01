@@ -11,8 +11,8 @@
 
     <!-- Menu -->
     <string name="registrar_cliente">Registrar Cliente</string>
-    <string name="registrar_pedido">Registrar Pedido</string>
-    <string name="lista_pedido">Pedidos Realizados</string>
+    <string name="registrar_pedido">Registrar Factura</string>
+    <string name="lista_pedido">Facturas Realizadas</string>
     <string name="sincronixar_datos">Sincronizar Datos</string>
     <!-- Menu de configuracion-->
     <string name="action_about">Acerca de nosotros</string>
@@ -69,7 +69,7 @@
     <!--Validaciones -->
     <string name="required">Campo requerido</string>
     <string name="mail_invalid">Email inválido</string>
-    <string name="required_min">Debe conterner mínimo</string>
+    <string name="required_min">Debe conterner mínimo </string>
     <string name="caracter">caracteres</string>
     <string name="ingreseContraseña">Ingrese su contraseña</string>
     <string name="titulo_actualizarContraseña">Actualizar contraseña</string>
@@ -125,5 +125,8 @@
     <string name="tomarFoto">Tomar Foto</string>
     <string name="ElegirGaleria">Elegir de la Galeria</string>
     <string name="imgperfil">Seleccione Foto de Perfil</string>
+    <string name="necesitas_conexion">Necesitas conexion a internet para realizar esta accion</string>
+    <string name="descargando">Descargando datos...</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

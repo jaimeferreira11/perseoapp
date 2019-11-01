@@ -23,7 +23,6 @@ import com.github.fcannizzaro.materialstepper.style.TextStepper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.util.Formatter;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,11 +30,13 @@ import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorFactura;
 import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.ui.fragments.pedidos.steps.Step1;
 import py.com.ideasweb.perseo.ui.fragments.pedidos.steps.Step2;
 import py.com.ideasweb.perseo.ui.fragments.pedidos.steps.Step3;
+import py.com.ideasweb.perseo.utilities.MiUbicacion;
 import py.com.ideasweb.perseo.utilities.UnicodeFormatter;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
@@ -106,13 +107,15 @@ public class MainStepper extends TextStepper implements Runnable {
         super.onComplete();
         LoginData.getFactura().setEstado(true);
         LoginData.getFactura().setSincronizadoCore(false);
-        LoginData.getFactura().setTipoFactura("CONTADO");
+       // LoginData.getFactura().setTipoFactura("CONTADO");
         LoginData.getFactura().setIdUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
-        LoginData.getFactura().setFecha(Utilities.getCurrentDateTime());
+        LoginData.getFactura().setFecha(Utilities.getCurrentDateTimeBD());
         LoginData.getFactura().setEstablecimiento(LoginData.getTalonario().getEstablecimiento());
         LoginData.getFactura().setPuntoExpedicion(LoginData.getTalonario().getPuntoExpedicion());
         LoginData.getFactura().setNumeroFactura(LoginData.getTalonario().getNumeroActual() + 1);
         LoginData.getFactura().setTimbrado(LoginData.getTalonario().getTimbrado());
+        LoginData.getFactura().setCoordendas(MiUbicacion.getCoordenadasActual());
+        LoginData.getFactura().setIdEmpresa(ConstantesRestApi.ID_EMPRESA);
 
 
 
@@ -201,6 +204,7 @@ public class MainStepper extends TextStepper implements Runnable {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
 
+                        Utilities.sendToast(getApplicationContext(), "Factura Registrada" , "success");
                         Utilities.deleteFacturaLoginData();
                         Intent intent = new Intent(MainStepper.this, MainActivity.class);
                         startActivity(intent);
@@ -235,6 +239,7 @@ public class MainStepper extends TextStepper implements Runnable {
                         }
                         setResult(RESULT_CANCELED);
                         //
+                        Utilities.deleteFacturaLoginData();
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("url", "py.com.ideasweb.perseo.ui.fragments.HomeFragment");
                         startActivity(intent);
@@ -271,18 +276,25 @@ public class MainStepper extends TextStepper implements Runnable {
                     OutputStream os = mBluetoothSocket
                             .getOutputStream();
 
-                    Formatter fmt = new Formatter();
+                    System.out.println(LoginData.getTalonario().toString());
+                    String establecimiento =  String.format("%03d", LoginData.getTalonario().getEstablecimiento());
+                    System.out.println("Estable " + establecimiento);
+                    String punto =  String.format("%03d", LoginData.getTalonario().getPuntoExpedicion());
+                    System.out.println("Punto " + punto);
+                    String numero = String.format("%07d", LoginData.getTalonario().getNumeroActual());
+                    System.out.println("Numero " + numero);
 
 
 
                     String BILL = "";
-                    BILL =  "   "+getResources().getString(R.string.empresa) +"\n"
-                            + "   "+getResources().getString(R.string.direccion_empresa) +"\n"
+                    BILL =  " "+getResources().getString(R.string.empresa) +"\n"
+                            + " "+getResources().getString(R.string.direccion_empresa) +"\n"
                             + "   Tel: "+getResources().getString(R.string.telefono_empresa) +"\n"
                             + "   RUC.: "+getResources().getString(R.string.ruc_empresa) +"\n"
                             +" Timbrado Nro.: "+LoginData.getTalonario().getTimbrado() +"\n"
-                            +" Validos hasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
-                            +" Factura.: "+  fmt.format("%08d",LoginData.getFactura().getNumeroFactura())  +"\n"
+                            +" Validoshasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
+                            +" Condicion: "+ LoginData.getFactura().getTipoFactura() +"\n"
+                            +" Factura.: "+ establecimiento + "-"+punto+"-"+numero  +"\n"
                             +" Fecha Hora.: "+Utilities.getCurrentDateTime() +"\n"
                             +" Usuario.: "+ CredentialValues.getLoginData().getUsuario().getLogin().toUpperCase() +"\n";
 
@@ -295,7 +307,7 @@ public class MainStepper extends TextStepper implements Runnable {
                             + "----------------------------\n";
 
 
-                    BILL = BILL + String.format("%1$8s %2$5s %3$5s %4$8s %5$8s", "Desc.", "Cant.", "IVA", "P. U", "Total");
+                    BILL = BILL + String.format("%1$-8s %2$-6s %3$-6s %4$-6s %5$-8s", "Desc.", "Cant.", "IVA", "P.U.", "TOTAL");
                     BILL = BILL + "\n";
                     BILL = BILL
                             + "----------------------------\n";
@@ -316,10 +328,11 @@ public class MainStepper extends TextStepper implements Runnable {
                         }else if(det.getTasaIva().intValue() == 0){
                             exenta += det.getSubTotal();
                         }
-                        BILL = BILL + "\n " + String.format("%1$20s", det.getConcepto() );
+                        BILL = BILL + "\n " + String.format("%1$-20s %2$4s", det.getConcepto(), det.getTasaIva().intValue()+"%" );
 
-                        BILL = BILL + "\n " + String.format("%1$2s %2$10s %3$10s %4$10s %2$5s",
-                                "" ,  det.getCantidad().intValue(),  det.getTasaIva().intValue()+"%" ,Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));
+                        BILL = BILL + "\n " + String.format("%1$5s %2$14s %3$15s",
+                                String.format("%.2f", det.getCantidad()).replace(".",","), Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));
+
 
 
                     }

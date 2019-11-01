@@ -39,9 +39,32 @@ public class Facturacab extends LitePalSupport {
     private Double porcDescuento;
     private String comentario;
     private Integer idEmpresa;
+    private String coordendas;
 
 
+    public Facturacab() {
+    }
 
+    public Facturacab(Facturacablog log) {
+        this.idFacturaCab = log.getIdFacturaCab();
+        this.fecha = log.getFecha();
+        this.idCliente = log.getIdCliente();
+        this.idUsuario = log.getIdUsuario();
+        this.nombreCliente = log.getNombreCliente();
+        this.nroDocumentoCliente = log.getNroDocumentoCliente();
+        this.direccionCliente = log.getDireccionCliente();
+        this.telefonoCliente = log.getTelefonoCliente();
+        this.timbrado = log.getTimbrado();
+        this.establecimiento = log.getEstablecimiento();
+        this.puntoExpedicion = log.getPuntoExpedicion();
+        this.numeroFactura = log.getNumeroFactura();
+        this.tipoFactura = log.getTipoFactura();
+        this.importe = log.getImporte();
+        this.estado = log.getEstado();
+        this.porcDescuento = log.getPorcDescuento();
+        this.comentario = log.getComentario();
+        this.idEmpresa = log.getIdEmpresa();
+    }
 
     public int getIdFacturaCab() {
         return idFacturaCab;
@@ -225,6 +248,14 @@ public class Facturacab extends LitePalSupport {
 
     public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    public String getCoordendas() {
+        return coordendas;
+    }
+
+    public void setCoordendas(String coordendas) {
+        this.coordendas = coordendas;
     }
 
     @Override

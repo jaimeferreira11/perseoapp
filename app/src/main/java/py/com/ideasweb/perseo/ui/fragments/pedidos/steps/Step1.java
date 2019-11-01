@@ -23,6 +23,7 @@ import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorCliente;
 import py.com.ideasweb.perseo.models.Cliente;
 import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.restApi.pojo.PedidoDetalle;
 import py.com.ideasweb.perseo.ui.activities.LoginActivity;
@@ -69,6 +70,7 @@ public class Step1 extends AbstractStep {
         barrio = (EditText) view.findViewById(R.id.regBarrio);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
 
+        System.out.println(LoginData.getFactura().toString());
         // SI SE EDITA UN PEDIDO EXISTENTE
         if(LoginData.getFactura().getIdCliente() != null){
 
@@ -128,7 +130,10 @@ public class Step1 extends AbstractStep {
         dialog.show();
 
 
-        final List<Cliente> busqueda = LitePal.where("upper(nombreApellido) like ?  or nroDocumento like ?" , "%"+param.toUpperCase().trim()+"%", "%"+param.trim()+"%").find(Cliente.class);
+        final List<Cliente> busqueda = LitePal.where("idUsuario =  ? and ( upper(nombreApellido) like ?  or idCliente like ? )" ,
+                String.valueOf(CredentialValues.getLoginData().getUsuario().getIdUsuario()),
+                "%"+param.toUpperCase().trim()+"%",
+                 param.trim()).find(Cliente.class);
 
 
         if(busqueda.isEmpty()){
@@ -178,6 +183,7 @@ public class Step1 extends AbstractStep {
         LoginData.getFactura().setNroDocumentoCliente(cliente.getNroDocumento());
         LoginData.getFactura().setTelefonoCliente(cliente.getTelefono());
         LoginData.getFactura().setDireccionCliente(cliente.getDireccion());
+        LoginData.getFactura().setTipoFactura("CONTADO");
 
 
 

@@ -19,7 +19,7 @@
             android:layout_marginBottom="10dp"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold"
-            android:text="@string/cargando"/>
+            android:text="@string/descargando"/>
 
         <ProgressBar
             android:layout_width="120dp"

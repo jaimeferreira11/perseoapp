@@ -42,6 +42,7 @@ import py.com.ideasweb.perseo.models.Usuario;
 import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.manager.UsuarioManager;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
+import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
 import py.com.ideasweb.perseo.utilities.Validation;
@@ -144,7 +145,10 @@ public class ProfileFragment extends Fragment {
                                 public void run() {
                                     try {
                                         UsuarioManager manager = new UsuarioManager();
-                                        manager.grabarUsuario(CredentialValues.getLoginData().getUsuario());
+                                        Respuesta respuesta = manager.grabarUsuario(CredentialValues.getLoginData().getUsuario());
+                                        if(respuesta.getEstado().equalsIgnoreCase("OK")){
+                                            CredentialValues.getLoginData().setUsuario((Usuario) respuesta.getDatos());
+                                        }
 
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -170,7 +174,7 @@ public class ProfileFragment extends Fragment {
                             }
                         }
                     }else{
-                        Snackbar.make(view, R.string.verifiqueInternet, Snackbar.LENGTH_LONG).show();
+                        Utilities.sendToast(getContext(), "Necesitas conexion a internet para realizar esta accion", "error");
                     }
 
 

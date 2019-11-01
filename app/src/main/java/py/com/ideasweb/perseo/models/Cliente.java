@@ -6,6 +6,7 @@ import org.litepal.crud.LitePalSupport;
 
 public class Cliente extends LitePalSupport {
 
+	private int id;
 	private Integer idCliente;
 	private String nombreApellido;
 	private String codTipoDocumento;
@@ -16,12 +17,17 @@ public class Cliente extends LitePalSupport {
 	private String barrio;
 	private String coordenadas;
 	private Integer idEmpresa;
-    @Column(defaultValue = "false")
+	private Integer idUsuario;
+    @Column(defaultValue = "0") //false
     private Boolean sincronizar;
 
 
 
 	public Cliente() {
+	}
+
+	public Cliente(Integer idCliente) {
+		this.idCliente = idCliente;
 	}
 
 	public Cliente(Integer idCliente, String nombreApellido) {
@@ -117,7 +123,25 @@ public class Cliente extends LitePalSupport {
         this.sincronizar = sincronizar;
     }
 
-    @Override
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
+
+	public Integer getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Integer idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	@Override
 	public String toString() {
 		return  nroDocumento + " - "+ nombreApellido ;
 	}

@@ -2,11 +2,8 @@ package py.com.ideasweb.perseo.ui.fragments.sincronizacion;
 
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +28,7 @@ import py.com.ideasweb.perseo.models.Cliente;
 import py.com.ideasweb.perseo.models.SincronizacionItem;
 import py.com.ideasweb.perseo.restApi.manager.ArticuloManager;
 import py.com.ideasweb.perseo.restApi.manager.ClienteManager;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
@@ -121,11 +119,12 @@ public class DownloadFragment extends Fragment {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Respuesta respuesta = manager.getaAll();
-                    // Respuesta respuesta = manager.getClientesByUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
+                    Respuesta respuesta = manager.getClientesByEmpresa();
+                     //Respuesta respuesta = manager.getClientesByUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
 
                     if(respuesta.getEstado() == "OK"){
                         ConstructorCliente cu = new ConstructorCliente();
+                        LitePal.deleteAll(Cliente.class);
                         ArrayList<Cliente> clienteList = (ArrayList<Cliente>) respuesta.getDatos();
 
                         if (clienteList.size() > 0){
@@ -152,7 +151,7 @@ public class DownloadFragment extends Fragment {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Respuesta respuesta = manager2.getaAll();
+                    Respuesta respuesta = manager2.getByEmpresa();
 
                     if(respuesta.getEstado() == "OK"){
                         ConstructorArticulos cu = new ConstructorArticulos();
@@ -183,6 +182,8 @@ public class DownloadFragment extends Fragment {
 
         }).start();
     }
+
+
 
 
 

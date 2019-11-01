@@ -28,6 +28,9 @@ public class SplashActivity extends AppCompatActivity {
         }
 
 
+
+        //Utilities.finalizarTareaPeriodica();
+
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
