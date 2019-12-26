@@ -13,8 +13,6 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import org.litepal.LitePal;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +28,12 @@ import py.com.ideasweb.perseo.constructor.ConstructorFactura;
 import py.com.ideasweb.perseo.constructor.ConstructorFacturaLog;
 import py.com.ideasweb.perseo.models.Articulo;
 import py.com.ideasweb.perseo.models.Cliente;
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.SincronizacionItem;
+import py.com.ideasweb.perseo.repo.FacturaDummyRepo;
 import py.com.ideasweb.perseo.restApi.manager.ArticuloManager;
 import py.com.ideasweb.perseo.restApi.manager.ClienteManager;
 import py.com.ideasweb.perseo.restApi.manager.FacturaManager;
-import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.ui.activities.MainActivity;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
@@ -58,6 +56,8 @@ public class UploadFragment extends Fragment {
 
 
     private ArrayList<SincronizacionItem> list = new ArrayList<>();
+    private ArrayList<SincronizacionItem> aux = new ArrayList<>();
+    int aux2 = 0;
 
 
     public UploadFragment() {
@@ -78,12 +78,7 @@ public class UploadFragment extends Fragment {
         inicializarAdaptadorRV(crearAdaptador(obtenerLista()));
 
         // Constructores
-        ConstructorCliente cc =  new ConstructorCliente();
-
-        List<Facturacab> allSongs = LitePal.findAll(Facturacab.class);
-
-        System.out.println("Todas Facturas " + allSongs.size());
-
+      //  ConstructorCliente cc =  new ConstructorCliente();
 
 
 
@@ -98,23 +93,24 @@ public class UploadFragment extends Fragment {
                         .setMessage("Subiendo datos...")
                         .build();
 
+                dialog.show();
 
+                aux = list;
+                for (int i = 0; i < list.size(); i++) {
 
-                for (SincronizacionItem item: list) {
-
-                    if(item.getTipo().equals("cliente")){
+                    if(list.get(i).getTipo().equals("cliente")){
                         /*for (Cliente cliente: item.getClientes()) {
                             // subir
                             subirCliente(cliente);
                         }*/
-                        subirListaCliente(item.getClientes());
+                        subirListaCliente(list.get(i).getClientes() , i);
 
-                    }else if(item.getTipo().equals("venta")){
-                        /*for (Facturacab facturacab: item.getFacturas()) {
+                    }else if(list.get(i).getTipo().equals("venta")){
+                        /*for (FacturaCab facturacab: item.getFacturas()) {
                             // subir
                             subirFactura(facturacab);
                         }*/
-                        subirListaFactura(item.getFacturas());
+                        subirListaFactura(list.get(i).getFacturas(), i);
 
                     }
                     /*else if(item.getTipo().equals("articulo")){
@@ -124,30 +120,9 @@ public class UploadFragment extends Fragment {
                         }
                         list.remove(item);
                     }*/
-
                 }
 
-                //dialog.dismiss();
 
-               /* if(error){
-                    new MaterialDialog.Builder(view.getContext())
-                            .icon(getResources().getDrawable(R.drawable.ic_error_black_24dp))
-                            .title(getResources().getString(R.string.error))
-                            .content("Intentelo mas tarde")
-                            .show();
-                }else{
-                    new MaterialDialog.Builder(view.getContext())
-                            .icon(getResources().getDrawable(R.drawable.checked_48))
-                            .title(getResources().getString(R.string.procesoExitoso))
-                            .content("Se sincronizaron los datos!")
-                            .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
-                            .positiveText("Aceptar")
-                            .show();
-
-                }*/
-
-
-                //bajarDatos();
 
 
             }
@@ -176,6 +151,8 @@ public class UploadFragment extends Fragment {
 
     private ArrayList<SincronizacionItem>  obtenerLista(){
 
+        list = new ArrayList<>();
+        aux2 = 0;
         ConstructorCliente cc = new ConstructorCliente();
         List<Cliente> clienteList = cc.obtenerClientesNuevos();
 
@@ -183,12 +160,16 @@ public class UploadFragment extends Fragment {
             list.add(new SincronizacionItem("Clientes", clienteList.size(), "cliente" , null ,clienteList));
 
         ConstructorFactura cf = new ConstructorFactura();
-        //List<Facturacab> facturaList = LitePal.where("sincronizadocore = ? " , "0").find(Facturacab.class);
-        List<Facturacab> facturaList = cf.getPendientes();
+        //List<FacturaCab> facturaList = LitePal.where("sincronizadocore = ? " , "0").find(FacturaCab.class);
+        List<FacturaCab> facturaList = cf.getPendientes();
 
         if (facturaList.size() > 0)
-            list.add(new SincronizacionItem("Factura de ventas", facturaList.size(), "venta", facturaList, null));
+            list.add(new SincronizacionItem("Facturas de ventas", facturaList.size(), "venta", facturaList, null));
 
+        List<FacturaCab> facturaAnulados = cf.getAnulados();
+
+        if (facturaAnulados.size() > 0)
+            list.add(new SincronizacionItem("Facturas anuladas", facturaAnulados.size(), "venta", facturaAnulados, null));
 
        /* ConstructorArticulos ca = new ConstructorArticulos();
         List<Articulo> articuloList = ca.obtenerArticulosNuevos();
@@ -197,6 +178,16 @@ public class UploadFragment extends Fragment {
             list.add(new SincronizacionItem("Articulos", articuloList.size(), "articulo", articuloList));*/
 
         UtilLogger.info("Lista para sincronizar: " + list.size());
+
+        return list;
+    }
+
+    /* Facturas de prueba*/
+    private ArrayList<SincronizacionItem>  obtenerListaDummy() {
+        list = new ArrayList<>();
+
+        List<FacturaCab> facturas = FacturaDummyRepo.getFacturasDePrueba();
+        list.add(new SincronizacionItem("Facturas de ventas", facturas.size(), "venta", facturas, null));
 
         return list;
     }
@@ -239,7 +230,7 @@ public class UploadFragment extends Fragment {
         }).start();
     }
 
-    private void subirFactura(final Facturacab factura){
+    private void subirFactura(final FacturaCab factura){
 
         final ConstructorFactura cf = new ConstructorFactura();
         final ConstructorFacturaLog clog = new ConstructorFacturaLog();
@@ -284,89 +275,116 @@ public class UploadFragment extends Fragment {
     }
 
 
-    private void subirListaFactura(final List<Facturacab> facturas){
+    private void subirListaFactura(final List<FacturaCab> facturas, final int index){
 
-        if(!dialog.isShowing())
-            dialog.show();
 
 
         final ConstructorFactura cf = new ConstructorFactura();
         final ConstructorFacturaLog clog = new ConstructorFacturaLog();
         final FacturaManager manager2 = new FacturaManager();
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    System.out.println("Grabando desde el fragment");
-                    final Respuesta respuesta = manager2.grabarListafactura(facturas);
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+        // borra el log actual
+        clog.vaciarTabla();
 
-                            if(dialog.isShowing())
-                                dialog.dismiss();
-                        }
-                    });
 
-                    System.out.println(respuesta.toString());
-                    if(respuesta.getEstado() == "OK"){
-                        // inserta en el log
-                        for (Facturacab factura: facturas) {
-                            System.out.println("Grabando la factura: " + factura.toString());
-                            factura.setSincronizadoCore(true);
+        for (int i = 0; i < facturas.size(); i++) {
+
+            System.out.println("Iniciando el for " + i);
+
+            final FacturaCab cab = facturas.get(i);
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        final Respuesta respuesta = manager2.grabarfactura(cab);
+
+                        System.out.println("respuesta " + respuesta.toString());
+                        if(respuesta.getEstado() == "OK"){
+                            // inserta en el log
+                            cab.setSincronizadoCore(true);
                             // actualiza la factura
-                            cf.actualizar(factura);
-                            clog.insertar(factura);
+                            cf.actualizar(cab);
+                            // inserta en el log
+                            clog.insertar(cab);
+                            facturas.remove(facturas.size() - 1);
+
+                        }else{
+
+                            error = true;
+                            facturas.remove(facturas.size() - 1);
 
                         }
 
-                        list.remove(facturas);
-                        Utilities.setUltSync(getContext(), Utilities.getCurrentDateTime(), null);
-                        ((MainActivity)getContext()).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                        if(facturas.size() == 0){
 
-                                new MaterialDialog.Builder(getContext())
-                                        .icon(getResources().getDrawable(R.drawable.checked_48))
-                                        .title(getResources().getString(R.string.procesoExitoso))
-                                        .content("Se sincronizo " + facturas.size() + " facturas")
-                                        .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
-                                        .positiveText("Aceptar")
-                                        .show();
+                            System.out.println("Tamano de la lista antes " +  list.size());
+                            System.out.println("Tamano del contador antes" + aux2);
+                            aux2++;
+                            System.out.println("Tamano del contador" + aux2);
+
+
+                            if(list.size() == aux2){
+
+                                Utilities.setUltSync(getContext(), Utilities.getCurrentDateTime(), null);
+                                System.out.println("la lista es vacia");
+                                System.out.println("Hay error? " + error);
+
+
+                                ((MainActivity)getContext()).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+
+                                        if(dialog.isShowing())
+                                            dialog.dismiss();
+
+                                        if(!error){
+
+                                            new MaterialDialog.Builder(getContext())
+                                                    .icon(getResources().getDrawable(R.drawable.checked_48))
+                                                    .title(getResources().getString(R.string.procesoExitoso))
+                                                    .content("Se sincronizaron todos los datos")
+                                                    .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                                                    .positiveText("Aceptar")
+                                                    .show();
+                                        }else{
+
+                                            new MaterialDialog.Builder(getContext())
+                                                    .icon(getResources().getDrawable(R.drawable.attention_48))
+                                                    .title("Atencion")
+                                                    .content("Solo algunas datos se han sincronizado. Contacte con el administrador")
+                                                    .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                                                    .positiveText("Aceptar")
+                                                    .show();
+                                        }
+
+                                        //armar el reciclerview
+                                        generarLineaLayoutVertical();
+                                        inicializarAdaptadorRV(crearAdaptador(obtenerLista()));
+                                    }
+                                });
+
                             }
-                        });
+                        }
 
 
-                    }else{
-
-                        error = true;
-
-                        ((MainActivity)getContext()).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                new MaterialDialog.Builder(getContext())
-                                        .icon(getResources().getDrawable(R.drawable.ic_error_black_24dp))
-                                        .title(getResources().getString(R.string.error))
-                                        .content("No se sincronizo las facturas")
-                                        .positiveText("Aceptar")
-                                        .show();
-                            }
-                        });
 
 
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
 
-        }).start();
+            }).start();
+        }
+
+
+
+
     }
 
 
-    private void subirListaCliente(final List<Cliente> clientes){
+    private void subirListaCliente(final List<Cliente> clientes, final int index){
 
         if(!dialog.isShowing())
             dialog.show();
@@ -379,15 +397,6 @@ public class UploadFragment extends Fragment {
                 try {
                     final Respuesta respuesta = manager.grabarListaClientes(clientes);
 
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            if(dialog.isShowing())
-                                dialog.dismiss();
-                        }
-                    });
                     if(respuesta.getEstado() == "OK"){
 
                         for (Cliente cliente: clientes) {
@@ -396,37 +405,66 @@ public class UploadFragment extends Fragment {
                             // ?
                         }
 
-                        list.remove(clientes);
-                        Utilities.setUltSync(getContext(), Utilities.getCurrentDateTime(), null);
-                        ((MainActivity)getContext()).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                        aux2++;
 
-                                new MaterialDialog.Builder(getContext())
-                                        .icon(getResources().getDrawable(R.drawable.checked_48))
-                                        .title(getResources().getString(R.string.procesoExitoso))
-                                        .content(respuesta.getDatos().toString())
-                                        .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
-                                        .positiveText("Aceptar")
-                                        .show();
-                            }
-                        });
 
                     }else{
                         error = true;
 
-                        getActivity().runOnUiThread(new Runnable() {
+
+                    }
+
+
+                    System.out.println("Tamano de la lista antes " +  list.size());
+                    System.out.println("Tamano del contador" + aux2);
+
+
+                    if(list.size() == aux2){
+
+                        Utilities.setUltSync(getContext(), Utilities.getCurrentDateTime(), null);
+
+                        System.out.println("la lista es vacia");
+                        System.out.println("Hay error? " + error);
+
+
+                        ((MainActivity)getContext()).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
-                                new MaterialDialog.Builder(getContext())
-                                        .icon(getResources().getDrawable(R.drawable.ic_error_black_24dp))
-                                        .title(getResources().getString(R.string.error))
-                                        .content("No se sincronizo los clientes")
-                                        .show();
+
+                                if(dialog.isShowing())
+                                    dialog.dismiss();
+
+                                if(!error){
+
+                                    new MaterialDialog.Builder(getContext())
+                                            .icon(getResources().getDrawable(R.drawable.checked_48))
+                                            .title(getResources().getString(R.string.procesoExitoso))
+                                            .content("Se sincronizaron todos los datos")
+                                            .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                                            .positiveText("Aceptar")
+                                            .show();
+                                }else{
+
+                                    new MaterialDialog.Builder(getContext())
+                                            .icon(getResources().getDrawable(R.drawable.attention_48))
+                                            .title("Atencion")
+                                            .content("Solo algunas datos se han sincronizado. Contacte con el administrador")
+                                            .titleColor(getContext().getResources().getColor(R.color.colorPrimaryDark))
+                                            .positiveText("Aceptar")
+                                            .show();
+                                }
+
+                                //armar el reciclerview
+
+                                generarLineaLayoutVertical();
+                                inicializarAdaptadorRV(crearAdaptador(obtenerLista()));
                             }
                         });
+
                     }
+
+
 
 
                 } catch (Exception e) {

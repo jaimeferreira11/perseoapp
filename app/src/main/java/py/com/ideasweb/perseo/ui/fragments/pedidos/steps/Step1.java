@@ -20,16 +20,14 @@ import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
-import py.com.ideasweb.perseo.constructor.ConstructorCliente;
 import py.com.ideasweb.perseo.models.Cliente;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
-import py.com.ideasweb.perseo.restApi.pojo.PedidoDetalle;
 import py.com.ideasweb.perseo.ui.activities.LoginActivity;
-import py.com.ideasweb.perseo.ui.activities.MainActivity;
 import py.com.ideasweb.perseo.ui.activities.MainStepper;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
+import py.com.ideasweb.perseo.utilities.Utilities;
 import py.com.ideasweb.perseo.utilities.Validation;
 
 /**
@@ -43,6 +41,7 @@ public class Step1 extends AbstractStep {
     ImageView buscar;
     EditText nombres;
     EditText id ;
+    EditText doc ;
     EditText  busqueda;
     EditText direccion;
     EditText telefono ;
@@ -62,6 +61,7 @@ public class Step1 extends AbstractStep {
         buscar = (ImageView) view.findViewById(R.id.cliente_buscar);
         nombres = (EditText) view.findViewById(R.id.regNombres);
         id = (EditText) view.findViewById(R.id.regID);
+        doc = (EditText) view.findViewById(R.id.regDOC);
         busqueda = (EditText) view.findViewById(R.id.text_busqueda);
 
         direccion = (EditText) view.findViewById(R.id.regDireccion);
@@ -69,6 +69,7 @@ public class Step1 extends AbstractStep {
         ciudad = (EditText) view.findViewById(R.id.regCiudad);
         barrio = (EditText) view.findViewById(R.id.regBarrio);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
+
 
         System.out.println(LoginData.getFactura().toString());
         // SI SE EDITA UN PEDIDO EXISTENTE
@@ -81,7 +82,8 @@ public class Step1 extends AbstractStep {
 
         }else{
 
-            LoginData.getFactura().setFacturadet(new ArrayList<Facturadet>());
+            LoginData.getFactura().setFecha(Utilities.getCurrentDateTimeBD());
+            LoginData.getFactura().setFacturadet(new ArrayList<FacturaDet>());
         }
 
         //dapatador
@@ -130,10 +132,12 @@ public class Step1 extends AbstractStep {
         dialog.show();
 
 
-        final List<Cliente> busqueda = LitePal.where("idUsuario =  ? and ( upper(nombreApellido) like ?  or idCliente like ? )" ,
+        final List<Cliente> busqueda = LitePal.where("idUsuario =  ? and ( upper(nombreApellido) like ?  or idCliente like ? or nroDocumento like ?)" ,
                 String.valueOf(CredentialValues.getLoginData().getUsuario().getIdUsuario()),
                 "%"+param.toUpperCase().trim()+"%",
-                 param.trim()).find(Cliente.class);
+                 param.trim(),
+                "%"+param.toUpperCase().trim()+"%")
+                .find(Cliente.class);
 
 
         if(busqueda.isEmpty()){
@@ -191,6 +195,7 @@ public class Step1 extends AbstractStep {
         direccion.setText(cliente.getDireccion());
         telefono.setText(cliente.getTelefono());
         id.setText(String.valueOf(cliente.getIdCliente()));
+        doc.setText(cliente.getNroDocumento());
 
         if(cliente.getCiudad() != null){
             ciudad.setText(cliente.getCiudad());

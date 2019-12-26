@@ -3,7 +3,9 @@ package py.com.ideasweb.perseo.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,7 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 import java.util.List;
 
 import py.com.ideasweb.R;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
@@ -28,11 +30,11 @@ import py.com.ideasweb.perseo.utilities.Utilities;
 
 public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.ResultadoViewHolder>{
     private Context context;
-    private List<Facturadet> lista;
+    private List<FacturaDet> lista;
     private  View view;
 
 
-    public FacturaDetAdapter(Context context, List<Facturadet> lista, View view) {
+    public FacturaDetAdapter(Context context, List<FacturaDet> lista, View view) {
         this.context = context;
         this.lista = lista;
         this.view = view;
@@ -48,16 +50,21 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
 
     @Override
     public void onBindViewHolder(final FacturaDetAdapter.ResultadoViewHolder holder, final int position) {
-        Facturadet task = lista.get(position);
+        final FacturaDet task = lista.get(position);
 
         holder.descripcion.setText(task.getConcepto());
         holder.precio.setText(Utilities.toStringFromDoubleWithFormat(task.getPrecioVenta()));
         holder.monto.setText(Utilities.toStringFromDoubleWithFormat(task.getSubTotal()));
 
-        holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(task.getCantidad()));
-        if(task.getCantidad() < 1 ){
+
+        if (Utilities.isEntero(task.getCantidad())) {
+            // si es entero
+            holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(task.getCantidad()));
+        }else{
+            // si no es entero
             holder.cantidad.setText(String.format("%.3f", task.getCantidad()));
         }
+
 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,13 +79,17 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 System.out.println("Position: " + position);
                                 removeItem(position);
+
                                 //recalcula el total
-                                //modifica la cabecera
-                                Double tot = new Double(0);
-                                for (Facturadet element: LoginData.getFactura().getFacturadet()) {
+                                // se movio a un metodo
+                                /*Double tot = new Double(0);
+                                for (FacturaDet element: LoginData.getFactura().getFacturadet()) {
                                     tot += element.getPrecioVenta() * element.getCantidad();
                                 }
-                                LoginData.getFactura().setImporte(tot);
+                                LoginData.getFactura().setImporte(tot);*/
+
+                                modificarTotal();
+
                                 // modificar el total del step
                                 TextView total = (TextView) view.findViewById(R.id.step3Total);
                                 String sTotal = "<b>Total: </b>"+Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getImporte());
@@ -111,18 +122,44 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
 
 
                                 //modificar el detalle
-                                LoginData.getFactura().getFacturadet().get(position).setCantidad(Double.valueOf(cantidad2.getText().toString().replace(".", "")));
+                                LoginData.getFactura().getFacturadet().get(position).setCantidad(Double.valueOf(cantidad2.getText().toString()));
                                 LoginData.getFactura().getFacturadet().get(position).setPrecioVenta(Double.valueOf(holder.precio.getText().toString().replace(".", "")));
-                                LoginData.getFactura().getFacturadet().get(position).setSubTotal(Double.valueOf(monto2.getText().toString().replace(".", "")));
+                                LoginData.getFactura().getFacturadet().get(position).setSubTotal(
+                                        LoginData.getFactura().getFacturadet().get(position).getCantidad() * LoginData.getFactura().getFacturadet().get(position).getPrecioVenta());
+
+
+                                // modificar el iva en el detalle
+                                if(task.getTasaIva() == 10){
+                                    LoginData.getFactura().getFacturadet().get(position).setImpuesto(task.getSubTotal() / 11);
+                                }else if(task.getTasaIva() == 5){
+                                    LoginData.getFactura().getFacturadet().get(position).setImpuesto(task.getSubTotal() / 1.1);
+                                }else{
+                                    LoginData.getFactura().getFacturadet().get(position).setImpuesto(task.getSubTotal());
+                                }
 
                                 //modifica la cabecera
-                                Double tot = new Double(0);
-                                for (Facturadet element: LoginData.getFactura().getFacturadet()) {
+                                // se mudo a un metodo a parte
+                               /* Double tot = new Double(0);
+                                for (FacturaDet element: LoginData.getFactura().getFacturadet()) {
                                     tot += element.getPrecioVenta() * element.getCantidad();
                                 }
-                                LoginData.getFactura().setImporte(tot);
+                                LoginData.getFactura().setImporte(tot);*/
+
+                                modificarTotal();
+
+
                                 holder.monto.setText(Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getFacturadet().get(position).getSubTotal()));
-                                holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(Double.valueOf(LoginData.getFactura().getFacturadet().get(position).getCantidad())));
+                               // holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(Double.valueOf(LoginData.getFactura().getFacturadet().get(position).getCantidad())));
+
+                                if (Utilities.isEntero(LoginData.getFactura().getFacturadet().get(position).getCantidad())) {
+                                    // si es entero
+                                    holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getFacturadet().get(position).getCantidad()));
+                                }else{
+                                    // si no es entero
+                                    holder.cantidad.setText(String.format("%.3f", LoginData.getFactura().getFacturadet().get(position).getCantidad()));
+                                }
+
+
 
                                 // modificar el total del step
                                TextView total = (TextView) view.findViewById(R.id.step3Total);
@@ -142,7 +179,7 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
                 TextView descripcion1 = (TextView) layout.findViewById(R.id.aa_descripcion);
                 final TextView precio1= (TextView) layout.findViewById(R.id.aa_precio);
                 final TextView monto1= (TextView) layout.findViewById(R.id.aa_monto);
-                final TextView cantidad1= (TextView) layout.findViewById(R.id.aa_cantidad);
+                 TextView cantidad1= (TextView) layout.findViewById(R.id.aa_cantidad);
                 TextView id1= (TextView) layout.findViewById(R.id.aa_id);
                 //
                 descripcion1.setText(holder.descripcion.getText().toString());
@@ -154,7 +191,7 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
                 MaterialIconView down = (MaterialIconView) layout.findViewById(R.id.aa_down);
                 MaterialIconView up = (MaterialIconView) layout.findViewById(R.id.aa_up);
 
-                down.setOnClickListener(new View.OnClickListener() {
+               /* down.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Double c = Double.valueOf(cantidad1.getText().toString());
@@ -180,11 +217,44 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
                         m = Double.parseDouble(precio1.getText().toString().replace(".", "")) * c;
                         monto1.setText(Utilities.stringNumberFormat(String.valueOf(m)));
                     }
+                });*/
+
+                cantidad1.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        System.out.println("beforeTextChanged");
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        System.out.println("onTextChanged");
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                        System.out.println("afterTextChanged");
+                        if(editable.toString().length() > 0){
+                            monto1.setText(Utilities.toStringFromDoubleWithFormat(
+                                    Double.parseDouble(editable.toString().trim()) * LoginData.getFactura().getFacturadet().get(position).getPrecioVenta() ));
+                        }
+                    }
                 });
 
             }
         });
 
+
+    }
+
+    private void modificarTotal(){
+
+        Double tot = new Double(0);
+        for (FacturaDet element: LoginData.getFactura().getFacturadet()) {
+            tot += element.getPrecioVenta() * element.getCantidad();
+        }
+        LoginData.getFactura().setImporte(tot);
 
     }
 
@@ -221,9 +291,14 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
     }
 
     public void removeItem(int position) {
-        LoginData.getFactura().getFacturadet().remove(lista.get(position));
+        System.out.println("detalles antes de eliminar " + LoginData.getFactura().getFacturadet().size() );
+        lista.remove(position);
+        LoginData.getFactura().setFacturadet(lista);
+        System.out.println("detalles despues de eliminar " + LoginData.getFactura().getFacturadet().size() );
 //        lista.remove(position);
         notifyDataSetChanged();
+
+
 
     }
 }

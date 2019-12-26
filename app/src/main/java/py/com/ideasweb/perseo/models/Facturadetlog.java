@@ -15,8 +15,9 @@ public class Facturadetlog extends LitePalSupport {
     Double tasaIva;
     Double impuesto;
     Integer idArticulo;
-    // Integer idFacturaCab;
     Double subTotal;
+
+    int facturacablog_id;
 
     @Column(ignore = true)
     Articulo articulo;
@@ -24,7 +25,7 @@ public class Facturadetlog extends LitePalSupport {
     public Facturadetlog() {
     }
 
-    public Facturadetlog(Facturadet det) {
+    public Facturadetlog(FacturaDet det) {
         this.concepto = det.getConcepto();
         this.cantidad = det.getCantidad();
         this.precioVenta = det.getPrecioVenta();
@@ -83,21 +84,13 @@ public class Facturadetlog extends LitePalSupport {
         this.impuesto = impuesto;
     }
 
-    /*public Integer getIdArticulo() {
-        return idArticulo;
+    public int getFacturacablog_id() {
+        return facturacablog_id;
     }
 
-    public void setIdArticulo(Integer idArticulo) {
-        this.idArticulo = idArticulo;
-    }*/
-
-    /*public Integer getIdFacturaCab() {
-        return idFacturaCab;
+    public void setFacturacablog_id(int facturacablog_id) {
+        this.facturacablog_id = facturacablog_id;
     }
-
-    public void setIdFacturaCab(Integer idFacturaCab) {
-        this.idFacturaCab = idFacturaCab;
-    }*/
 
     public Double getSubTotal() {
         return subTotal;
@@ -126,7 +119,7 @@ public class Facturadetlog extends LitePalSupport {
 
     @Override
     public String toString() {
-        return "Facturadet{" +
+        return "FacturaDet{" +
                 "concepto='" + concepto + '\'' +
                 ", cantidad=" + cantidad +
                 ", precioVenta=" + precioVenta +

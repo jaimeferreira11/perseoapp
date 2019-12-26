@@ -25,8 +25,7 @@ import py.com.ideasweb.perseo.adapter.ArticuloAdapter;
 import py.com.ideasweb.perseo.adapter.DialogAdapter;
 import py.com.ideasweb.perseo.adapter.RvSearchDemoAdapter;
 import py.com.ideasweb.perseo.models.Articulo;
-import py.com.ideasweb.perseo.models.Facturadet;
-import py.com.ideasweb.perseo.restApi.pojo.PedidoDetalle;
+import py.com.ideasweb.perseo.models.FacturaDet;
 
 /**
  * Created by jaime on 09/11/17.
@@ -110,7 +109,7 @@ public class Step2BackupBuscador extends AbstractStep {
         });
 
 
-        final ArrayList<Facturadet> list = new ArrayList<>();
+        final ArrayList<FacturaDet> list = new ArrayList<>();
         // fab
         counterFab.setCount(10);
         counterFab.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +119,7 @@ public class Step2BackupBuscador extends AbstractStep {
              //   View contentView = getLayoutInflater().inflate(R.layout.content2, null);
                 DialogPlus dialogPlus = DialogPlus.newDialog(getContext())
                         .setGravity(Gravity.BOTTOM)
-                        .setAdapter(new DialogAdapter(getContext(), list, counterFab ))
+                        .setAdapter(new DialogAdapter(getContext(), list, counterFab))
                         .setContentHolder(new ListHolder())
                         .setHeader(R.layout.dialog_header)
                         .setFooter(R.layout.dialog_footer)

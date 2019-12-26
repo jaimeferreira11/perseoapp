@@ -10,8 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import py.com.ideasweb.R;
-import py.com.ideasweb.perseo.models.Facturadet;
-import py.com.ideasweb.perseo.restApi.pojo.PedidoDetalle;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.utilities.Utilities;
 
 /**
@@ -20,10 +19,10 @@ import py.com.ideasweb.perseo.utilities.Utilities;
 
 public class FacturaDetAdapter2 extends RecyclerView.Adapter<FacturaDetAdapter2.ResultadoViewHolder>{
     private Context context;
-    private List<Facturadet> lista;
+    private List<FacturaDet> lista;
 
 
-    public FacturaDetAdapter2(Context context, List<Facturadet> lista) {
+    public FacturaDetAdapter2(Context context, List<FacturaDet> lista) {
         this.context = context;
         this.lista = lista;
 
@@ -39,14 +38,18 @@ public class FacturaDetAdapter2 extends RecyclerView.Adapter<FacturaDetAdapter2.
 
     @Override
     public void onBindViewHolder(FacturaDetAdapter2.ResultadoViewHolder holder, int position) {
-        Facturadet task = lista.get(position);
+        FacturaDet task = lista.get(position);
 
         holder.descripcion.setText(task.getConcepto());
         holder.precio.setText(Utilities.toStringFromDoubleWithFormat(task.getPrecioVenta()) + " Gs.");
         holder.monto.setText(Utilities.toStringFromDoubleWithFormat(task.getSubTotal()) + " Gs.");
         holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(Double.valueOf(task.getCantidad())));
 
-        if(task.getCantidad() < 1 ){
+        if (Utilities.isEntero(task.getCantidad())) {
+            // si es entero
+            holder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(task.getCantidad()));
+        }else{
+            // si no es entero
             holder.cantidad.setText(String.format("%.3f", task.getCantidad()));
         }
 

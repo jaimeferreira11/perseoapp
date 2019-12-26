@@ -5,9 +5,11 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 
+import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.Perfil;
 import py.com.ideasweb.perseo.models.Perfilusuario;
 import py.com.ideasweb.perseo.models.Usuario;
+import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.utilities.MD5Generator;
@@ -38,14 +40,21 @@ public class ConstructorUsuario {
                ConstructorPerfil cp = new ConstructorPerfil();
                u.setPerfiles(cp.getPerfilesByUsuario(u.getIdUsuario()));
 
+
+
                LoginData login = new LoginData();
+               ConstructorEmpresa ce = new ConstructorEmpresa();
+               login.setEmpresa(ce.getById(ConstantesRestApi.ID_EMPRESA));
                login.setUsuario(u);
                CredentialValues.setLoginData(login);
+             //  borrarFacturasSincronizadas();
                return true;
            }
        }
        return false;
     }
+
+
 
 
     public void insertarUsuarios(ArrayList<Usuario> usuarios){

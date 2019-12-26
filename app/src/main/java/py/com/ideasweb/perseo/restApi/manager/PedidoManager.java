@@ -11,7 +11,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import okhttp3.RequestBody;
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.restApi.Endpoints;
 import py.com.ideasweb.perseo.restApi.adapter.RestApiAdapter;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
@@ -56,10 +56,10 @@ public class PedidoManager {
                     System.out.println(respuesta.toString());
 
                     String jsonInString = gson.toJson(response.body().getDatos());
-                    Type listType = new TypeToken<List<Facturacab>>() {}.getType();
+                    Type listType = new TypeToken<List<FacturaCab>>() {}.getType();
                     //setenado en login en el credentials
                     //respuesta.setDatos((ArrayList<PedidoCabecera>) new Gson().fromJson(jsonInString, listType));
-                    LoginData.setListVentas((ArrayList<Facturacab>) gson.fromJson(jsonInString, listType));
+                    LoginData.setListVentas((ArrayList<FacturaCab>) gson.fromJson(jsonInString, listType));
 
 
                 }
@@ -108,10 +108,10 @@ public class PedidoManager {
                     System.out.println(respuesta.toString());
 
                     String jsonInString = gson.toJson(response.body().getDatos());
-                    Type listType = new TypeToken<List<Facturacab>>() {}.getType();
+                    Type listType = new TypeToken<List<FacturaCab>>() {}.getType();
                     //setenado en login en el credentials
                     //respuesta.setDatos((ArrayList<PedidoCabecera>) new Gson().fromJson(jsonInString, listType));
-                    LoginData.setListVentas((ArrayList<Facturacab>) gson.fromJson(jsonInString, listType));
+                    LoginData.setListVentas((ArrayList<FacturaCab>) gson.fromJson(jsonInString, listType));
 
 
                 }
@@ -165,7 +165,7 @@ public class PedidoManager {
                     respuesta.setError(gson.toJson(response.body().getError()));
 
                     String jsonInString = gson.toJson(response.body().getDatos());
-                    Type listType = new TypeToken<Facturacab>() {}.getType();
+                    Type listType = new TypeToken<FacturaCab>() {}.getType();
 
                     respuesta.setDatos(gson.fromJson(jsonInString, listType));
                 }

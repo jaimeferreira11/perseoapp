@@ -28,7 +28,7 @@ public class HomeItemRepo {
                 lista.add(new HomeItem(3 ,"Listado de Clientes" ,"py.com.ideasweb.perseo.ui.fragments.cliente.ListClienteFragment", R.drawable.icons8_address_book_2_100 ,3,"F"));
                 lista.add(new HomeItem(3 ,"Listado de Articulos" ,"py.com.ideasweb.perseo.ui.fragments.articulos.ListArticuloFragment", R.drawable.icons8_open_box_100 ,3,"F"));
                 lista.add(new HomeItem(3 ,"Listado de Historico Facturas" ,"py.com.ideasweb.perseo.ui.fragments.facturas.ListLogFacturasFragment", R.drawable.faccturas ,3,"F"));
-                lista.add(new HomeItem(3 ,"Restaurar Datos" ,"", R.drawable.ic_refresh_black_24dp ,4,""));
+                lista.add(new HomeItem(3 ,"Restaurar a estado inicial" ,"", R.drawable.ic_refresh_black_24dp ,4,""));
 
 
                 break;
@@ -42,6 +42,7 @@ public class HomeItemRepo {
                 lista.add(new HomeItem(2 ,"Subir Datos" ,"py.com.ideasweb.perseo.ui.fragments.sincronizacion.UploadFragment", R.drawable.up ,3,"F"));
                 lista.add(new HomeItem(3 ,"Listado de Clientes" ,"py.com.ideasweb.perseo.ui.fragments.cliente.ListClienteFragment", R.drawable.icons8_address_book_2_100 ,3,"F"));
                 lista.add(new HomeItem(3 ,"Listado de Articulos" ,"py.com.ideasweb.perseo.ui.fragments.articulos.ListArticuloFragment", R.drawable.icons8_open_box_100 ,3,"F"));
+                lista.add(new HomeItem(3 ,"Borrar Facturas Sincronizadas" ,"", R.drawable.ic_refresh_black_24dp ,5,""));
                 //lista.add(new HomeItem(3 ,"Marcaciones" ,"py.com.ideasweb.perseo.ui.fragments.marcacion.TabMarcacionFragment", R.drawable.faccturas ,3,"F"));
 
                 //lista.add(new HomeItem(3 ,"Tracking" ,"py.com.ideasweb.perseo.ui.fragments.MapsFragment", R.drawable.faccturas ,3,"F"));

@@ -4,8 +4,11 @@ import org.litepal.LitePal;
 
 import java.util.List;
 
-import py.com.ideasweb.perseo.models.Facturacab;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaCab;
+import py.com.ideasweb.perseo.models.FacturaDet;
+import py.com.ideasweb.perseo.models.Facturacablog;
+import py.com.ideasweb.perseo.models.Facturadetlog;
+import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 
 
@@ -17,15 +20,17 @@ public class ConstructorFactura {
 
 
 
-    public void insertarNuevaFactura(Facturacab cab){
-        System.out.println("Insertando nueva factura " + cab.getNumeroFactura());
+    public void insertarNuevaFactura(FacturaCab cab){
+        System.out.println("Insertando nueva factura " + cab.toString());
         try {
+
+
             cab.save();
             System.out.println("CANTIDAD DE DETALLES: " + cab.getFacturadet().size());
-            for (Facturadet det: cab.getFacturadet() ) {
-                
+            for (FacturaDet det: cab.getFacturadet() ) {
                 det.save();
             }
+
 
             // aumentar el talonario
             ConstructorTalonario ct = new ConstructorTalonario();
@@ -38,12 +43,12 @@ public class ConstructorFactura {
 
     }
 
-    public void insertar(Facturacab cab){
+    public void insertar(FacturaCab cab){
         System.out.println("Insertando factura");
         try {
             cab.save();
             System.out.println("CANTIDAD DE DETALLES: " + cab.getFacturadet().size());
-            for (Facturadet det: cab.getFacturadet() ) {
+            for (FacturaDet det: cab.getFacturadet() ) {
 
                 det.save();
             }
@@ -56,32 +61,29 @@ public class ConstructorFactura {
 
     }
 
-    public void actualizar(Facturacab cab){
-        List<Facturacab> allSongs = LitePal.findAll(Facturacab.class);
+    public void actualizar(FacturaCab cab){
 
-        System.out.println("Facturas antes de actualizar " + allSongs.size());
 
         System.out.println("Actualizando la factura: " + cab.toString());
         cab.update(cab.getId());
 
-        allSongs = LitePal.findAll(Facturacab.class);
         System.out.println("Actualizado factura: " + cab.toString());
-        System.out.println("Facturas desdepues de actualizar " + allSongs.size());
 
 
     }
 
 
-    public List<Facturacab> getPendientes(){
+    public List<FacturaCab> getPendientes(){
 
 
 
-        final List<Facturacab> busqueda = LitePal.where(" sincronizadocore = ? and estado = ?" , "0" , "1" )
-                .find(Facturacab.class);
+        final List<FacturaCab> busqueda = LitePal.where(" sincronizadocore = ? and estado = ? and idUsuario = ?" ,
+                "0" , "1" , String.valueOf(CredentialValues.getLoginData().getUsuario().getIdUsuario()))
+                .find(FacturaCab.class);
 
-        for (Facturacab cab: busqueda ) {
-            List<Facturadet> detalles = LitePal.where(" facturacab_id = ? "  , String.valueOf(cab.getId()))
-                    .find(Facturadet.class);
+        for (FacturaCab cab: busqueda ) {
+            List<FacturaDet> detalles = LitePal.where(" facturacab_id = ? "  , String.valueOf(cab.getId()))
+                    .find(FacturaDet.class);
             cab.setFacturadet(detalles);
         }
 
@@ -89,14 +91,15 @@ public class ConstructorFactura {
         return  busqueda;
     }
 
-    public List<Facturacab> getAnulados(){
+    public List<FacturaCab> getAnulados(){
 
-        final List<Facturacab> busqueda = LitePal.where(" sincronizadocore = ? and estado = ?", "0", "0" )
-                .find(Facturacab.class);
+        final List<FacturaCab> busqueda = LitePal.where(" sincronizadocore = ? and estado = ?  and idUsuario = ?",
+                "0", "0",String.valueOf(CredentialValues.getLoginData().getUsuario().getIdUsuario()) )
+                .find(FacturaCab.class);
 
-        for (Facturacab cab: busqueda ) {
-            List<Facturadet> detalles = LitePal.where(" facturacab_id = ? "  , String.valueOf(cab.getId()))
-                    .find(Facturadet.class);
+        for (FacturaCab cab: busqueda ) {
+            List<FacturaDet> detalles = LitePal.where(" facturacab_id = ? "  , String.valueOf(cab.getId()))
+                    .find(FacturaDet.class);
             cab.setFacturadet(detalles);
         }
 
@@ -104,14 +107,15 @@ public class ConstructorFactura {
         return  busqueda;
     }
 
-    public List<Facturacab> getSincronizados(){
+    public List<FacturaCab> getSincronizados(){
 
-        final List<Facturacab> busqueda = LitePal.where(" sincronizadocore = ? and estado = ?" , "1" , "1")
-                .find(Facturacab.class);
+        final List<FacturaCab> busqueda = LitePal.where(" sincronizadocore = ? and idUsuario = ?" ,
+                "1" , String.valueOf(CredentialValues.getLoginData().getUsuario().getIdUsuario()) )
+                .find(FacturaCab.class);
 
-        for (Facturacab cab: busqueda ) {
-            List<Facturadet> detalles = LitePal.where(" facturacab_id = ? "  , String.valueOf(cab.getId()))
-                    .find(Facturadet.class);
+        for (FacturaCab cab: busqueda ) {
+            List<FacturaDet> detalles = LitePal.where(" facturacab_id = ? "  , String.valueOf(cab.getId()))
+                    .find(FacturaDet.class);
             cab.setFacturadet(detalles);
         }
 
@@ -120,19 +124,32 @@ public class ConstructorFactura {
     }
 
 
-    public void borrarFactura(Facturacab cab){
+    public void borrarFactura(FacturaCab cab){
 
         System.out.println("Borrando la factura " + cab.getId());
-        for (Facturadet det: cab.getFacturadet() ) {
-            LitePal.delete(Facturadet.class, det.getId());
+        for (FacturaDet det: cab.getFacturadet() ) {
+            LitePal.delete(FacturaDet.class, det.getId());
         }
 
-        LitePal.delete(Facturacab.class, cab.getId());
+        LitePal.delete(FacturaCab.class, cab.getId());
 
 
     }
 
 
+
+    public void borrarFacturasSincronizadas() {
+        ConstructorFactura cf = new ConstructorFactura();
+        List<FacturaCab> lista = cf.getSincronizados();
+
+        for (FacturaCab cab : lista) {
+            cf.borrarFactura(cab);
+        }
+        LitePal.deleteAll(Facturacablog.class);
+        LitePal.deleteAll(Facturadetlog.class);
+
+
+    }
 
 
 }

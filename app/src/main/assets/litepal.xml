@@ -19,7 +19,7 @@
 			For example:
     	<version value="1" />
     -->
-    <version value="13" />
+    <version value="16" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -35,15 +35,16 @@
         <mapping class="py.com.ideasweb.perseo.models.Usuario" />
         <mapping class="py.com.ideasweb.perseo.models.Cliente" />
         <mapping class="py.com.ideasweb.perseo.models.Articulo" />
-        <mapping class="py.com.ideasweb.perseo.models.Facturacab" />
+        <mapping class="py.com.ideasweb.perseo.models.FacturaCab" />
         <mapping class="py.com.ideasweb.perseo.models.Facturacablog" />
-        <mapping class="py.com.ideasweb.perseo.models.Facturadet" />
+        <mapping class="py.com.ideasweb.perseo.models.FacturaDet" />
         <mapping class="py.com.ideasweb.perseo.models.Facturadetlog" />
         <mapping class="py.com.ideasweb.perseo.models.Talonario" />
         <mapping class="py.com.ideasweb.perseo.models.Perfil" />
         <mapping class="py.com.ideasweb.perseo.models.Perfilusuario" />
         <mapping class="py.com.ideasweb.perseo.models.Tracking" />
         <mapping class="py.com.ideasweb.perseo.models.TrackingConfig" />
+        <mapping class="py.com.ideasweb.perseo.models.Empresa" />
     </list>
 
         <storage value="internal" />

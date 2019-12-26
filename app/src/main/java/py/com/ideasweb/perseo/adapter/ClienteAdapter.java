@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import java.util.List;
 
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.models.Cliente;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.ui.activities.MainActivity;
 import py.com.ideasweb.perseo.ui.activities.MainStepper;
@@ -81,7 +80,7 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.Resultad
                                 LoginData.getFactura().setNroDocumentoCliente(entity.getNroDocumento());
                                 LoginData.getFactura().setTelefonoCliente(entity.getTelefono());
                                 LoginData.getFactura().setDireccionCliente(entity.getDireccion());
-                                LoginData.getFactura().setFacturadet(new ArrayList<Facturadet>());
+                                LoginData.getFactura().setFacturadet(new ArrayList<FacturaDet>());
                                 v.getContext().startActivity(intent);
                                 ((MainActivity)v.getContext()).finish();
 

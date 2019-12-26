@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.adapter.FacturaAdapter;
 import py.com.ideasweb.perseo.constructor.ConstructorFactura;
-import py.com.ideasweb.perseo.models.Facturacab;
-import py.com.ideasweb.perseo.restApi.pojo.LoginData;
+import py.com.ideasweb.perseo.models.FacturaCab;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +49,7 @@ public class PedidosRealizadosAnuladosFragment extends Fragment {
                 refresh.setRefreshing(true);
 
                 generarLineaLayoutVertical();
-                inicializarAdaptadorRV(crearAdaptador((ArrayList<Facturacab>) cf.getAnulados(), getResources().getString(R.string.anulados)));
+                inicializarAdaptadorRV(crearAdaptador((ArrayList<FacturaCab>) cf.getAnulados(), getResources().getString(R.string.anulados)));
 
                 refresh.setRefreshing(false);
             }
@@ -58,7 +57,7 @@ public class PedidosRealizadosAnuladosFragment extends Fragment {
 
 
         generarLineaLayoutVertical();
-        inicializarAdaptadorRV(crearAdaptador((ArrayList<Facturacab>) cf.getAnulados(), getResources().getString(R.string.anulados)));
+        inicializarAdaptadorRV(crearAdaptador((ArrayList<FacturaCab>) cf.getAnulados(), getResources().getString(R.string.anulados)));
 
 
 
@@ -72,7 +71,7 @@ public class PedidosRealizadosAnuladosFragment extends Fragment {
     }
 
 
-    public FacturaAdapter crearAdaptador(ArrayList<Facturacab> taskList, String state) {
+    public FacturaAdapter crearAdaptador(ArrayList<FacturaCab> taskList, String state) {
         FacturaAdapter adaptador = new FacturaAdapter(getContext(), taskList, state);
         return adaptador;
     }

@@ -24,6 +24,7 @@ public class ConstructorCliente {
 
         borraClientesNuevos();
         for (Cliente data: lista) {
+            System.out.println(data.getIdUsuario());
             data.save();
             cont++;
         }
@@ -57,6 +58,7 @@ public class ConstructorCliente {
         final List<Cliente> busqueda = LitePal.where(" idUsuario =  ?  " , String.valueOf(idUsuario))
                 .find(Cliente.class);
 
+        System.out.println("Clientes encontados para el usuario " + idUsuario + " : " + busqueda.size());
         return  busqueda;
     }
 

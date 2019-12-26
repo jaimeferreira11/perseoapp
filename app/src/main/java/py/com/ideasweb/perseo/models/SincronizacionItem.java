@@ -10,7 +10,7 @@ public class SincronizacionItem {
 
     private String tipo;
 
-    private List<Facturacab> facturas;
+    private List<FacturaCab> facturas;
 
     private List<Cliente> clientes;
 
@@ -22,7 +22,7 @@ public class SincronizacionItem {
         this.tipo = tipo;
     }
 
-    public SincronizacionItem(String titulo, Integer cantidad, String tipo, List<Facturacab> facturas, List<Cliente> clientes) {
+    public SincronizacionItem(String titulo, Integer cantidad, String tipo, List<FacturaCab> facturas, List<Cliente> clientes) {
         this.titulo = titulo;
         this.cantidad = cantidad;
         this.tipo = tipo;
@@ -61,11 +61,11 @@ public class SincronizacionItem {
         this.tipo = tipo;
     }
 
-    public List<Facturacab> getFacturas() {
+    public List<FacturaCab> getFacturas() {
         return facturas;
     }
 
-    public void setFacturas(List<Facturacab> facturas) {
+    public void setFacturas(List<FacturaCab> facturas) {
         this.facturas = facturas;
     }
 

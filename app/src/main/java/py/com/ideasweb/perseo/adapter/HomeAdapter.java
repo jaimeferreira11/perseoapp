@@ -1,13 +1,11 @@
 package py.com.ideasweb.perseo.adapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +21,14 @@ import org.litepal.LitePal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
+import py.com.ideasweb.perseo.constructor.ConstructorFactura;
 import py.com.ideasweb.perseo.models.Articulo;
 import py.com.ideasweb.perseo.models.Cliente;
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.FacturaCab;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.models.Facturacablog;
-import py.com.ideasweb.perseo.models.Facturadet;
 import py.com.ideasweb.perseo.models.Facturadetlog;
 import py.com.ideasweb.perseo.models.HomeItem;
 import py.com.ideasweb.perseo.models.Talonario;
@@ -40,10 +36,8 @@ import py.com.ideasweb.perseo.models.Tracking;
 import py.com.ideasweb.perseo.models.TrackingConfig;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.ui.activities.MainActivity;
-import py.com.ideasweb.perseo.ui.activities.MainStepper;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
-import py.com.ideasweb.perseo.utilities.Validation;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
@@ -122,6 +116,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                             break;
                         case 4 :
                             restaurar();
+                            break;
+
+                        case 5 :
+                            borrarSincronizadas();
                             break;
 
                          default:
@@ -206,6 +204,42 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         //finish();
     }*/
 
+    private void borrarSincronizadas(){
+
+        new MaterialDialog.Builder(context)
+                .title("Desea borrar las facturas sincronizadas?")
+                .content("Los datos ya no estaran en el dispositivo")
+                .icon(context.getResources().getDrawable(R.drawable.help_48))
+                .positiveText(context.getResources().getString(R.string.aceptar))
+                .negativeText(context.getResources().getString(R.string.cancelar))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+
+                        ConstructorFactura cf = new ConstructorFactura();
+                        cf.borrarFacturasSincronizadas();
+
+                        Utilities.setUltSync(context, "", "" );
+
+                        new MaterialDialog.Builder(context)
+                                .icon(context.getResources().getDrawable(R.drawable.checked_48))
+                                .title(context.getResources().getString(R.string.procesoExitoso))
+                                .content("Se borraron los datos del telefono")
+                                .titleColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                                .positiveText("Aceptar")
+                                .show();
+
+                    }
+                })
+                .show();
+
+
+
+
+    }
+
+
     private void restaurar(){
 
         new MaterialDialog.Builder(context)
@@ -216,10 +250,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        LitePal.deleteAll(Facturacab.class);
-                        //LitePal.deleteAll(Facturacablog.class);
-                        LitePal.deleteAll(Facturadet.class);
-                       // LitePal.deleteAll(Facturadetlog.class);
+                        LitePal.deleteAll(FacturaCab.class);
+                        LitePal.deleteAll(Facturacablog.class);
+                        LitePal.deleteAll(FacturaDet.class);
+                        LitePal.deleteAll(Facturadetlog.class);
                         LitePal.deleteAll(Talonario.class);
                         LitePal.deleteAll(Cliente.class);
                         LitePal.deleteAll(Articulo.class);

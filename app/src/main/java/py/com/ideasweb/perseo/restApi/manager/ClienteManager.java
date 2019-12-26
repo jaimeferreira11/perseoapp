@@ -15,7 +15,6 @@ import py.com.ideasweb.perseo.models.Cliente;
 import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.Endpoints;
 import py.com.ideasweb.perseo.restApi.adapter.RestApiAdapter;
-import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import retrofit2.Call;
@@ -376,9 +375,9 @@ public class ClienteManager {
                     respuesta.setEstado( "OK");
                     respuesta.setDatos(response.body());
                     //String jsonInString = gson.toJson(response.body());
-                    //Type listType = new TypeToken<Facturacab>() {}.getType();
+                    //Type listType = new TypeToken<FacturaCab>() {}.getType();
                     //setenado en login en el credentials
-                    // respuesta.setDatos((Facturacab) gson.fromJson(jsonInString, listType));
+                    // respuesta.setDatos((FacturaCab) gson.fromJson(jsonInString, listType));
                     //deserealizando
 
                 }

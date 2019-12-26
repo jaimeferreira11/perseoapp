@@ -3,6 +3,7 @@ package py.com.ideasweb.perseo.ui.fragments.facturas;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,17 +14,16 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import py.com.ideasweb.R;
-import py.com.ideasweb.perseo.adapter.ClienteAdapter;
 import py.com.ideasweb.perseo.adapter.FacturaAdapter;
-import py.com.ideasweb.perseo.constructor.ConstructorCliente;
+import py.com.ideasweb.perseo.adapter.FacturaLogAdapter;
 import py.com.ideasweb.perseo.constructor.ConstructorFacturaLog;
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.FacturaCab;
+import py.com.ideasweb.perseo.models.Facturacablog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,12 +33,15 @@ public class ListLogFacturasFragment extends Fragment {
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
+    @BindView(R.id.refresh)
+    SwipeRefreshLayout refresh;
+
 
     @BindView(R.id.floating_search_view)
     FloatingSearchView mSearchView;
 
     Unbinder unbinder;
-    FacturaAdapter adaptador;
+    FacturaLogAdapter adaptador;
 
     public ListLogFacturasFragment() {
         // Required empty public constructor
@@ -54,10 +57,6 @@ public class ListLogFacturasFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
 
-        ConstructorFacturaLog cc = new ConstructorFacturaLog();
-        generarLineaLayoutVertical();
-        inicializarAdaptadorRV(crearAdaptador((ArrayList<Facturacab>) cc.getAll(), ""));
-
 
         mSearchView.setOnClearSearchActionListener(new FloatingSearchView.OnClearSearchActionListener() {
             @Override
@@ -67,6 +66,20 @@ public class ListLogFacturasFragment extends Fragment {
                 mSearchView.hideProgress();
                 mSearchView.clearSuggestions();
                 mSearchView.clearSearchFocus();
+            }
+        });
+
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                refresh.setRefreshing(true);
+
+                ConstructorFacturaLog cc = new ConstructorFacturaLog();
+                generarLineaLayoutVertical();
+                inicializarAdaptadorRV(crearAdaptador((ArrayList<Facturacablog>) cc.getAllLog()));
+
+                refresh.setRefreshing(false);
             }
         });
 
@@ -115,14 +128,24 @@ public class ListLogFacturasFragment extends Fragment {
     }
 
 
-    public FacturaAdapter crearAdaptador(ArrayList<Facturacab> taskList, String state) {
-        adaptador = new FacturaAdapter(getContext(), taskList, state);
+    public FacturaLogAdapter crearAdaptador(ArrayList<Facturacablog> taskList) {
+        adaptador = new FacturaLogAdapter(getContext(), taskList);
         return adaptador;
     }
 
-    public void inicializarAdaptadorRV(FacturaAdapter adapatador) {
+    public void inicializarAdaptadorRV(FacturaLogAdapter adapatador) {
         recycler.setAdapter(adapatador);
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("ONRESUME");
+
+        ConstructorFacturaLog cc = new ConstructorFacturaLog();
+        generarLineaLayoutVertical();
+        inicializarAdaptadorRV(crearAdaptador((ArrayList<Facturacablog>) cc.getAllLog()));
+    }
 }

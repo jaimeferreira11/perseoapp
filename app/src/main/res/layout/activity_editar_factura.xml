@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/iron"
+    tools:context="py.com.ideasweb.perseo.ui.activities.EditarFacturaActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+
+    <android.support.v7.widget.CardView
+            android:id="@+id/cvPedido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:layout_below="@id/toolbar"
+            android:layout_margin="1dp"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <py.com.ideasweb.perseo.ui.elements.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/step3Cliente"
+                    android:textSize="@dimen/subtitle"
+                    android:maxLines="2"
+                    android:text=""
+                    android:ellipsize="end"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/primary_text"
+                    android:gravity="center"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/radioCO"
+                        android:checked="true"
+                        android:text="CONTADO"/>
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/radioCR"
+                        android:layout_marginRight="@dimen/spacing_normal"
+                        android:text="CREDITO"/>
+
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="wrap_content">
+
+                    <py.com.ideasweb.perseo.ui.elements.MyTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_form"
+                        android:id="@+id/step3Doc"
+                        android:textColor="@color/secondary_text"
+                        android:text="RUC: xxxxxxxxx"/>
+
+                    <py.com.ideasweb.perseo.ui.elements.MyTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:textSize="@dimen/text_form"
+                        android:id="@+id/step3Fecha"
+                        android:textColor="@color/secondary_text"
+                        android:text="Fecha: 01/11/2017"/>
+
+
+
+                </RelativeLayout>
+
+
+
+
+                <py.com.ideasweb.perseo.ui.elements.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/margin_titulo"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:id="@+id/step3Total"
+                    android:text="1500"/>
+
+
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Descuento"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="15dp"
+                        android:id="@+id/labelDescuento"
+                        android:textSize="@dimen/text_form"
+                        android:textColor="@color/primary_text"/>
+
+
+
+                    <TextView
+                        android:id="@+id/setValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/labelDescuento"
+                        android:text="0%"
+                        android:layout_marginTop="8dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/primary_text"
+                        android:textSize="18sp"/>
+
+                    <com.appyvet.materialrangebar.RangeBar
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:id="@+id/range"
+                        app:mrb_pinMaxFont="14sp"
+                        app:mrb_rangeBarPaddingBottom="20dp"
+                        app:mrb_selectorBoundaryColor="@color/colorAccent"
+                        app:mrb_selectorBoundarySize="2dp"
+                        app:mrb_pinTextColor="@color/icons"
+                        app:mrb_selectorSize="12dp"
+                        app:mrb_rangeBar="false"
+                        app:mrb_temporaryPins="false"
+                        app:mrb_tickStart="0"
+                        app:mrb_tickEnd="100"
+                        app:mrb_tickInterval="5"
+                        />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/cvPedido">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvDetallePedido"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="2dp"
+                tools:listitem="@layout/cardview_detalle_pedido"
+                />
+
+        </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fab"
+        android:layout_margin="15dp"
+        android:clickable="true"
+        app:fabSize="normal"
+        android:src="@drawable/ic_save_white_48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        />
+
+    </RelativeLayout>

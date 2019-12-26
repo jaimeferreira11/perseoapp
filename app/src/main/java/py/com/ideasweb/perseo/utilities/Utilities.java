@@ -48,26 +48,24 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Formatter;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import harmony.java.awt.Color;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorArticulos;
 import py.com.ideasweb.perseo.constructor.ConstructorCliente;
-import py.com.ideasweb.perseo.constructor.ConstructorPerfil;
+import py.com.ideasweb.perseo.constructor.ConstructorEmpresa;
 import py.com.ideasweb.perseo.constructor.ConstructorUsuario;
 import py.com.ideasweb.perseo.models.Articulo;
 import py.com.ideasweb.perseo.models.Cliente;
-import py.com.ideasweb.perseo.models.Facturacab;
-import py.com.ideasweb.perseo.models.Facturadet;
-import py.com.ideasweb.perseo.models.Perfil;
+import py.com.ideasweb.perseo.models.Empresa;
+import py.com.ideasweb.perseo.models.FacturaCab;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.models.Usuario;
 import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.manager.ArticuloManager;
 import py.com.ideasweb.perseo.restApi.manager.ClienteManager;
-import py.com.ideasweb.perseo.restApi.manager.PerfilManager;
+import py.com.ideasweb.perseo.restApi.manager.EmpresaManager;
 import py.com.ideasweb.perseo.restApi.manager.UsuarioManager;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
@@ -337,7 +335,7 @@ public class Utilities {
     public static void deleteFacturaLoginData(){
 
         //CredentialValues.setLoginData(null);
-        LoginData.setFactura(new Facturacab());
+        LoginData.setFactura(new FacturaCab());
         LoginData.getFactura().setPorcDescuento(new Double(0));
 
     }
@@ -355,6 +353,26 @@ public class Utilities {
                         ConstructorUsuario cu = new ConstructorUsuario();
                         cu.insertarUsuarios((ArrayList<Usuario>) respuesta.getDatos());
 
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+
+        // usuarios
+        final EmpresaManager empresaManager = new EmpresaManager();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Respuesta respuesta = empresaManager.getById(ConstantesRestApi.ID_EMPRESA);
+
+                    if(respuesta.getEstado() == "OK"){
+                        ConstructorEmpresa cu = new ConstructorEmpresa();
+                        cu.insertar((Empresa) respuesta.getDatos());
 
                     }
 
@@ -762,7 +780,7 @@ public class Utilities {
     }
 
 
-    public static void imprimirFactura(final Facturacab factura, final Context context){
+    public static void imprimirFactura(final FacturaCab factura, final Context context){
         UtilLogger.info("IMPRIMIENDO FACTURA");
         Toast.makeText(context, "Imprimiendo..." , Toast.LENGTH_SHORT).show();
         Thread t = new Thread() {
@@ -787,10 +805,14 @@ public class Utilities {
                     System.out.println("Talonario: " + establecimiento + "-"+punto+"-"+numero);
 
                     String BILL = "";
-                    BILL =    "   "+context.getResources().getString(R.string.empresa) +"\n"
-                            + "   "+context.getResources().getString(R.string.direccion_empresa) +"\n"
-                            + "   Tel: "+context.getResources().getString(R.string.telefono_empresa) +"\n"
-                            + "   RUC.: "+context.getResources().getString(R.string.ruc_empresa) +"\n"
+                    BILL =
+                            " "+CredentialValues.getLoginData().getEmpresa().getDescripcion() +"\n"
+                                    //     + " "+getResources().getString(R.string.direccion_empresa) +"\n"
+                                    + " "+CredentialValues.getLoginData().getEmpresa().getDireccion() +"\n"
+                                    // + "   Tel: "+getResources().getString(R.string.telefono_empresa) +"\n"
+                                    + "   Tel: "+CredentialValues.getLoginData().getEmpresa().getTelefono() +"\n"
+                                    //   + "   RUC.: "+getResources().getString(R.string.ruc_empresa) +"\n"
+                                    + "   RUC.: "+CredentialValues.getLoginData().getEmpresa().getRuc() +"\n"
                             +" Timbrado Nro.: "+LoginData.getTalonario().getTimbrado() +"\n"
                             +" Valido hasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
                             +" Condicion: "+ factura.getTipoFactura() +"\n"
@@ -818,7 +840,7 @@ public class Utilities {
 
                     Double iva10 = new Double(0);
                     Double iva5 = new Double(0);
-                    for (Facturadet det: factura.getFacturadet()  ) {
+                    for (FacturaDet det: factura.getFacturadet()  ) {
                         if(det.getTasaIva().intValue() == 10){
                             iva10 += det.getImpuesto();
                             total10 += det.getSubTotal();
@@ -844,13 +866,13 @@ public class Utilities {
                             + "-------------------------------\n";
                     BILL = BILL + "\n\n ";
 
-                    BILL = BILL + " TOTAL :             "+ Utilities.toStringFromDoubleWithFormat(factura.getImporte()) + " Gs. \n";
+                    BILL = BILL + " TOTAL:          "+ Utilities.toStringFromDoubleWithFormat(factura.getImporte()) + " Gs. \n";
                     BILL = BILL
                             + "-------------------------------\n";
 
-                    BILL = BILL + " Total exentas:       "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
-                    BILL = BILL + " Total 10%:           "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
-                    BILL = BILL + " Total 5%:            "+ Utilities.toStringFromDoubleWithFormat(total5) + " Gs.\n";
+                    BILL = BILL + " Total exentas:      "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
+                    BILL = BILL + " Total 10%:          "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
+                    BILL = BILL + " Total 5%:           "+ Utilities.toStringFromDoubleWithFormat(total5) + " Gs.\n";
 
 
                     BILL = BILL
@@ -965,4 +987,63 @@ public class Utilities {
         WorkManager.getInstance().cancelAllWork();
     }
 
+
+    public static boolean isEntero(double numero){
+       return ((numero == Math.floor(numero)) && !Double.isInfinite(numero));
+    }
+
+    public static String getEmailTemplate(){
+        String template = "<html>" +
+                "<head>" +
+                "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />" +
+                "</head>" +
+                "<body>" +
+                "<table bgcolor=\"#113a69\" width=\"100%\">" +
+                "<tr>" +
+                "<td align=\"center\">" +
+                //   "<h2><font color=\"#ffffff\" ><img src=\"http://www.fundacionparaguaya.org.py/wp-content/themes/fundacion/images/logo_fundacionparaguaya.png\" alt=\"Fundación Paraguaya\"></font>" +
+                "<br/><font color=\"#ffffff\" ><b>Titulo </b></font></h2>" +
+                "</td>" +
+                "</tr>" +
+                "</table>" +
+                "<table bgcolor=\"#f2f2f2\" width=\"100%\">" +
+                "<tr>" +
+                "<td>" +
+                "<div>Contenido <br/><br/></div>" +
+                "</td>" +
+                "</tr>" +
+                "</table>" +
+                "<table bgcolor=\"#f2f2f2\" width=\"100%\">" +
+                "<tr>" +
+                "<td align=\"center\">" +
+                "<h5>" +
+                "<font color=\"#262626\"><b>No responda a este mensaje</b>. Si tiene alguna duda respecto al contenido de este correo, favor comunicarse a <a href=\"mailto:CorreoInfo\">CorreoInfo</a> </font><br>"+
+                "</h5>"+
+                "</td>" +
+                "</tr>" +
+                "</table>" +
+                "<table bgcolor=\"#113a69\" width=\"100%\">" +
+                "<tr>" +
+                "<td align=\"center\">" +
+                "<h6>" +
+                "<font color=\"#ffffff\" ><b>&copy; Fundación Paraguaya</b>. Dirección: Manuel Blinder 5589 c/ Tte. Espinoza. Asunción, Paraguay. Tel.: (+595 21) 609 - 277 </font>" +
+                "</h6>" +
+                "</td>" +
+                "</tr>" +
+                "</table>" +
+                "</body>" +
+                "</html>";
+
+        return template;
+    }
+
+
+    public static boolean isNumeric(String cadena){
+        try {
+            Integer.parseInt(cadena);
+            return true;
+        } catch (NumberFormatException nfe){
+            return false;
+        }
+    }
 }

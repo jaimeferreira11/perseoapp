@@ -131,6 +131,8 @@ public class RegistroClienteFragment extends Fragment {
                     cliente.setCoordenadas(MiUbicacion.getCoordenadasActual());
                     cliente.setSincronizar(true);
                     cliente.setIdEmpresa(ConstantesRestApi.ID_EMPRESA);
+                    cliente.setIdUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
+
 
                     if(CredentialValues.getLoginData().getPerfilactual().getIdPerfil() == 1){
                         //si es administrador

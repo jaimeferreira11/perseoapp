@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.Empresa;
+import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.Perfil;
 import py.com.ideasweb.perseo.models.Talonario;
 import py.com.ideasweb.perseo.models.Usuario;
@@ -20,16 +21,17 @@ public class LoginData implements Serializable {
     private Usuario usuario;
     private String tipo;
     private Perfil perfilactual;
+    private Empresa empresa;
     private static ArrayList<Menuapp> menues;
   //  private static PedidoCabecera pedido = new PedidoCabecera();
 
-    private static Facturacab factura = new Facturacab();
-    private static ArrayList<Facturacab> listVentas = new ArrayList<>();
+    private static FacturaCab factura = new FacturaCab();
+    private static ArrayList<FacturaCab> listVentas = new ArrayList<>();
 
 
-    private static ArrayList<Facturacab> factSincronizadas = new ArrayList<>();
-    private static ArrayList<Facturacab> factPendientes = new ArrayList<>();
-    private static ArrayList<Facturacab> factAnuladas = new ArrayList<>();
+    private static ArrayList<FacturaCab> factSincronizadas = new ArrayList<>();
+    private static ArrayList<FacturaCab> factPendientes = new ArrayList<>();
+    private static ArrayList<FacturaCab> factAnuladas = new ArrayList<>();
 
 
     private static Talonario talonario;
@@ -96,11 +98,11 @@ public class LoginData implements Serializable {
         LoginData.menues = menues;
     }
 
-    public static ArrayList<Facturacab> getListVentas() {
+    public static ArrayList<FacturaCab> getListVentas() {
         return listVentas;
     }
 
-    public static void setListVentas(ArrayList<Facturacab> listVentas) {
+    public static void setListVentas(ArrayList<FacturaCab> listVentas) {
         LoginData.listVentas = listVentas;
     }
 
@@ -121,35 +123,35 @@ public class LoginData implements Serializable {
     }
 
 
-    public static Facturacab getFactura() {
+    public static FacturaCab getFactura() {
         return factura;
     }
 
-    public static void setFactura(Facturacab factura) {
+    public static void setFactura(FacturaCab factura) {
         LoginData.factura = factura;
     }
 
-    public static ArrayList<Facturacab> getFactSincronizadas() {
+    public static ArrayList<FacturaCab> getFactSincronizadas() {
         return factSincronizadas;
     }
 
-    public static void setFactSincronizadas(ArrayList<Facturacab> factSincronizadas) {
+    public static void setFactSincronizadas(ArrayList<FacturaCab> factSincronizadas) {
         LoginData.factSincronizadas = factSincronizadas;
     }
 
-    public static ArrayList<Facturacab> getFactPendientes() {
+    public static ArrayList<FacturaCab> getFactPendientes() {
         return factPendientes;
     }
 
-    public static void setFactPendientes(ArrayList<Facturacab> factPendientes) {
+    public static void setFactPendientes(ArrayList<FacturaCab> factPendientes) {
         LoginData.factPendientes = factPendientes;
     }
 
-    public static ArrayList<Facturacab> getFactAnuladas() {
+    public static ArrayList<FacturaCab> getFactAnuladas() {
         return factAnuladas;
     }
 
-    public static void setFactAnuladas(ArrayList<Facturacab> factAnuladas) {
+    public static void setFactAnuladas(ArrayList<FacturaCab> factAnuladas) {
         LoginData.factAnuladas = factAnuladas;
     }
 
@@ -159,6 +161,15 @@ public class LoginData implements Serializable {
 
     public void setPerfilactual(Perfil perfilactual) {
         this.perfilactual = perfilactual;
+    }
+
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     @Override

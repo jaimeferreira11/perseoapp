@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">5dp</dimen>
     <dimen name="nav_drawer_width">260dp</dimen>
     <dimen name="titulo_fragment">20dp</dimen>
-    <dimen name="text_form">18dp</dimen>
+    <dimen name="text_form">17dp</dimen>
     <dimen name="text_button">18sp</dimen>
     <dimen name="button">55dp</dimen>
     <dimen name="margin_titulo">10sp</dimen>

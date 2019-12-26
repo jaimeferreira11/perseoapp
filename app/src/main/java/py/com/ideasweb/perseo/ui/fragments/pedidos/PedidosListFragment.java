@@ -17,8 +17,6 @@ import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.adapter.PageAdapter;
 import py.com.ideasweb.perseo.constructor.ConstructorFactura;
-import py.com.ideasweb.perseo.models.Facturacab;
-import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 
 /**
  * A simple {@link Fragment} subclass.

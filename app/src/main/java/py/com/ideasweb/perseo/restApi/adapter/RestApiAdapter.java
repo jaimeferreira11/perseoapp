@@ -28,8 +28,8 @@ public class RestApiAdapter {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .connectTimeout(10 , TimeUnit.MINUTES)
-                .readTimeout(10, TimeUnit.MINUTES)
+                .connectTimeout(20 , TimeUnit.MINUTES)
+                .readTimeout(20, TimeUnit.MINUTES)
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
@@ -55,8 +55,8 @@ public class RestApiAdapter {
     //peticiones privadas a la nube
     public Endpoints establecerConexionRest( ){
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .connectTimeout(10 , TimeUnit.MINUTES)
-                .readTimeout(10, TimeUnit.MINUTES)
+                .connectTimeout(20 , TimeUnit.MINUTES)
+                .readTimeout(20, TimeUnit.MINUTES)
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
@@ -79,8 +79,8 @@ public class RestApiAdapter {
     //peticiones publicas a la nube
     public Endpoints establecerPublicConexionRest( ){
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .connectTimeout(10 , TimeUnit.MINUTES)
-                .readTimeout(10, TimeUnit.MINUTES)
+                .connectTimeout(20 , TimeUnit.MINUTES)
+                .readTimeout(20, TimeUnit.MINUTES)
                 /*  .addInterceptor(new Interceptor() {
                       @Override
                       public Response intercept(Chain chain) throws IOException {

@@ -1,6 +1,7 @@
 package py.com.ideasweb.perseo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,20 +19,20 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 import java.util.List;
 
 import py.com.ideasweb.R;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
-import py.com.ideasweb.perseo.restApi.pojo.PedidoDetalle;
+import py.com.ideasweb.perseo.ui.activities.MainStepper;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
 
 public class DialogAdapter extends BaseAdapter {
 
   private LayoutInflater layoutInflater;
-  private List<Facturadet> list;
+  private List<FacturaDet> list;
   static CounterFab counterFab;
 
 
-  public DialogAdapter(Context context, List<Facturadet> list, CounterFab counterFab) {
+  public DialogAdapter(Context context, List<FacturaDet> list, CounterFab counterFab) {
     layoutInflater = LayoutInflater.from(context);
     this.list =list;
     this.counterFab = counterFab;
@@ -57,7 +58,7 @@ public class DialogAdapter extends BaseAdapter {
   public View getView(final int position, View convertView, ViewGroup parent) {
     final ViewHolder viewHolder;
     View view = convertView;
-    final Facturadet entity = list.get(position);
+    final FacturaDet entity = list.get(position);
 
 
     if (view == null) {
@@ -84,10 +85,17 @@ public class DialogAdapter extends BaseAdapter {
     viewHolder.descripcion.setText(entity.getConcepto());
     viewHolder.precio.setText(Utilities.toStringFromDoubleWithFormat(entity.getPrecioVenta()));
    // viewHolder.codigo.setText(entity.getArticulo().getCodigoBarraEan());
-    viewHolder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(entity.getCantidad()));
-    if(entity.getCantidad() < 1 ){
+
+
+
+    if (Utilities.isEntero(entity.getCantidad())) {
+      // si es entero
+      viewHolder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(entity.getCantidad()));
+    }else{
+      // si no es entero
       viewHolder.cantidad.setText(String.format("%.3f", entity.getCantidad()));
     }
+
     viewHolder.monto.setText(Utilities.toStringFromDoubleWithFormat(entity.getSubTotal()));
 
 
@@ -107,9 +115,12 @@ public class DialogAdapter extends BaseAdapter {
                     removeItem(position);
                     counterFab.setCount(LoginData.getFactura().getFacturadet().size());
                     //modificar el header y el footer
-
-                    Toast.makeText(v.getContext(), "Eliminado. Se actualizara al cerrar esta ventana" , Toast.LENGTH_SHORT).show();
-
+                    new MaterialDialog.Builder(v.getContext())
+                            .title("Item Eliminado")
+                            .content("Cierre la venta para actualizar la iformacion")
+                            .icon(v.getContext().getDrawable(R.drawable.checked_48))
+                            .positiveText("Aceptar")
+                            .show();
 
                   }
                 })
@@ -117,6 +128,7 @@ public class DialogAdapter extends BaseAdapter {
       }
     });
 
+    //viewHolder.edit.setVisibility(View.GONE);
     viewHolder.edit.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(final View v) {
@@ -138,12 +150,14 @@ public class DialogAdapter extends BaseAdapter {
 
 
                     //modificar el detalle
-                    LoginData.getFactura().getFacturadet().get(position).setCantidad(Double.valueOf(cantidad2.getText().toString().replace(".", "")));
+                    LoginData.getFactura().getFacturadet().get(position).setCantidad(Double.valueOf(cantidad2.getText().toString()));
                     LoginData.getFactura().getFacturadet().get(position).setPrecioVenta(Double.valueOf(viewHolder.precio.getText().toString().replace(".", "")));
-                    LoginData.getFactura().getFacturadet().get(position).setSubTotal(Double.valueOf(monto2.getText().toString().replace(".", "")));
+                    LoginData.getFactura().getFacturadet().get(position).setSubTotal(
+                            LoginData.getFactura().getFacturadet().get(position).getCantidad() * LoginData.getFactura().getFacturadet().get(position).getPrecioVenta());
                     LoginData.getFactura().getFacturadet().get(position).setIdArticulo(entity.getIdArticulo());
                     LoginData.getFactura().getFacturadet().get(position).setConcepto(entity.getConcepto());
 
+                    // modifica el iva
                     if(entity.getTasaIva() == 10){
                       LoginData.getFactura().getFacturadet().get(position).setImpuesto(entity.getSubTotal() / 11);
                     }else if(entity.getTasaIva() == 5){
@@ -152,15 +166,28 @@ public class DialogAdapter extends BaseAdapter {
                       LoginData.getFactura().getFacturadet().get(position).setImpuesto(entity.getSubTotal());
                     }
 
-                    //modifica la cabecera
+                    //modifica el total de la cabecera
                     Double tot = new Double(0);
-                    for (Facturadet element: LoginData.getFactura().getFacturadet()) {
+                    for (FacturaDet element: LoginData.getFactura().getFacturadet()) {
                       tot += element.getPrecioVenta() * element.getCantidad();
                     }
                     LoginData.getFactura().setImporte(tot);
+
                     //actualizar el floating
                     counterFab.setCount(LoginData.getFactura().getFacturadet().size());
                     Toast.makeText(v.getContext(), "Editado. Se actualizara al cerrar esta ventana" , Toast.LENGTH_SHORT).show();
+
+
+                    // NUEVO
+                    viewHolder.monto.setText(Utilities.toStringFromDoubleWithFormat(
+                            LoginData.getFactura().getFacturadet().get(position).getCantidad() * LoginData.getFactura().getFacturadet().get(position).getPrecioVenta() ));
+                    if (Utilities.isEntero(LoginData.getFactura().getFacturadet().get(position).getCantidad())) {
+                      // si es entero
+                      viewHolder.cantidad.setText(Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getFacturadet().get(position).getCantidad()));
+                    }else{
+                      // si no es entero
+                      viewHolder.cantidad.setText(String.format("%.3f", LoginData.getFactura().getFacturadet().get(position).getCantidad()));
+                    }
 
                   }
                 })
@@ -250,6 +277,18 @@ public class DialogAdapter extends BaseAdapter {
   public void removeItem(int position) {
     list.remove(position);
     notifyDataSetChanged();
+
+    LoginData.getFactura().setFacturadet(list);
+    //modifica la cabecera
+    Double tot = new Double(0);
+    for (FacturaDet element: LoginData.getFactura().getFacturadet()) {
+      tot += element.getPrecioVenta() * element.getCantidad();
+    }
+
+    LoginData.getFactura().setImporte(tot);
+    //actualizar el floating
+    counterFab.setCount(LoginData.getFactura().getFacturadet().size());
+
 
   }
 }

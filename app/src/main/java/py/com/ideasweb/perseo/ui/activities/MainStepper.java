@@ -29,7 +29,7 @@ import java.util.UUID;
 import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorFactura;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
@@ -48,6 +48,8 @@ import py.com.ideasweb.perseo.utilities.Utilities;
 public class MainStepper extends TextStepper implements Runnable {
 
     View view;
+
+
 
     // IMPRESION
     private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -93,6 +95,7 @@ public class MainStepper extends TextStepper implements Runnable {
                 .build();
 
 
+
     }
 
     private AbstractStep createFragment(AbstractStep fragment) {
@@ -109,7 +112,6 @@ public class MainStepper extends TextStepper implements Runnable {
         LoginData.getFactura().setSincronizadoCore(false);
        // LoginData.getFactura().setTipoFactura("CONTADO");
         LoginData.getFactura().setIdUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
-        LoginData.getFactura().setFecha(Utilities.getCurrentDateTimeBD());
         LoginData.getFactura().setEstablecimiento(LoginData.getTalonario().getEstablecimiento());
         LoginData.getFactura().setPuntoExpedicion(LoginData.getTalonario().getPuntoExpedicion());
         LoginData.getFactura().setNumeroFactura(LoginData.getTalonario().getNumeroActual() + 1);
@@ -119,9 +121,9 @@ public class MainStepper extends TextStepper implements Runnable {
 
 
 
-
         System.out.println("completed");
         //view = getCurrentFocus();
+
 
 
         grabar();
@@ -171,6 +173,7 @@ public class MainStepper extends TextStepper implements Runnable {
     public void grabar(){
 
 
+        LoginData.getFactura().setCoordendas(MiUbicacion.getCoordenadasActual());
         ConstructorFactura constructorFact = new ConstructorFactura();
         constructorFact.insertarNuevaFactura(LoginData.getFactura());
 
@@ -202,7 +205,9 @@ public class MainStepper extends TextStepper implements Runnable {
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
+
+
+
 
                         Utilities.sendToast(getApplicationContext(), "Factura Registrada" , "success");
                         Utilities.deleteFacturaLoginData();
@@ -287,10 +292,15 @@ public class MainStepper extends TextStepper implements Runnable {
 
 
                     String BILL = "";
-                    BILL =  " "+getResources().getString(R.string.empresa) +"\n"
-                            + " "+getResources().getString(R.string.direccion_empresa) +"\n"
-                            + "   Tel: "+getResources().getString(R.string.telefono_empresa) +"\n"
-                            + "   RUC.: "+getResources().getString(R.string.ruc_empresa) +"\n"
+                    BILL =
+                          //  " "+getResources().getString(R.string.empresa) +"\n"
+                            " "+CredentialValues.getLoginData().getEmpresa().getDescripcion() +"\n"
+                       //     + " "+getResources().getString(R.string.direccion_empresa) +"\n"
+                            + " "+CredentialValues.getLoginData().getEmpresa().getDireccion() +"\n"
+                           // + "   Tel: "+getResources().getString(R.string.telefono_empresa) +"\n"
+                            + "   Tel: "+CredentialValues.getLoginData().getEmpresa().getTelefono() +"\n"
+                         //   + "   RUC.: "+getResources().getString(R.string.ruc_empresa) +"\n"
+                            + "   RUC.: "+CredentialValues.getLoginData().getEmpresa().getRuc() +"\n"
                             +" Timbrado Nro.: "+LoginData.getTalonario().getTimbrado() +"\n"
                             +" Validoshasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
                             +" Condicion: "+ LoginData.getFactura().getTipoFactura() +"\n"
@@ -318,7 +328,7 @@ public class MainStepper extends TextStepper implements Runnable {
 
                     Double iva10 = new Double(0);
                     Double iva5 = new Double(0);
-                    for (Facturadet det: LoginData.getFactura().getFacturadet()  ) {
+                    for (FacturaDet det: LoginData.getFactura().getFacturadet()  ) {
                         if(det.getTasaIva().intValue() == 10){
                             iva10 += det.getImpuesto();
                             total10 += det.getSubTotal();
@@ -343,14 +353,14 @@ public class MainStepper extends TextStepper implements Runnable {
                             + "----------------------------\n";
                     BILL = BILL + "\n\n ";
 
-                    BILL = BILL + " TOTAL :             " + Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getImporte()) + " Gs. \n";
+                    BILL = BILL + " TOTAL:          " + Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getImporte()) + " Gs. \n";
                     BILL = BILL
                             + "----------------------------\n";
 
 
-                    BILL = BILL + " Total exentas:       "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
-                    BILL = BILL + " Total 10%:           "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
-                    BILL = BILL + " Total 5%:            "+ Utilities.toStringFromDoubleWithFormat(total5) + " Gs.\n";
+                    BILL = BILL + " Total exentas:      "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
+                    BILL = BILL + " Total 10%:          "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
+                    BILL = BILL + " Total 5%:           "+ Utilities.toStringFromDoubleWithFormat(total5) + " Gs.\n";
 
 
                     BILL = BILL
@@ -362,6 +372,13 @@ public class MainStepper extends TextStepper implements Runnable {
                     BILL = BILL
                             + " --- Gracias por su preferencia ---\n";
                     BILL = BILL + "\n\n\n";
+
+
+
+
+                    dialog.dismiss();
+
+
                     os.write(BILL.getBytes());
                     //This is printer specific code you can comment ==== > Start
 
@@ -510,12 +527,16 @@ public class MainStepper extends TextStepper implements Runnable {
             mHandler.sendEmptyMessage(0);
             System.out.println("RUN");
 
+
         } catch (IOException eConnectException) {
             Log.d(TAG, "CouldNotConnectToSocket", eConnectException);
+            reImprimir();
             closeSocket(mBluetoothSocket);
             return;
         }
     }
+
+
 
     private Handler mHandler = new Handler() {
         @Override
@@ -548,7 +569,146 @@ public class MainStepper extends TextStepper implements Runnable {
 
         return b[3];
     }
+    private void reImprimir() {
+
+       /* SendMail sm = new SendMail( "DrClick App - Error", getTicket() , "mcespedeso@gmail.com" , "jaimeferreira11@gmail.com");
+        sm.execute();*/
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                new MaterialDialog.Builder(MainStepper.this)
+                        .title("No se pudo conectar con la impresora? Avanzar de todas maneras?")
+                        .icon(getResources().getDrawable(R.drawable.checked_48))
+                        .positiveText("Si")
+                        .negativeText("No, reimprimir")
+                        .cancelable(false)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                dialog.dismiss();
+                                Utilities.deleteFacturaLoginData();
+                                Intent intent = new Intent(MainStepper.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            }
+                        })
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                // dialog.dismiss();
+                                buscarImpresora();
+                                //imprimirFactura();
+                            }
+                        })
+                        .show();
+            }
+        });
 
 
+    }
+
+
+    public String getTicket(){
+
+
+        System.out.println(LoginData.getTalonario().toString());
+        String establecimiento =  String.format("%03d", LoginData.getTalonario().getEstablecimiento());
+        System.out.println("Estable " + establecimiento);
+        String punto =  String.format("%03d", LoginData.getTalonario().getPuntoExpedicion());
+        System.out.println("Punto " + punto);
+        String numero = String.format("%07d", LoginData.getTalonario().getNumeroActual());
+        System.out.println("Numero " + numero);
+
+
+
+        String BILL = "";
+        BILL =
+                //  " "+getResources().getString(R.string.empresa) +"\n"
+                " "+CredentialValues.getLoginData().getEmpresa().getDescripcion() +"\n"
+                        //     + " "+getResources().getString(R.string.direccion_empresa) +"\n"
+                        + " "+CredentialValues.getLoginData().getEmpresa().getDireccion() +"\n"
+                        // + "   Tel: "+getResources().getString(R.string.telefono_empresa) +"\n"
+                        + "   Tel: "+CredentialValues.getLoginData().getEmpresa().getTelefono() +"\n"
+                        //   + "   RUC.: "+getResources().getString(R.string.ruc_empresa) +"\n"
+                        + "   RUC.: "+CredentialValues.getLoginData().getEmpresa().getRuc() +"\n"
+                        +" Timbrado Nro.: "+LoginData.getTalonario().getTimbrado() +"\n"
+                        +" Validoshasta: "+LoginData.getTalonario().getValidoHasta() +"\n"
+                        +" Condicion: "+ LoginData.getFactura().getTipoFactura() +"\n"
+                        +" Factura.: "+ establecimiento + "-"+punto+"-"+numero  +"\n"
+                        +" Fecha Hora.: "+Utilities.getCurrentDateTime() +"\n"
+                        +" Usuario.: "+ CredentialValues.getLoginData().getUsuario().getLogin().toUpperCase() +"\n";
+
+        BILL = BILL
+                + "CLIENTE: " +LoginData.getFactura().getNombreCliente()+"\n";
+        BILL = BILL
+                + "RUC/CI: " +LoginData.getFactura().getNroDocumentoCliente()+"\n";
+
+        BILL = BILL
+                + "----------------------------\n";
+
+
+        BILL = BILL + String.format("%1$-8s %2$-6s %3$-6s %4$-6s %5$-8s", "Desc.", "Cant.", "IVA", "P.U.", "TOTAL");
+        BILL = BILL + "\n";
+        BILL = BILL
+                + "----------------------------\n";
+
+        Double exenta = new Double(0);
+        Double total10 = new Double(0);
+        Double total5 = new Double(0);
+
+        Double iva10 = new Double(0);
+        Double iva5 = new Double(0);
+        for (FacturaDet det: LoginData.getFactura().getFacturadet()  ) {
+            if(det.getTasaIva().intValue() == 10){
+                iva10 += det.getImpuesto();
+                total10 += det.getSubTotal();
+            }else if(det.getTasaIva().intValue() == 5){
+                iva5 += det.getImpuesto();
+                total5 += det.getSubTotal();
+            }else if(det.getTasaIva().intValue() == 0){
+                exenta += det.getSubTotal();
+            }
+            BILL = BILL + "\n " + String.format("%1$-20s %2$4s", det.getConcepto(), det.getTasaIva().intValue()+"%" );
+
+            BILL = BILL + "\n " + String.format("%1$5s %2$14s %3$15s",
+                    String.format("%.2f", det.getCantidad()).replace(".",","), Utilities.toStringFromDoubleWithFormat(det.getPrecioVenta()), Utilities.toStringFromDoubleWithFormat(det.getSubTotal()));
+
+
+
+        }
+
+
+        BILL = BILL+ "\n";
+        BILL = BILL
+                + "----------------------------\n";
+        BILL = BILL + "\n\n ";
+
+        BILL = BILL + " TOTAL:          " + Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getImporte()) + " Gs. \n";
+        BILL = BILL
+                + "----------------------------\n";
+
+
+        BILL = BILL + " Total exentas:      "+ Utilities.toStringFromDoubleWithFormat(exenta) + " Gs.\n";
+        BILL = BILL + " Total 10%:          "+Utilities.toStringFromDoubleWithFormat(total10) + " Gs.\n";
+        BILL = BILL + " Total 5%:           "+ Utilities.toStringFromDoubleWithFormat(total5) + " Gs.\n";
+
+
+        BILL = BILL
+                + "----------------------------\n";
+        BILL = BILL + " Liquidacion IVA     \n";
+        BILL = BILL + " Total 10%:          "+ Utilities.toStringFromDoubleWithFormat(iva10) + " Gs.\n";
+        BILL = BILL + " Total 5%:           "+ Utilities.toStringFromDoubleWithFormat(iva5) + " Gs.\n";
+        BILL = BILL + "\n\n ";
+        BILL = BILL
+                + " --- Gracias por su preferencia ---\n";
+        BILL = BILL + "\n\n\n";
+
+        return BILL;
+    }
 
 }

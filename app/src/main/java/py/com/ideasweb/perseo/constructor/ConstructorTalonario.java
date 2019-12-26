@@ -2,10 +2,6 @@ package py.com.ideasweb.perseo.constructor;
 
 import org.litepal.LitePal;
 
-import java.util.List;
-
-import py.com.ideasweb.perseo.models.Facturacab;
-import py.com.ideasweb.perseo.models.Facturadet;
 import py.com.ideasweb.perseo.models.Talonario;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 

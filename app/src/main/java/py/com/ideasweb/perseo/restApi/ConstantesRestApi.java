@@ -6,14 +6,12 @@ package py.com.ideasweb.perseo.restApi;
 
 public final class ConstantesRestApi {
 
-     public static final String urlBase = "http://181.121.129.218";
-  //  public static final String urlBase = "http://10.0.10.174";
-    public static final String port    = ":8085";
+     public static final String urlBase = "http://181.121.129.218"; // AVV
+//    public static final String urlBase = "http://192.155.92.106";  // linode
+    public static final String port    = ":8085"; // AVV
+//    public static final String port    = ":8888"; // linode
     public static final String context = "/perseo-rest/";
 
-   /*public static final String urlBase = "http://www.fundacionparaguaya.org.py";
-   public static final String port    = "";
-   public static final String context = "/semaforo-rest/";*/
 
     public static final String ROOT_URL = urlBase+port+context;
 
@@ -24,8 +22,14 @@ public final class ConstantesRestApi {
 
 
    // EMPRESA
-    public static final int ID_EMPRESA = 2;
+   // public static final int ID_EMPRESA = 1; //  Ideas Web
+   public static final int ID_EMPRESA = 2; //  AVV
 
+
+    /*Email*/
+    public static final String EMAIL_IW = "ideaswebpy@gmail.com";
+    public static final String ADMIN_EMAIL ="soporte@drclick.com.py";
+    public static final String ADMIN_EMAIL_PASSWORD ="s0p0rt3drc!";
 
     /**
      * URL login to WebServices Oauth2
@@ -117,7 +121,12 @@ public final class ConstantesRestApi {
     //perfiles
     public static final String API_GET_PERFILES= api_version + "/perfiles";
 
+
+    // empresa
+
     /*Impresion de comprobantes*/
+    public static final String API_GET_EMPRESA_BY_ID = api_version + "/empresas/{idEmpresa}";
+
 
 
 

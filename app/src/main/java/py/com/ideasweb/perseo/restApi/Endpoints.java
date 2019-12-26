@@ -5,11 +5,12 @@ import java.util.List;
 import okhttp3.RequestBody;
 import py.com.ideasweb.perseo.models.Articulo;
 import py.com.ideasweb.perseo.models.Cliente;
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.Empresa;
+import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.Perfil;
 import py.com.ideasweb.perseo.models.Talonario;
-import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.models.Usuario;
+import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -106,17 +107,17 @@ public interface Endpoints {
     Call<Talonario> grabarTalonario(@Body Talonario talonario);
 
     @GET(ConstantesRestApi.API_GET_FACTURAS)
-    Call<List<Facturacab>> getFacturas();
+    Call<List<FacturaCab>> getFacturas();
 
     @GET(ConstantesRestApi.API_GET_FACTURAS_BY_USUARIO)
-    Call<List<Facturacab>> getFacturasByUsuario(@Path("idUsuario") Integer idUsuario);
+    Call<List<FacturaCab>> getFacturasByUsuario(@Path("idUsuario") Integer idUsuario);
 
 
     @POST(ConstantesRestApi.API_POST_GRABAR_FACTURA)
-    Call<Facturacab> grabarFactura(@Body Facturacab facturacab);
+    Call<Void> grabarFactura(@Body FacturaCab facturacab);
 
     @POST(ConstantesRestApi.API_POST_GRABAR_LISTA_FACTURA)
-    Call<Void> grabarListaFactura(@Body List<Facturacab> facturas);
+    Call<Void> grabarListaFactura(@Body List<FacturaCab> facturas);
 
 
 
@@ -158,4 +159,9 @@ public interface Endpoints {
     // PERFILES
     @GET(ConstantesRestApi.API_GET_PERFILES)
     Call<List<Perfil>> getPerfiles();
+
+
+    // EMPRESAS
+    @GET(ConstantesRestApi.API_GET_EMPRESA_BY_ID)
+    Call<Empresa> getEmpresaById(@Path("idEmpresa") Integer idEmpresa);
 }

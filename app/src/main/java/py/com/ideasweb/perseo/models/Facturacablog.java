@@ -41,7 +41,7 @@ public class Facturacablog extends LitePalSupport {
     private Integer idEmpresa;
 
 
-    public Facturacablog(Facturacab cab) {
+    public Facturacablog(FacturaCab cab) {
         this.idFacturaCab = cab.getIdFacturaCab();
         this.fecha = cab.getFecha();
         this.idCliente = cab.getIdCliente();
@@ -245,7 +245,7 @@ public class Facturacablog extends LitePalSupport {
 
     @Override
     public String toString() {
-        return "Facturacab{" +
+        return "FacturaCab{" +
                 "id=" + id +
                 ", idFacturaCab=" + idFacturaCab +
                 ", fecha='" + fecha + '\'' +

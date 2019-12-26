@@ -55,6 +55,8 @@ public class Step2 extends AbstractStep {
     RecyclerView rvItems;
 
 
+    View footerView;
+
     ConstructorArticulos articuloRepo;
 
     @Override
@@ -139,7 +141,7 @@ public class Step2 extends AbstractStep {
 
                         final DialogPlus dialogPlus = DialogPlus.newDialog(getContext())
                                 .setGravity(Gravity.BOTTOM)
-                                .setAdapter(new DialogAdapter(getContext(), LoginData.getFactura().getFacturadet(), counterFab))
+                                .setAdapter(new DialogAdapter(getContext(), LoginData.getFactura().getFacturadet(), counterFab ))
                                 .setContentHolder(new ListHolder())
                                 .setHeader(R.layout.dialog_header)
                                 .setFooter(R.layout.dialog_footer)
@@ -165,11 +167,7 @@ public class Step2 extends AbstractStep {
                                 })
                                 .create();
 
-                        dialogPlus.show();
-
-
-
-                        View footerView = dialogPlus.getFooterView();
+                        footerView = dialogPlus.getFooterView();
                         TextView footer_tot = (TextView) footerView.findViewById(R.id.footer_tot);
                         footer_tot.setText("Total: "+Utilities.toStringFromDoubleWithFormat(LoginData.getFactura().getImporte()) +" Gs.");
                         Button close = (Button) footerView.findViewById(R.id.footer_close_button);
@@ -184,9 +182,16 @@ public class Step2 extends AbstractStep {
                         View headerView = dialogPlus.getHeaderView();
                         TextView header_cant = (TextView) headerView.findViewById(R.id.header_cant);
                         header_cant.setText(LoginData.getFactura().getFacturadet().size() + " Articulos");
+
+
+                        dialogPlus.show();
+
+
                     }else {
                         Toast.makeText(getContext(), "Agregue articulo al carro", Toast.LENGTH_SHORT).show();
                     }
+
+
                 }
                 //   View contentView = getLayoutInflater().inflate(R.layout.content2, null);
 
@@ -213,6 +218,7 @@ public class Step2 extends AbstractStep {
     public void onResume() {
         super.onResume();
 
+        System.out.println("STEP2 ONRESUMEN");
         if(LoginData.getCodigoBarra() != null){
                 getArticulosByCodigoBarra(getContext() , LoginData.getCodigoBarra());
 
@@ -224,8 +230,15 @@ public class Step2 extends AbstractStep {
     @Override
     public void onStop() {
         super.onStop();
-        System.out.println("ONSTOP");
+        System.out.println("STEP2 ONSTOP");
     }
+
+    @Override
+    public void onPause() {
+        System.out.println("STEP2 ONPAUSE");
+        super.onPause();
+    }
+
 
     private void getArticulos(final Context context , final String param){
 

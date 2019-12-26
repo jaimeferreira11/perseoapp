@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,7 +25,7 @@ import java.util.List;
 
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.models.Articulo;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.utilities.Utilities;
 
@@ -111,6 +112,7 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Result
                                 .customView(R.layout.layout_agregar_articulo, wrapInScrollView)
                                 // .content("Favor, conectese a internet y sincronize")
                                 //  .icon(R.drawable.info)
+                                .autoDismiss(false)
                                 .positiveText(itemView.getResources().getString(R.string.aceptar))
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
@@ -119,18 +121,24 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Result
                                         final TextView monto2= (TextView) layout.findViewById(R.id.aa_monto);
                                         final TextView cantidad2= (TextView) layout.findViewById(R.id.aa_cantidad);
 
-                                        Facturadet detalleDTO = new Facturadet();
+                                        FacturaDet detalleDTO = new FacturaDet();
                                         Articulo articuloDTO = new Articulo();
 
                                         if (cantidad2.getText().toString().length() == 0){
-                                            cantidad2.setText("1");
+                                            Toast.makeText(itemView.getContext(), "Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        if(Double.parseDouble(cantidad2.getText().toString().trim()) <= new Double(0)){
+                                            Toast.makeText(itemView.getContext(), "Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
+                                            return;
                                         }
 
                                         articuloDTO.setIdArticulo(Integer.parseInt(idArticulo.getText().toString().trim()));
                                         articuloDTO.setTasaIva(Double.parseDouble(iva.getText().toString()));
                                         articuloDTO.setCodigoBarra(cod.getText().toString());
                                         articuloDTO.setDescripcion(descripcion.getText().toString());
-                                        detalleDTO.setCantidad(Double.valueOf(cantidad2.getText().toString().replace(".", "")));
+                                        detalleDTO.setCantidad(Double.valueOf(cantidad2.getText().toString()));
                                         detalleDTO.setPrecioVenta(Double.valueOf(precio.getText().toString().replace(".", "")));
                                         detalleDTO.setSubTotal(detalleDTO.getCantidad() * detalleDTO.getPrecioVenta());
 
@@ -155,16 +163,23 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Result
                                         LoginData.getFactura().getFacturadet().add(detalleDTO);
                                         //modifica la cabecera
                                         Double tot = new Double(0);
-                                        for (Facturadet element: LoginData.getFactura().getFacturadet()) {
+                                        for (FacturaDet element: LoginData.getFactura().getFacturadet()) {
                                             tot += element.getPrecioVenta() * element.getCantidad();
                                         }
                                         LoginData.getFactura().setImporte(tot);
                                         //actualizar el floating
                                         counterFab.setCount(LoginData.getFactura().getFacturadet().size());
+                                        dialog.dismiss();
 
                                     }
                                 })
                                 .negativeText(R.string.cancelar)
+                                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        dialog.dismiss();
+                                    }
+                                })
                                 .show();
 
 

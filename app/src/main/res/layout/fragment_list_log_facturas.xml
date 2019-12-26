@@ -30,7 +30,7 @@
         android:id="@+id/floating_search_view"
         android:layout_width="match_parent"
         android:layout_below="@id/titulo"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:floatingSearch_searchBarMarginLeft="10dp"
         app:floatingSearch_searchBarMarginTop="0dp"
         app:floatingSearch_searchBarMarginRight="10dp"
@@ -67,6 +67,13 @@
 
 
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/refresh">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
@@ -77,5 +84,7 @@
         android:id="@+id/recycler"
         tools:listitem="@layout/cardview_pedido"
         android:layout_centerHorizontal="true" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

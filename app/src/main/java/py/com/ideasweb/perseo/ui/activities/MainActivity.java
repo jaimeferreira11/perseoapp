@@ -73,7 +73,7 @@ import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.adapter.DrawerAdapter;
 import py.com.ideasweb.perseo.constructor.ConstructorTalonario;
 import py.com.ideasweb.perseo.constructor.ConstructorUsuario;
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.Perfil;
 import py.com.ideasweb.perseo.models.Tracking;
 import py.com.ideasweb.perseo.models.Usuario;
@@ -83,7 +83,6 @@ import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.ui.elements.DrawerItem;
 import py.com.ideasweb.perseo.ui.elements.ItemClickSupport;
 import py.com.ideasweb.perseo.utilities.GPSTracker;
-import py.com.ideasweb.perseo.utilities.GPSTracker2;
 import py.com.ideasweb.perseo.utilities.MiUbicacion;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
@@ -146,7 +145,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
     protected static final String TAG = "PRINT";
     private UUID applicationUUID = UUID
             .fromString("00001101-0000-1000-8000-00805F9B34FB");
-    Facturacab factura;
+    FacturaCab factura;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1036,7 +1035,7 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
         }
     }
 
-    public void buscarImpresora(Facturacab cab){
+    public void buscarImpresora(FacturaCab cab){
 
         this.factura = cab;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

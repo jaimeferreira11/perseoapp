@@ -32,9 +32,12 @@ public class ConstructorArticulos {
 
 
     public List<Articulo> getAll(){
-        return LitePal.order("descripcion")
+        final List<Articulo> busqueda = LitePal.order("descripcion")
                 .where(" idDeposito =  ?", String.valueOf(CredentialValues.getLoginData().getUsuario().getIdDeposito()))
                 .find(Articulo.class);
+
+        System.out.println("Articulos del deposito " + CredentialValues.getLoginData().getUsuario().getIdDeposito() + " : " + busqueda.size());
+        return  busqueda;
     }
 
 

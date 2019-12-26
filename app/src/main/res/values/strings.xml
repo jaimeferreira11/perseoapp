@@ -9,6 +9,17 @@
     <string name="version_name"> Beta</string>
 
 
+    <!--Datos de facturacopn-->
+    <string name="empresa">DISTRIBUIDORA AVV S.R.L.</string>
+    <string name="direccion_empresa">CABALLERO N 2796 ESQ ISLA TAJY</string>
+    <string name="telefono_empresa">021 371 943</string>
+    <string name="ruc_empresa">80032130-8</string>
+    <!--<string name="empresa">IDEAS WEB</string>
+    <string name="direccion_empresa">ASUNCION - PARAGUAY</string>
+    <string name="telefono_empresa">021 ### ###</string>
+    <string name="ruc_empresa">4800301-8</string>-->
+
+
     <!-- Menu -->
     <string name="registrar_cliente">Registrar Cliente</string>
     <string name="registrar_pedido">Registrar Factura</string>
@@ -21,8 +32,8 @@
     <string name="action_refresh">Actualizar</string>
     <string name="drawer_open">Abrir</string>
     <string name="drawer_close">Cerrar</string>
-    <string name="texto_about">™ © 2018 – Ideas Web. Todos los derechos reservados.</string>
-    <string name="developers">Emilio Espinola - Jaime Ferreira - Marcos Cespedes.</string>
+    <string name="texto_about">™ © 2019 – Ideas Web. Todos los derechos reservados.</string>
+    <string name="developers">Jaime Ferreira - Marcos Cespedes.</string>
 
     <!-- Login Activity -->
     <string name="loginactivity">Ingresar</string>
@@ -111,10 +122,8 @@
     <string name="seleccione_cliente">Seleccione el Cliente</string>
     <string name="buscar">Código de barra o descripcion</string>
     <string name="agregar_articulo">Agregar al Carrito</string>
-    <string name="empresa">DISTRIBUIDORA AVV S.R.L.</string>
-    <string name="direccion_empresa">CABALLERO N 2796 ESQ ISLA TAJY</string>
-    <string name="telefono_empresa">021 371 943</string>
-    <string name="ruc_empresa">80032130-8</string>
+
+
     <string name="registrar_talonario">Registrar Talonario</string>
 
 

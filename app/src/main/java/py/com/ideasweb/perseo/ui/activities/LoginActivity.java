@@ -30,6 +30,7 @@ import com.multidots.fingerprintauth.FingerPrintAuthHelper;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import butterknife.BindView;
+import py.com.ideasweb.BuildConfig;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorUsuario;
 import py.com.ideasweb.perseo.models.Perfil;
@@ -52,6 +53,8 @@ public class LoginActivity extends BaseActivity  implements FingerPrintAuthCallb
     SwitchCompat SwRecordad;
     @BindView(R.id.btnSignIn)
     ActionProcessButton btnSignIn;
+    @BindView(R.id.version)
+    TextView version;
 
 
     //finger
@@ -148,6 +151,8 @@ public class LoginActivity extends BaseActivity  implements FingerPrintAuthCallb
 
     @Override
     public void inicializar() {
+
+        version.setText(BuildConfig.VERSION_NAME);
 
         if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             mFingerPrintAuthHelper = FingerPrintAuthHelper.getHelper(this, this);

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import py.com.ideasweb.perseo.models.Facturacab;
+import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.Talonario;
 import py.com.ideasweb.perseo.restApi.Endpoints;
 import py.com.ideasweb.perseo.restApi.adapter.RestApiAdapter;
@@ -121,17 +121,18 @@ public class FacturaManager {
     }
 
 
-    public Respuesta grabarfactura(Facturacab factura) throws  Exception{
+    public Respuesta grabarfactura(FacturaCab factura) throws  Exception{
 
         final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
         RestApiAdapter restApiAdapter = new RestApiAdapter();
-        Endpoints endpoints = restApiAdapter.establecerConexionRest();
+        Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
 
-        Call<Facturacab> tokenCall = endpoints.grabarFactura(factura);
+        Call<Void> tokenCall = endpoints.grabarFactura(factura);
 
-        tokenCall.enqueue(new Callback<Facturacab>() {
+        System.out.println("Grabando factura");
+        tokenCall.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Facturacab> call, Response<Facturacab> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 Respuesta respuesta = new Respuesta();
                 System.out.println("Codigo grabar " + response.code());
                 if (response.code() >= 400) {
@@ -143,9 +144,9 @@ public class FacturaManager {
                     System.out.println("body info grabar: " + response.body());
                     respuesta.setEstado( "OK");
                     String jsonInString = gson.toJson(response.body());
-                    Type listType = new TypeToken<Facturacab>() {}.getType();
+                    Type listType = new TypeToken<FacturaCab>() {}.getType();
                     //setenado en login en el credentials
-                   // respuesta.setDatos((Facturacab) gson.fromJson(jsonInString, listType));
+                   // respuesta.setDatos((FacturaCab) gson.fromJson(jsonInString, listType));
                     //deserealizando
 
                 }
@@ -153,7 +154,7 @@ public class FacturaManager {
             }
 
             @Override
-            public void onFailure(Call<Facturacab> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Respuesta respuesta = new Respuesta();
                 t.printStackTrace();
                 respuesta.setEstado("Error");
@@ -165,11 +166,11 @@ public class FacturaManager {
         return blockingQueue.take();
     }
 
-    public Respuesta grabarListafactura(List<Facturacab> facturas) throws  Exception{
+    public Respuesta grabarListafactura(List<FacturaCab> facturas) throws  Exception{
 
         final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
         RestApiAdapter restApiAdapter = new RestApiAdapter();
-        Endpoints endpoints = restApiAdapter.establecerConexionRest();
+        Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
 
         Call<Void> tokenCall = endpoints.grabarListaFactura(facturas);
 
@@ -188,9 +189,9 @@ public class FacturaManager {
                     respuesta.setEstado( "OK");
                     //respuesta.setDatos(response.body());
                     //String jsonInString = gson.toJson(response.body());
-                    //Type listType = new TypeToken<Facturacab>() {}.getType();
+                    //Type listType = new TypeToken<FacturaCab>() {}.getType();
                     //setenado en login en el credentials
-                    // respuesta.setDatos((Facturacab) gson.fromJson(jsonInString, listType));
+                    // respuesta.setDatos((FacturaCab) gson.fromJson(jsonInString, listType));
                     //deserealizando
 
                 }
@@ -218,11 +219,11 @@ public class FacturaManager {
         Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
 
         //se invoca al metodo del endpoints
-        Call<List<Facturacab>> tokenCall = endpoints.getFacturas();
+        Call<List<FacturaCab>> tokenCall = endpoints.getFacturas();
 
-        tokenCall.enqueue(new Callback<List<Facturacab>>() {
+        tokenCall.enqueue(new Callback<List<FacturaCab>>() {
             @Override
-            public void onResponse(Call<List<Facturacab>> call, Response<List<Facturacab>> response) {
+            public void onResponse(Call<List<FacturaCab>> call, Response<List<FacturaCab>> response) {
                 Respuesta respuesta = new Respuesta();
                 System.out.println(response.code());
                 if (response.code() >= 400) {
@@ -239,9 +240,9 @@ public class FacturaManager {
                     //deserealizando
                     // Gson gson = new Gson();
                     String jsonInString = gson.toJson(response.body());
-                    Type listType = new TypeToken<List<Facturacab>>() {}.getType();
+                    Type listType = new TypeToken<List<FacturaCab>>() {}.getType();
                     //setenado en login en el credentials
-                    respuesta.setDatos((ArrayList<Facturacab>) gson.fromJson(jsonInString, listType));
+                    respuesta.setDatos((ArrayList<FacturaCab>) gson.fromJson(jsonInString, listType));
 
 
                 }
@@ -249,7 +250,7 @@ public class FacturaManager {
             }
 
             @Override
-            public void onFailure(Call<List<Facturacab>> call, Throwable t) {
+            public void onFailure(Call<List<FacturaCab>> call, Throwable t) {
                 Respuesta respuesta = new Respuesta();
                 t.printStackTrace();
                 respuesta.setEstado("Error");
@@ -270,11 +271,11 @@ public class FacturaManager {
         Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
 
         //se invoca al metodo del endpoints
-        Call<List<Facturacab>> tokenCall = endpoints.getFacturasByUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
+        Call<List<FacturaCab>> tokenCall = endpoints.getFacturasByUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
 
-        tokenCall.enqueue(new Callback<List<Facturacab>>() {
+        tokenCall.enqueue(new Callback<List<FacturaCab>>() {
             @Override
-            public void onResponse(Call<List<Facturacab>> call, Response<List<Facturacab>> response) {
+            public void onResponse(Call<List<FacturaCab>> call, Response<List<FacturaCab>> response) {
                 Respuesta respuesta = new Respuesta();
                 System.out.println(response.code());
                 if (response.code() >= 400) {
@@ -291,9 +292,9 @@ public class FacturaManager {
                     //deserealizando
                     // Gson gson = new Gson();
                     String jsonInString = gson.toJson(response.body());
-                    Type listType = new TypeToken<List<Facturacab>>() {}.getType();
+                    Type listType = new TypeToken<List<FacturaCab>>() {}.getType();
                     //setenado en login en el credentials
-                    respuesta.setDatos((ArrayList<Facturacab>) gson.fromJson(jsonInString, listType));
+                    respuesta.setDatos((ArrayList<FacturaCab>) gson.fromJson(jsonInString, listType));
 
 
                 }
@@ -301,7 +302,7 @@ public class FacturaManager {
             }
 
             @Override
-            public void onFailure(Call<List<Facturacab>> call, Throwable t) {
+            public void onFailure(Call<List<FacturaCab>> call, Throwable t) {
                 Respuesta respuesta = new Respuesta();
                 t.printStackTrace();
                 respuesta.setEstado("Error");

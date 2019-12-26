@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,10 +25,9 @@ import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
-import py.com.ideasweb.perseo.constructor.ConstructorCliente;
 import py.com.ideasweb.perseo.constructor.ConstructorFactura;
-import py.com.ideasweb.perseo.models.Facturacab;
-import py.com.ideasweb.perseo.models.Facturadet;
+import py.com.ideasweb.perseo.models.FacturaCab;
+import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
 import py.com.ideasweb.perseo.ui.activities.MainActivity;
 import py.com.ideasweb.perseo.ui.activities.MainStepper;
@@ -41,15 +39,15 @@ import py.com.ideasweb.perseo.utilities.Utilities;
 
 public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.ResultadoViewHolder>{
     private Context context;
-    private List<Facturacab> lista;
-    private ArrayList<Facturacab> listCopy;
+    private List<FacturaCab> lista;
+    private ArrayList<FacturaCab> listCopy;
     private static RecyclerView rv;
     RecyclerView.Adapter adapter = this;
     String state;
 
 
 
-    public FacturaAdapter(Context context, List<Facturacab> lista, String state) {
+    public FacturaAdapter(Context context, List<FacturaCab> lista, String state) {
         this.context = context;
         this.lista = lista;
         this.state = state;
@@ -67,7 +65,7 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
 
     @Override
     public void onBindViewHolder(final FacturaAdapter.ResultadoViewHolder holder, final int position) {
-        final Facturacab task = lista.get(position);
+        final FacturaCab task = lista.get(position);
         Double aux = new Double(1);
         if(task.getPorcDescuento() != null){
             if(task.getPorcDescuento() > 0){
@@ -83,12 +81,14 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
         holder.fecha.setText(task.getFecha());
         holder.monto.setText(Utilities.toStringFromDoubleWithFormat(task.getImporte() * aux) + " Gs.");
 
-
+        if(!task.getEstado())
+            holder.anulado.setVisibility(View.VISIBLE);
 
         switch (state){
             case "Anulados":
 
                 holder.frame.setVisibility(View.GONE);
+
                 break;
             case "Pendientes":
 
@@ -200,10 +200,10 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
                 detNro.setText("Detalles factura: " +new Formatter().format("%08d",task.getNumeroFactura()));
 
                 //buscar el detalle por el cod
-                List<Facturadet> detalles =  task.getFacturadet();
-                /*for (Facturacab cab: task.getFacturadet()) {
+                List<FacturaDet> detalles =  task.getFacturadet();
+                /*for (FacturaCab cab: task.getFacturadet()) {
                     if(cab.getIdFacturaCab() == Integer.parseInt(holder.nro.getText().toString())){
-                        detalles = (ArrayList<Facturadet>) cab.getFacturadet();
+                        detalles = (ArrayList<FacturaDet>) cab.getFacturadet();
                     }
                 }*/
 
@@ -232,6 +232,7 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
         private MaterialIconView view;
         private TextView delete;
         private TextView edit;
+        private TextView anulado;
         private SwipeRevealLayout swipeLayout;
         private FrameLayout frame;
 
@@ -248,6 +249,7 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
             view = (MaterialIconView) itemView.findViewById(R.id.ver);
             delete = (TextView) itemView.findViewById(R.id.delete_layout);
             edit = (TextView) itemView.findViewById(R.id.edit_layout);
+            anulado = (TextView) itemView.findViewById(R.id.anulado);
             swipeLayout = (SwipeRevealLayout) itemView.findViewById(R.id.swipe_layout);
             frame = (FrameLayout) itemView.findViewById(R.id.frame);
 
@@ -300,7 +302,7 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
     }
 
 
-    public static FacturaDetAdapter2 crearAdaptador(Context context, List<Facturadet> lista) {
+    public static FacturaDetAdapter2 crearAdaptador(Context context, List<FacturaDet> lista) {
         FacturaDetAdapter2 adaptador = new FacturaDetAdapter2(context, lista);
         return adaptador;
     }
@@ -320,7 +322,7 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
 
 
 
-    public static void cancelarPedido(final Facturacab cab, final Context context){
+    public static void cancelarPedido(final FacturaCab cab, final Context context){
 
         final AlertDialog dialog = new SpotsDialog.Builder()
                 .setContext(context)
@@ -360,10 +362,10 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
 
         try {
 
-            ArrayList<Facturacab> temp = new ArrayList<>();
+            ArrayList<FacturaCab> temp = new ArrayList<>();
             if (sequence != null) {
                 System.out.println("BUSQUEDA: " + sequence.toString());
-                for (Facturacab s : lista) {
+                for (FacturaCab s : lista) {
                     if (s.getNombreCliente().toLowerCase().contains(sequence) || String.valueOf(s.getNumeroFactura()).contains(sequence)) {
                         temp.add(s);
                     }
