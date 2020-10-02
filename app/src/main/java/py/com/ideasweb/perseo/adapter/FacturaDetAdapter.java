@@ -132,7 +132,7 @@ public class FacturaDetAdapter extends RecyclerView.Adapter<FacturaDetAdapter.Re
                                 if(task.getTasaIva() == 10){
                                     LoginData.getFactura().getFacturadet().get(position).setImpuesto(task.getSubTotal() / 11);
                                 }else if(task.getTasaIva() == 5){
-                                    LoginData.getFactura().getFacturadet().get(position).setImpuesto(task.getSubTotal() / 1.1);
+                                    LoginData.getFactura().getFacturadet().get(position).setImpuesto(task.getSubTotal() / 21);
                                 }else{
                                     LoginData.getFactura().getFacturadet().get(position).setImpuesto(task.getSubTotal());
                                 }

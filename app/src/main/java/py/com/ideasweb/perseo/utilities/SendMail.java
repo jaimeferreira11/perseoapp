@@ -16,7 +16,6 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -113,16 +112,17 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         //Configuring properties for gmail
         //If you are not using gmail you may need to change the values
         props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.host", "mail.drclick.com.py");
-        //props.put("mail.smtp.username", "smtp.gmail.com");
-       // props.put("mail.smtp.password", "smtp.gmail.com");
-        //props.put("mail.smtp.socketFactory.port", "465");
-        //props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "587");
-        //props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.username", "smtp.gmail.com");
+        props.put("mail.smtp.password", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.trust", "mail.drclick.com.py");
+
+        props.put("mail.smtp.host", "smtp.gmail.com"); // El servidor SMTP de Google
+      //  props.put("mail.smtp.user", remitente);
+       // props.put("mail.smtp.clave", clave); // La clave de la cuenta
+        props.put("mail.smtp.auth", "true"); // Usar autenticación mediante usuario y clave
+        props.put("mail.smtp.starttls.enable", "true"); // Para conectar de manera segura al servidor SMTP
+        props.put("mail.smtp.port", "587"); // El puerto SMTP seguro de Google
 
 
         //Creating a new session
@@ -130,7 +130,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
                 new javax.mail.Authenticator() {
                     //Authenticating the password
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(ConstantesRestApi.ADMIN_EMAIL, ConstantesRestApi.ADMIN_EMAIL_PASSWORD);
+                        return new PasswordAuthentication(ConstantesRestApi.EMAIL_IW, ConstantesRestApi.ADMIN_EMAIL_PASSWORD);
                     }
                 });
 
@@ -144,7 +144,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
                     MimeMessage mm = new MimeMessage(session);
 
                     //Setting sender address
-                    mm.setFrom(new InternetAddress(ConstantesRestApi.ADMIN_EMAIL));
+                    mm.setFrom(new InternetAddress(ConstantesRestApi.EMAIL_IW));
 
                     //Adding receiver
                     mm.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
@@ -153,7 +153,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
                         mm.addRecipient(Message.RecipientType.CC, new InternetAddress(cc_email));
 
                     // copiar al admin
-                    mm.addRecipient(Message.RecipientType.CC , new InternetAddress(ConstantesRestApi.ADMIN_EMAIL));
+                    mm.addRecipient(Message.RecipientType.CC , new InternetAddress(ConstantesRestApi.EMAIL_JAIME));
 
                     //Adding subject
                     mm.setSubject(subject);
@@ -170,7 +170,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
                     Map<String, String> input = new HashMap<String, String>();
                     input.put("Titulo", subject);
                     input.put("Contenido", message);
-                    input.put("CorreoInfo", ConstantesRestApi.ADMIN_EMAIL);
+                    input.put("CorreoInfo", "");
                     //HTML mail content
                     String htmlText = readEmailFromHtml(input);
                     mbp.setContent(htmlText, "text/html; charset=UTF-8");
@@ -195,7 +195,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
                     //Creating MimeMessage object
                     MimeMessage mm = new MimeMessage(session);
                     //Setting sender address
-                    mm.setFrom(new InternetAddress(ConstantesRestApi.ADMIN_EMAIL));
+                    mm.setFrom(new InternetAddress(ConstantesRestApi.EMAIL_IW));
                     //Adding receiver
                     mm.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
@@ -203,7 +203,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
                         mm.addRecipient(Message.RecipientType.CC, new InternetAddress(cc_email));
 
                     // copiar al admin
-                    mm.addRecipient(Message.RecipientType.CC , new InternetAddress(ConstantesRestApi.ADMIN_EMAIL));
+                    mm.addRecipient(Message.RecipientType.CC , new InternetAddress(ConstantesRestApi.EMAIL_JAIME));
                     //Adding subject
                     mm.setSubject(subject);
 
@@ -217,7 +217,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
                     Map<String, String> input = new HashMap<String, String>();
                     input.put("Titulo", subject);
                     input.put("Contenido", message);
-                    input.put("CorreoInfo", ConstantesRestApi.ADMIN_EMAIL);
+                    input.put("CorreoInfo", "");
                     //HTML mail content
                     String htmlText = readEmailFromHtml(input);
                     mbp.setContent(htmlText, "text/html; charset=UTF-8");

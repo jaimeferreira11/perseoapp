@@ -6,7 +6,7 @@ package py.com.ideasweb.perseo.restApi;
 
 public final class ConstantesRestApi {
 
-     public static final String urlBase = "http://181.121.129.218"; // AVV
+     public static final String urlBase = "http://186.0.190.2"; // AVV
 //    public static final String urlBase = "http://192.155.92.106";  // linode
     public static final String port    = ":8085"; // AVV
 //    public static final String port    = ":8888"; // linode
@@ -28,8 +28,10 @@ public final class ConstantesRestApi {
 
     /*Email*/
     public static final String EMAIL_IW = "ideaswebpy@gmail.com";
-    public static final String ADMIN_EMAIL ="soporte@drclick.com.py";
-    public static final String ADMIN_EMAIL_PASSWORD ="s0p0rt3drc!";
+    public static final String EMAIL_RAUL = "raulriverospy@gmail.com ";
+    public static final String EMAIL_MARCOS ="mcespedeso@gmail.com";
+    public static final String EMAIL_JAIME ="jaimeferreira11@gmail.com";
+    public static final String ADMIN_EMAIL_PASSWORD ="ideasweb2017";
 
     /**
      * URL login to WebServices Oauth2

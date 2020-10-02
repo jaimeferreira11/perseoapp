@@ -20,15 +20,19 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.fcannizzaro.materialstepper.AbstractStep;
 import com.github.fcannizzaro.materialstepper.style.TextStepper;
 
+import org.litepal.LitePal;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorFactura;
+import py.com.ideasweb.perseo.constructor.ConstructorTalonario;
 import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.pojo.CredentialValues;
@@ -112,10 +116,14 @@ public class MainStepper extends TextStepper implements Runnable {
         LoginData.getFactura().setSincronizadoCore(false);
        // LoginData.getFactura().setTipoFactura("CONTADO");
         LoginData.getFactura().setIdUsuario(CredentialValues.getLoginData().getUsuario().getIdUsuario());
-        LoginData.getFactura().setEstablecimiento(LoginData.getTalonario().getEstablecimiento());
-        LoginData.getFactura().setPuntoExpedicion(LoginData.getTalonario().getPuntoExpedicion());
-        LoginData.getFactura().setNumeroFactura(LoginData.getTalonario().getNumeroActual() + 1);
-        LoginData.getFactura().setTimbrado(LoginData.getTalonario().getTimbrado());
+
+        // es una factura nueva
+        if(LoginData.getFactura().getId() == 0){
+            LoginData.getFactura().setEstablecimiento(LoginData.getTalonario().getEstablecimiento());
+            LoginData.getFactura().setPuntoExpedicion(LoginData.getTalonario().getPuntoExpedicion());
+            LoginData.getFactura().setNumeroFactura(LoginData.getTalonario().getNumeroActual() + 1);
+            LoginData.getFactura().setTimbrado(LoginData.getTalonario().getTimbrado());
+        }
         LoginData.getFactura().setCoordendas(MiUbicacion.getCoordenadasActual());
         LoginData.getFactura().setIdEmpresa(ConstantesRestApi.ID_EMPRESA);
 
@@ -174,8 +182,48 @@ public class MainStepper extends TextStepper implements Runnable {
 
 
         LoginData.getFactura().setCoordendas(MiUbicacion.getCoordenadasActual());
+        // graba la factura
         ConstructorFactura constructorFact = new ConstructorFactura();
-        constructorFact.insertarNuevaFactura(LoginData.getFactura());
+
+
+        // es una factura nueva
+        if(LoginData.getFactura().getId() == 0){
+            // graba nueva factura
+            constructorFact.insertarNuevaFactura(LoginData.getFactura());
+            // aumentar el talonario
+            ConstructorTalonario ct = new ConstructorTalonario();
+            ct.aumentar();
+        }else{
+            // edita una existente
+
+            // se borra los antiguos detalles
+            System.out.println("Borrando los detalles de la factura " + LoginData.getFactura().getId());
+            List<FacturaDet> detalles = LitePal.where(" facturacab_id = ? "  , String.valueOf(LoginData.getFactura().getId()))
+                    .find(FacturaDet.class);
+            System.out.println("Cantidad de detalles: " + detalles.size());
+            for (FacturaDet det: detalles ) {
+                LitePal.delete(FacturaDet.class, det.getId());
+            }
+            //actualiza la cabecera
+            constructorFact.actualizar(LoginData.getFactura());
+            System.out.println("Se insertan los nuevos detalles " + LoginData.getFactura().getFacturadet().size());
+            for (FacturaDet det:  LoginData.getFactura().getFacturadet() ) {
+                FacturaDet aux = new FacturaDet();
+                aux.setImpuesto(det.getImpuesto());
+                aux.setPrecioVenta(det.getPrecioVenta());
+                aux.setIdArticulo(det.getIdArticulo());
+                aux.setConcepto(det.getConcepto());
+                aux.setCantidad(det.getCantidad());
+                aux.setTasaIva(det.getTasaIva());
+                aux.setSubTotal(det.getSubTotal());
+                aux.setFacturacab_id(LoginData.getFactura().getId());
+
+                System.out.println(aux.toString());
+                aux.save();
+
+
+            }
+        }
 
         //buscarImpresora();
 
@@ -191,12 +239,13 @@ public class MainStepper extends TextStepper implements Runnable {
                 .positiveText("Si, Imprimir")
                 .negativeText("No")
                 .cancelable(false)
+                .autoDismiss(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
 
-                       // dialog.dismiss();
+                        dialog.dismiss();
                         buscarImpresora();
                         //imprimirFactura();
 
@@ -207,7 +256,7 @@ public class MainStepper extends TextStepper implements Runnable {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
 
-
+                        dialog.dismiss();
 
                         Utilities.sendToast(getApplicationContext(), "Factura Registrada" , "success");
                         Utilities.deleteFacturaLoginData();
@@ -308,6 +357,8 @@ public class MainStepper extends TextStepper implements Runnable {
                             +" Fecha Hora.: "+Utilities.getCurrentDateTime() +"\n"
                             +" Usuario.: "+ CredentialValues.getLoginData().getUsuario().getLogin().toUpperCase() +"\n";
 
+                    BILL = BILL
+                            + "COD.: " +LoginData.getFactura().getIdCliente()+"\n";
                     BILL = BILL
                             + "CLIENTE: " +LoginData.getFactura().getNombreCliente()+"\n";
                     BILL = BILL

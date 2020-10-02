@@ -88,7 +88,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                                 }else{
 
                                     try {
-                                        Date fechaValido = Utilities.toDateFromString(LoginData.getTalonario().getValidoHasta());
+                                        Date fechaValido = Utilities.toDateDBFromString(LoginData.getTalonario().getValidoHasta() + " 23:59");
                                         if (fechaValido.before(new Date(System.currentTimeMillis()))) {
                                             Toast.makeText(context, "El talonario esta vencido. Favor actualice", Toast.LENGTH_LONG).show();
                                             return;

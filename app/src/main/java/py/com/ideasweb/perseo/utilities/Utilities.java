@@ -103,6 +103,11 @@ public class Utilities {
         return sd.parse(stringDate);
     }
 
+    public static Date toDateDBFromString(String stringDate ) throws ParseException {
+        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return sd.parse(stringDate);
+    }
+
     public static String toStringFromDoubleWithFormat(Double value ){
         try {
 
@@ -821,6 +826,8 @@ public class Utilities {
                             +" Usuario.: "+ usuario.getLogin().toUpperCase() +"\n";
 
                     BILL = BILL
+                            + "COD.: " +factura.getIdCliente()+"\n";
+                    BILL = BILL
                             + "CLIENTE: " +factura.getNombreCliente()+"\n";
                     BILL = BILL
                             + "RUC/CI: " +factura.getNroDocumentoCliente()+"\n";
@@ -1026,7 +1033,7 @@ public class Utilities {
                 "<tr>" +
                 "<td align=\"center\">" +
                 "<h6>" +
-                "<font color=\"#ffffff\" ><b>&copy; Fundación Paraguaya</b>. Dirección: Manuel Blinder 5589 c/ Tte. Espinoza. Asunción, Paraguay. Tel.: (+595 21) 609 - 277 </font>" +
+                "<font color=\"#ffffff\" >Este correo se envio automaticamente </font>" +
                 "</h6>" +
                 "</td>" +
                 "</tr>" +

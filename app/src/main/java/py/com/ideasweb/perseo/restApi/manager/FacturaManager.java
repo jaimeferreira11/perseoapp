@@ -123,47 +123,58 @@ public class FacturaManager {
 
     public Respuesta grabarfactura(FacturaCab factura) throws  Exception{
 
-        final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
-        RestApiAdapter restApiAdapter = new RestApiAdapter();
-        Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
+        try {
 
-        Call<Void> tokenCall = endpoints.grabarFactura(factura);
+            final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
+            RestApiAdapter restApiAdapter = new RestApiAdapter();
+            Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
 
-        System.out.println("Grabando factura");
-        tokenCall.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                Respuesta respuesta = new Respuesta();
-                System.out.println("Codigo grabar " + response.code());
-                if (response.code() >= 400) {
-                    respuesta.setEstado("ERROR");
-                    respuesta.setError("Ha ocurrido un error");
+            Call<Void> tokenCall = endpoints.grabarFactura(factura);
 
-                }else{
-                    Gson gson = new Gson();
-                    System.out.println("body info grabar: " + response.body());
-                    respuesta.setEstado( "OK");
-                    String jsonInString = gson.toJson(response.body());
-                    Type listType = new TypeToken<FacturaCab>() {}.getType();
-                    //setenado en login en el credentials
-                   // respuesta.setDatos((FacturaCab) gson.fromJson(jsonInString, listType));
-                    //deserealizando
+            System.out.println("Grabando factura");
+            tokenCall.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    Respuesta respuesta = new Respuesta();
+                    System.out.println("Codigo grabar " + response.code());
+                    if (response.code() >= 400) {
+                        respuesta.setEstado("ERROR");
+                        respuesta.setError("Ha ocurrido un error");
 
+                    }else{
+                        Gson gson = new Gson();
+                        System.out.println("body info grabar: " + response.body());
+                        respuesta.setEstado( "OK");
+                        String jsonInString = gson.toJson(response.body());
+                        Type listType = new TypeToken<FacturaCab>() {}.getType();
+                        //setenado en login en el credentials
+                        // respuesta.setDatos((FacturaCab) gson.fromJson(jsonInString, listType));
+                        //deserealizando
+
+                    }
+                    blockingQueue.add(respuesta);
                 }
-                blockingQueue.add(respuesta);
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Respuesta respuesta = new Respuesta();
-                t.printStackTrace();
-                respuesta.setEstado("Error");
-                respuesta.setError("Ha ocurrido un error");
-                // blockingQueue.add(respuesta);
-            }
-        });
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    System.out.println("ERROR EN FACTURA");
+                    System.out.println(t.getMessage());
+                    Respuesta respuesta = new Respuesta();
+                    t.printStackTrace();
+                    respuesta.setEstado("Error");
+                    respuesta.setError(t.getMessage());
+                     blockingQueue.add(respuesta);
+                }
+            });
 
-        return blockingQueue.take();
+            return blockingQueue.take();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            throw  e;
+        }
+
+
     }
 
     public Respuesta grabarListafactura(List<FacturaCab> facturas) throws  Exception{

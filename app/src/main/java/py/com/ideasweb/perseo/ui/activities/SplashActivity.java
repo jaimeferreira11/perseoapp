@@ -9,9 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import py.com.ideasweb.R;
-import py.com.ideasweb.perseo.constructor.ConstructorFactura;
-import py.com.ideasweb.perseo.models.FacturaCab;
-import py.com.ideasweb.perseo.repo.FacturaDummyRepo;
 import py.com.ideasweb.perseo.utilities.Utilities;
 
 public class SplashActivity extends AppCompatActivity {

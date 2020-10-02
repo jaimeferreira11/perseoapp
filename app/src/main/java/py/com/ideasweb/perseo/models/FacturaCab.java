@@ -258,6 +258,8 @@ public class FacturaCab extends LitePalSupport {
         this.coordendas = coordendas;
     }
 
+
+
     @Override
     public String toString() {
         return "FacturaCab{" +

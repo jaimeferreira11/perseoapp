@@ -4,12 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +30,7 @@ import java.util.List;
 import dmax.dialog.SpotsDialog;
 import py.com.ideasweb.R;
 import py.com.ideasweb.perseo.constructor.ConstructorFactura;
+import py.com.ideasweb.perseo.constructor.ConstructorFacturaLog;
 import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.FacturaDet;
 import py.com.ideasweb.perseo.restApi.pojo.LoginData;
@@ -84,134 +89,194 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
         if(!task.getEstado())
             holder.anulado.setVisibility(View.VISIBLE);
 
-        switch (state){
-            case "Anulados":
-
-                holder.frame.setVisibility(View.GONE);
-
-                break;
-            case "Pendientes":
-
-                holder.frame.setVisibility(View.VISIBLE);
-                break;
-            case "Sincronizados":
-
-                holder.frame.setVisibility(View.GONE);
-                break;
-                default:
-                    break;
-        }
 
 
-        holder.delete.setOnClickListener(new View.OnClickListener() {
+        // boton de opciones
+        final CardView button = holder.cvPedido;
+        holder.cvPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if(!task.getSincronizadoCore()){
-                    new MaterialDialog.Builder(v.getContext())
-                            .title("Anular Factura?")
-                            .icon(v.getResources().getDrawable(R.drawable.help_48))
-                            .positiveText("Anular")
-                            .negativeText(v.getResources().getString(R.string.cancelar))
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    removeItem(position);
-                                    //recalcula el total
-                                }
-                            })
-                            .show();
-                }else{
-                    Toast.makeText(context, "No puedes anular una factura sincronizada", Toast.LENGTH_LONG).show();
+                PopupMenu popup = new PopupMenu(context, button);
+
+
+                if(state.equalsIgnoreCase("Pendientes")) {
+                    popup.inflate(R.menu.factura_menu);
+                }else if(state.equalsIgnoreCase("Sincronizados")){
+                    popup.inflate(R.menu.factura_menu_sinc);
+                }else {
+                    popup.inflate(R.menu.factura_menu2);
                 }
 
-            }
-        });
 
-        holder.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                if(!task.getSincronizadoCore()){
-                    new MaterialDialog.Builder(v.getContext())
-                            .title("Deseas editar esta factura?")
-                            .icon(v.getResources().getDrawable(R.drawable.help_48))
-                            .positiveText("Editar")
-                            .negativeText(v.getResources().getString(R.string.cancelar))
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    Intent intent = new Intent(v.getContext(), MainStepper.class);
-                                    LoginData.setFactura(task);
-                                    v.getContext().startActivity(intent);
-                                    ((MainActivity)v.getContext()).finish();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.ver:
 
+                                System.out.println(task.toString());
+                                boolean wrapInScrollView = true;
+                                MaterialDialog dialog = new MaterialDialog.Builder(context)
+                                        //.title("Mensaje")
+                                        .customView(R.layout.layout_detalle_pedido, wrapInScrollView)
+                                        .negativeText("Reimprimir")
+                                        .positiveText("Cerrar")
+                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                Toast.makeText(v.getContext(), "Reimprimiendo la factura", Toast.LENGTH_SHORT).show();
+
+
+                                                ((MainActivity)context).buscarImpresora(task);
+
+                                            }
+                                        }).build();
+
+                                if(state.equals("Anulados")){
+
+                                    dialog = new MaterialDialog.Builder(context)
+                                            //.title("Mensaje")
+                                            .customView(R.layout.layout_detalle_pedido, wrapInScrollView)
+                                            .positiveText("Cerrar")
+                                            .build();
                                 }
-                            })
-                            .show();
-                }else{
-                    Toast.makeText(context, "No puedes editar una factura sincronizada", Toast.LENGTH_LONG).show();
-                }
 
-            }
-        });
+                                dialog.show();
 
+                                final View layout = dialog.getCustomView();
+                                TextView detcliente = (TextView) layout.findViewById(R.id.detCliente);
+                                TextView dettotal = (TextView) layout.findViewById(R.id.detTotal);
+                                TextView detNro = (TextView) layout.findViewById(R.id.detNro);
+                                rv = (RecyclerView) layout.findViewById(R.id.rvDetallePedido);
 
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
+                                detcliente.setText(holder.cliente.getText().toString());
+                                dettotal.setText(holder.monto.getText().toString());
+                                detNro.setText("Detalles factura: " +new Formatter().format("%08d",task.getNumeroFactura()));
 
-
-                System.out.println(task.toString());
-                boolean wrapInScrollView = true;
-                MaterialDialog dialog = new MaterialDialog.Builder(context)
-                        //.title("Mensaje")
-                        .customView(R.layout.layout_detalle_pedido, wrapInScrollView)
-                        .negativeText("Reimprimir")
-                        .positiveText("Cerrar")
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                Toast.makeText(v.getContext(), "Reimprimiendo la factura", Toast.LENGTH_SHORT).show();
+                                //buscar el detalle por el cod
+                                List<FacturaDet> detalles =  task.getFacturadet();
 
 
-                                ((MainActivity)context).buscarImpresora(task);
+                                generarLineaLayoutVertical(v.getContext());
+                                inicializarAdaptadorRV(crearAdaptador(v.getContext(), detalles));
 
-                            }
-                        }).build();
+                                return true;
+                            case R.id.cambiar:
 
-               if(state.equals("Anulados")){
 
-                   dialog = new MaterialDialog.Builder(context)
-                           //.title("Mensaje")
-                           .customView(R.layout.layout_detalle_pedido, wrapInScrollView)
-                           .positiveText("Cerrar")
-                           .build();
-               }
+                                new MaterialDialog.Builder(v.getContext())
+                                        .icon(v.getContext().getResources().getDrawable(R.drawable.help_48))
+                                        .title("Editar numeracion (Nro. actual: "+task.getNumeroFactura()+")")
+                                        .negativeText(R.string.cancelar)
+                                        .positiveText("Si")
+                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .inputType(InputType.TYPE_CLASS_NUMBER )
+                                        .input("Ingrese el nuevo nro. de factura", "", new MaterialDialog.InputCallback() {
+                                            @Override
+                                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                                // Do something
 
-               dialog.show();
+                                                if(input.toString().equals("") || !Utilities.isNumeric(input.toString().trim()) ){
+                                                    return;
+                                                }
+                                                task.setNumeroFactura(Integer.parseInt(input.toString().trim()));
+                                                task.update(task.getId());
+                                                holder.nro.setText(input.toString().trim());
 
-                final View layout = dialog.getCustomView();
-                TextView detcliente = (TextView) layout.findViewById(R.id.detCliente);
-                TextView dettotal = (TextView) layout.findViewById(R.id.detTotal);
-                TextView detNro = (TextView) layout.findViewById(R.id.detNro);
-                rv = (RecyclerView) layout.findViewById(R.id.rvDetallePedido);
 
-                detcliente.setText(holder.cliente.getText().toString());
-                dettotal.setText(holder.monto.getText().toString());
-                detNro.setText("Detalles factura: " +new Formatter().format("%08d",task.getNumeroFactura()));
+                                                new MaterialDialog.Builder(context)
+                                                        .title("Nro de factura modificado  correctamente")
+                                                        .content("Favor verifique la consistencia del talonario")
+                                                        .icon(context.getResources().getDrawable(R.drawable.checked_48))
+                                                        .titleColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                                                        .positiveText("Aceptar")
+                                                        .show();
 
-                //buscar el detalle por el cod
-                List<FacturaDet> detalles =  task.getFacturadet();
-                /*for (FacturaCab cab: task.getFacturadet()) {
-                    if(cab.getIdFacturaCab() == Integer.parseInt(holder.nro.getText().toString())){
-                        detalles = (ArrayList<FacturaDet>) cab.getFacturadet();
+
+
+
+                                            }
+                                        }).show();
+
+
+                                return true;
+                            case R.id.editar:
+
+
+                                if(!task.getSincronizadoCore()){
+                                    new MaterialDialog.Builder(v.getContext())
+                                            .title("Deseas editar esta factura?")
+                                            .icon(v.getResources().getDrawable(R.drawable.help_48))
+                                            .positiveText("Editar")
+                                            .negativeText(v.getResources().getString(R.string.cancelar))
+                                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                @Override
+                                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                    Intent intent = new Intent(v.getContext(), MainStepper.class);
+                                                    LoginData.setFactura(task);
+                                                    v.getContext().startActivity(intent);
+                                                    ((MainActivity)v.getContext()).finish();
+
+                                                }
+                                            })
+                                            .show();
+                                }else{
+                                    Toast.makeText(context, "No puedes editar una factura sincronizada", Toast.LENGTH_LONG).show();
+                                }
+
+
+                                return true;
+                            case R.id.anular:
+
+                                if(!task.getSincronizadoCore()){
+                                    new MaterialDialog.Builder(v.getContext())
+                                            .title("Anular Factura?")
+                                            .icon(v.getResources().getDrawable(R.drawable.help_48))
+                                            .positiveText("Anular")
+                                            .negativeText(v.getResources().getString(R.string.cancelar))
+                                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                @Override
+                                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                    removeItem(position);
+                                                    //recalcula el total
+                                                }
+                                            })
+                                            .show();
+                                }else{
+                                    Toast.makeText(context, "No puedes anular una factura sincronizada", Toast.LENGTH_LONG).show();
+                                }
+
+                                return true;
+
+                            case R.id.restaurar:
+
+                                new MaterialDialog.Builder(v.getContext())
+                                        .title("Desea marcar como NO sincronizado?")
+                                        .content("La misma aparecerá en la lista para sincronizar nuevamente.")
+                                        .icon(v.getContext().getDrawable(R.drawable.help_48))
+                                        .positiveText(v.getContext().getString(R.string.aceptar))
+                                        .negativeText(v.getContext().getString(R.string.cancelar))
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                restaurar(task, v.getContext());
+                                            }
+                                        })
+                                        .show();
+
+
+                                return true;
+                        }
+                        return false;
                     }
-                }*/
+                });
 
-                generarLineaLayoutVertical(v.getContext());
-                inicializarAdaptadorRV(crearAdaptador(v.getContext(), detalles));
-
-
-
+                popup.show();
             }
         });
 
@@ -229,12 +294,8 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
         private TextView fecha;
         private TextView monto;
         private TextView documento;
-        private MaterialIconView view;
-        private TextView delete;
-        private TextView edit;
         private TextView anulado;
-        private SwipeRevealLayout swipeLayout;
-        private FrameLayout frame;
+        private CardView cvPedido;
 
 
 
@@ -246,51 +307,11 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
             fecha= (TextView) itemView.findViewById(R.id.fecha);
             monto= (TextView) itemView.findViewById(R.id.monto);
             documento= (TextView) itemView.findViewById(R.id.documento);
-            view = (MaterialIconView) itemView.findViewById(R.id.ver);
-            delete = (TextView) itemView.findViewById(R.id.delete_layout);
-            edit = (TextView) itemView.findViewById(R.id.edit_layout);
             anulado = (TextView) itemView.findViewById(R.id.anulado);
-            swipeLayout = (SwipeRevealLayout) itemView.findViewById(R.id.swipe_layout);
-            frame = (FrameLayout) itemView.findViewById(R.id.frame);
-
-
-            /*itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    boolean wrapInScrollView = true;
-                    MaterialDialog dialog = new MaterialDialog.Builder(itemView.getContext())
-                            //.title("Mensaje")
-                            .customView(R.layout.layout_detalle_pedido, wrapInScrollView)
-                            // .content("Favor, conectese a internet y sincronize")
-                            //  .icon(R.drawable.info)
-                            .positiveText(itemView.getResources().getString(R.string.aceptar))
-                            .show();
-
-                    final View layout = dialog.getCustomView();
-                    TextView detcliente = (TextView) layout.findViewById(R.id.detCliente);
-                    TextView dettotal = (TextView) layout.findViewById(R.id.detTotal);
-                    TextView detNro = (TextView) layout.findViewById(R.id.detNro);
-                    rv = (RecyclerView) layout.findViewById(R.id.rvDetallePedido);
-
-                    detcliente.setText(cliente.getText().toString());
-                    dettotal.setText(monto.getText().toString());
-                    detNro.setText("Detalles del Pedido: " +nro.getText().toString());
-
-                    //buscar el detalle por el cod
-                    ArrayList<PedidoDetalle> detalles =  new ArrayList<PedidoDetalle>();
-                    for (PedidoCabecera cab:LoginData.getListPedidos()) {
-                        if(cab.getCodPedidoCab() == Integer.parseInt(nro.getText().toString())){
-                            detalles = (ArrayList<PedidoDetalle>) cab.getPedidoDetalle();
-                        }
-                    }
-
-                    generarLineaLayoutVertical(v.getContext());
-                    inicializarAdaptadorRV(crearAdaptador(v.getContext(), detalles));
+            cvPedido = (CardView) itemView.findViewById(R.id.cvPedido);
 
 
 
-                }
-            });*/
         }
     }
 
@@ -384,6 +405,41 @@ public class FacturaAdapter extends RecyclerView.Adapter<FacturaAdapter.Resultad
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    public static void restaurar(final FacturaCab cab, final Context context){
+
+        final AlertDialog dialog = new SpotsDialog.Builder()
+                .setContext(context)
+                .setTheme(R.style.spots)
+                .setMessage(R.string.aguarde)
+                .build();
+        dialog.show();
+
+
+        ConstructorFactura constructorFac = new ConstructorFactura();
+
+        // se marca como no sincronizado
+        cab.setSincronizadoCore(false);
+        constructorFac.actualizar(cab);
+
+
+        dialog.dismiss();
+
+        ((MainActivity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new MaterialDialog.Builder(context)
+                        .title(context.getString(R.string.procesoExitoso))
+                        .content("Factura nro " + cab.getNumeroFactura() + " restaurada correctamente. Recargue la lista")
+                        .icon(context.getResources().getDrawable(R.drawable.checked_48))
+                        .titleColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                        .positiveText("Aceptar")
+                        .show();
+
+            }
+        });
 
     }
 }

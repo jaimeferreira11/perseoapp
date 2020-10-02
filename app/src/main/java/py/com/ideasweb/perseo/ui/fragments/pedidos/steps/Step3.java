@@ -132,10 +132,18 @@ public class Step3 extends AbstractStep {
         total.setText(Html.fromHtml(sTotal));
 
         // mostrar numero de factura
-        String establecimiento =  String.format("%03d", LoginData.getTalonario().getEstablecimiento());
-        String punto =  String.format("%03d", LoginData.getTalonario().getPuntoExpedicion());
-        String numero = String.format("%07d", LoginData.getTalonario().getNumeroActual() + 1);
-        doc.setText(Html.fromHtml("<b>Fact.: </b>"+establecimiento + "-"+punto+"-"+numero));
+        if(LoginData.getFactura().getId() == 0){
+            String establecimiento =  String.format("%03d", LoginData.getTalonario().getEstablecimiento());
+            String punto =  String.format("%03d", LoginData.getTalonario().getPuntoExpedicion());
+            String numero = String.format("%07d", LoginData.getTalonario().getNumeroActual() + 1);
+            doc.setText(Html.fromHtml("<b>Fact.: </b>"+establecimiento + "-"+punto+"-"+numero));
+        }else{
+            //factura existente
+            String establecimiento =  String.format("%03d", LoginData.getFactura().getEstablecimiento());
+            String punto =  String.format("%03d", LoginData.getFactura().getPuntoExpedicion());
+            String numero = String.format("%07d", LoginData.getFactura().getNumeroFactura());
+            doc.setText(Html.fromHtml("<b>Fact.: </b>"+establecimiento + "-"+punto+"-"+numero));
+        }
 
         UtilLogger.info("DET SIZE: " +LoginData.getFactura().getFacturadet().size() );
         generarLineaLayoutVertical();

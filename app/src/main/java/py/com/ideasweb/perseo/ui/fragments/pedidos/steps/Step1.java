@@ -72,10 +72,12 @@ public class Step1 extends AbstractStep {
 
 
         System.out.println(LoginData.getFactura().toString());
-        // SI SE EDITA UN PEDIDO EXISTENTE
-        if(LoginData.getFactura().getIdCliente() != null){
 
-            nombres.setText(LoginData.getFactura().getNroDocumentoCliente());
+        // SI SE EDITA UNA FACTURA EXISTENTE
+        if(LoginData.getFactura().getId() >  0){
+
+            nombres.setText(LoginData.getFactura().getNombreCliente());
+            doc.setText(LoginData.getFactura().getNroDocumentoCliente());
             direccion.setText(LoginData.getFactura().getDireccionCliente());
             telefono.setText(LoginData.getFactura().getTelefonoCliente());
             id.setText(String.valueOf(LoginData.getFactura().getIdCliente()));
@@ -188,6 +190,8 @@ public class Step1 extends AbstractStep {
         LoginData.getFactura().setTelefonoCliente(cliente.getTelefono());
         LoginData.getFactura().setDireccionCliente(cliente.getDireccion());
         LoginData.getFactura().setTipoFactura("CONTADO");
+
+        LoginData.getFactura().setCliente(cliente);
 
 
 

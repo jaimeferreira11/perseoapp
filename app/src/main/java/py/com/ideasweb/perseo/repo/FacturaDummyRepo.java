@@ -16,7 +16,7 @@ public class FacturaDummyRepo {
         List<FacturaCab> facturas = new ArrayList<>();
 
 
-        for (int i = 1; i < 101; i++) {
+        for (int i = 1; i < 501; i++) {
             FacturaCab facturaCab = new FacturaCab();
             facturaCab.setIdCliente(388);
             facturaCab.setTimbrado("12345678");

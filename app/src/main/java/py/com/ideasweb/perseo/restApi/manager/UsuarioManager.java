@@ -83,6 +83,7 @@ public class UsuarioManager {
 
     public Respuesta getByEmpresa() throws Exception{
 
+
         final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
         RestApiAdapter restApiAdapter = new RestApiAdapter();
         Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
@@ -123,10 +124,13 @@ public class UsuarioManager {
 
             @Override
             public void onFailure(Call<List<Usuario>> call, Throwable t) {
+
+                System.out.println("ERROR EN USUARIO");
+                System.out.println(t.getMessage());
                 Respuesta respuesta = new Respuesta();
                 t.printStackTrace();
                 respuesta.setEstado("Error");
-                respuesta.setError("Ha ocurrido un error");
+                respuesta.setError(t.getMessage());
                 blockingQueue.add(respuesta);
             }
         });
@@ -139,7 +143,7 @@ public class UsuarioManager {
 
         final BlockingQueue<Respuesta> blockingQueue = new ArrayBlockingQueue<>(1);
         RestApiAdapter restApiAdapter = new RestApiAdapter();
-        Endpoints endpoints = restApiAdapter.establecerConexionRest();
+        Endpoints endpoints = restApiAdapter.establecerPublicConexionRest();
 
 
         Call<Usuario> tokenCall = endpoints.grabarUsuario(usuario);

@@ -161,7 +161,7 @@ public class DialogAdapter extends BaseAdapter {
                     if(entity.getTasaIva() == 10){
                       LoginData.getFactura().getFacturadet().get(position).setImpuesto(entity.getSubTotal() / 11);
                     }else if(entity.getTasaIva() == 5){
-                      LoginData.getFactura().getFacturadet().get(position).setImpuesto(entity.getSubTotal() / 1.1);
+                      LoginData.getFactura().getFacturadet().get(position).setImpuesto(entity.getSubTotal() / 21);
                     }else{
                       LoginData.getFactura().getFacturadet().get(position).setImpuesto(entity.getSubTotal());
                     }

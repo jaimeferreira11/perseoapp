@@ -81,14 +81,6 @@ public class RestApiAdapter {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(20 , TimeUnit.MINUTES)
                 .readTimeout(20, TimeUnit.MINUTES)
-                /*  .addInterceptor(new Interceptor() {
-                      @Override
-                      public Response intercept(Chain chain) throws IOException {
-                          Request.Builder ongoing = chain.request().newBuilder();
-                          ongoing.addHeader("Authorization", "Bearer "+CredentialValues.getPublic_accessToken());
-                          return chain.proceed(ongoing.build());
-                      }
-                  })*/
                 .build();
 
 

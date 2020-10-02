@@ -2,6 +2,7 @@ package py.com.ideasweb.perseo.ui.fragments.sincronizacion;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,11 +32,13 @@ import py.com.ideasweb.perseo.models.Cliente;
 import py.com.ideasweb.perseo.models.FacturaCab;
 import py.com.ideasweb.perseo.models.SincronizacionItem;
 import py.com.ideasweb.perseo.repo.FacturaDummyRepo;
+import py.com.ideasweb.perseo.restApi.ConstantesRestApi;
 import py.com.ideasweb.perseo.restApi.manager.ArticuloManager;
 import py.com.ideasweb.perseo.restApi.manager.ClienteManager;
 import py.com.ideasweb.perseo.restApi.manager.FacturaManager;
 import py.com.ideasweb.perseo.restApi.pojo.Respuesta;
 import py.com.ideasweb.perseo.ui.activities.MainActivity;
+import py.com.ideasweb.perseo.utilities.SendMail;
 import py.com.ideasweb.perseo.utilities.UtilLogger;
 import py.com.ideasweb.perseo.utilities.Utilities;
 
@@ -52,6 +55,7 @@ public class UploadFragment extends Fragment {
 
     Unbinder unbinder;
     AlertDialog dialog;
+    Dialog errorDialog;
     boolean error = false;
 
 
@@ -76,6 +80,7 @@ public class UploadFragment extends Fragment {
         //armar el reciclerview
         generarLineaLayoutVertical();
         inicializarAdaptadorRV(crearAdaptador(obtenerLista()));
+        //inicializarAdaptadorRV(crearAdaptador(obtenerListaDummy()));
 
         // Constructores
       //  ConstructorCliente cc =  new ConstructorCliente();
@@ -308,6 +313,47 @@ public class UploadFragment extends Fragment {
                             facturas.remove(facturas.size() - 1);
 
                         }else{
+
+                            // si es un error de conexion
+                            if(respuesta.getError().toString().indexOf("Failed to connect") > -1){
+
+                                ((MainActivity)getContext()).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        if(dialog.isShowing())
+                                            dialog.dismiss();
+
+
+                                        if(errorDialog == null){
+                                            errorDialog = new MaterialDialog.Builder(getContext())
+                                                    .icon(getResources().getDrawable(R.drawable.ic_error_black_24dp))
+                                                    .title("404 - Servidor no disponible")
+                                                    .content("No se pudo establecer conexión con el servidor y se detuve la sincronización. Favor contacte con el administrador.")
+                                                    .titleColor(getContext().getResources().getColor(R.color.error))
+                                                    .positiveText("Aceptar")
+                                                    .build();
+
+                                            if(!errorDialog.isShowing())
+                                              errorDialog.show();
+
+                                            SendMail sm = new SendMail("Perseo - Servidor caído",
+                                                    "Se detectó que un usuario intento sincronizar la app y el servidor se encuentra caido. Favor vuelva a levantar los servicios en la brevedad posible",
+                                                    ConstantesRestApi.EMAIL_RAUL,
+                                                    ConstantesRestApi.EMAIL_MARCOS);
+                                            sm.execute();
+                                        }
+
+
+
+                                        return;
+                                    }
+                                });
+
+
+                                return;
+
+                            }
 
                             error = true;
                             facturas.remove(facturas.size() - 1);
@@ -600,4 +646,6 @@ public class UploadFragment extends Fragment {
         super.onStop();
         //bajarDatos();
     }
+
+
 }

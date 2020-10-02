@@ -32,9 +32,7 @@ public class ConstructorFactura {
             }
 
 
-            // aumentar el talonario
-            ConstructorTalonario ct = new ConstructorTalonario();
-            ct.aumentar();
+
         }catch (Exception e){
 
             e.printStackTrace();
